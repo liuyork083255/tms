@@ -1,8 +1,15 @@
 package cn.edu.sspu.pojo;
 
 public class Json {
+	private Object obj = null;
 	private String success = null;
 	private String msg = null;
+	public Object getObj() {
+		return obj;
+	}
+	public void setObj(Object obj) {
+		this.obj = obj;
+	}
 	public String getSuccess() {
 		return success;
 	}
