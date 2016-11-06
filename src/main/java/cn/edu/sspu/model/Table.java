@@ -3,10 +3,27 @@ package cn.edu.sspu.model;
 import java.util.List;
 
 public class Table {
+	
+	private String id;
+	private String name;
+	
 	private List<Text> textList;
 	private List<Select> selectList;
 	private List<Date> datetList;
 	private List<Upload> uploatList;
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public List<Text> getTextList() {
 		return textList;
