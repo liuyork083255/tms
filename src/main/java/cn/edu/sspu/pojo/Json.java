@@ -2,7 +2,7 @@ package cn.edu.sspu.pojo;
 
 public class Json {
 	private Object obj = null;
-	private String success = null;
+	private boolean success = false;
 	private String msg = null;
 	public Object getObj() {
 		return obj;
@@ -10,10 +10,10 @@ public class Json {
 	public void setObj(Object obj) {
 		this.obj = obj;
 	}
-	public String getSuccess() {
+	public boolean isSuccess() {
 		return success;
 	}
-	public void setSuccess(String success) {
+	public void setSuccess(boolean success) {
 		this.success = success;
 	}
 	public String getMsg() {
@@ -24,8 +24,10 @@ public class Json {
 	}
 	@Override
 	public String toString() {
-		return "Json [success=" + success + ", msg=" + msg + "]";
+		return "Json [obj=" + obj + ", success=" + success + ", msg=" + msg
+				+ "]";
 	}
+	
 	
 
 }

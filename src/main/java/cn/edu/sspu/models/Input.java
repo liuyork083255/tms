@@ -7,6 +7,7 @@ public class Input {
 	private String type;
 	private String param;
 	private String info;
+	private String required;
 	private String tableown;
 	private String user_id;
 	private String table_id;
@@ -46,6 +47,12 @@ public class Input {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	public String getRequired() {
+		return required;
+	}
+	public void setRequired(String required) {
+		this.required = required;
+	}
 	public String getTableown() {
 		return tableown;
 	}
@@ -68,8 +75,9 @@ public class Input {
 	public String toString() {
 		return "Input [input_id=" + input_id + ", name=" + name + ", value="
 				+ value + ", type=" + type + ", param=" + param + ", info="
-				+ info + ", tableown=" + tableown + ", user_id=" + user_id
-				+ ", table_id=" + table_id + "]";
+				+ info + ", required=" + required + ", tableown=" + tableown
+				+ ", user_id=" + user_id + ", table_id=" + table_id + "]";
 	}
+	
 	
 }

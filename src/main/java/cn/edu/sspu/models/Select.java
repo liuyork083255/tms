@@ -7,6 +7,7 @@ public class Select {
 	private String values;
 	private String type;
 	private String info;
+	private String tableown;
 	private String user_id;
 	private String table_id;
 	public String getSelect_id() {
@@ -45,6 +46,12 @@ public class Select {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	public String getTableown() {
+		return tableown;
+	}
+	public void setTableown(String tableown) {
+		this.tableown = tableown;
+	}
 	public String getUser_id() {
 		return user_id;
 	}
@@ -61,8 +68,9 @@ public class Select {
 	public String toString() {
 		return "Select [select_id=" + select_id + ", name=" + name + ", value="
 				+ value + ", values=" + values + ", type=" + type + ", info="
-				+ info + ", user_id=" + user_id + ", table_id=" + table_id
-				+ "]";
+				+ info + ", tableown=" + tableown + ", user_id=" + user_id
+				+ ", table_id=" + table_id + "]";
 	}
+	
 	
 }

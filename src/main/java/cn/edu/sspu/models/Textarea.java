@@ -6,6 +6,7 @@ public class Textarea {
 	private String value;
 	private String type;
 	private String info;
+	private String tableown;
 	private String user_id;
 	private String table_id;
 	public String getTextarea_id() {
@@ -38,6 +39,12 @@ public class Textarea {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	public String getTableown() {
+		return tableown;
+	}
+	public void setTableown(String tableown) {
+		this.tableown = tableown;
+	}
 	public String getUser_id() {
 		return user_id;
 	}
@@ -54,7 +61,9 @@ public class Textarea {
 	public String toString() {
 		return "Textarea [textarea_id=" + textarea_id + ", name=" + name
 				+ ", value=" + value + ", type=" + type + ", info=" + info
-				+ ", user_id=" + user_id + ", table_id=" + table_id + "]";
+				+ ", tableown=" + tableown + ", user_id=" + user_id
+				+ ", table_id=" + table_id + "]";
 	}
+	
 	
 }
