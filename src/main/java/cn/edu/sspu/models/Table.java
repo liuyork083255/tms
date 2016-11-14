@@ -1,5 +1,7 @@
 package cn.edu.sspu.models;
 
+import java.util.Date;
+
 public class Table {
 	private String table_id;
 	private String name;
@@ -34,5 +36,7 @@ public class Table {
 		return "Table [table_id=" + table_id + ", name=" + name
 				+ ", createtime=" + createtime + ", info=" + info + "]";
 	}
+	
+	
 	
 }

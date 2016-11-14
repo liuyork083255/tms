@@ -1,5 +1,10 @@
 package cn.edu.sspu.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 
 import cn.edu.sspu.models.Model;
+import cn.edu.sspu.models.Table;
 import cn.edu.sspu.pojo.Json;
 
 
@@ -53,10 +59,38 @@ public class AdminDBController {
 	}
 
 	
+	/*该方法是获取所有的table并以list集合方式返回，并且会有page和rows两个参数用于分页*/
+	@ResponseBody
+	@RequestMapping("/getalltables")
+	public Map<String,Object> getAllTables(int page,int rows){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("total", 100);//---------------------------------这里要查询真实数据库中的总记录
+		List<Table> tablelist = new ArrayList<Table>();
+		for(int i=0;i<rows;i++){
+			Table table = new Table();
+			table.setTable_id("0000" + i);
+			table.setName("name" + i);
+			table.setCreatetime("2016-11-13 19:34:45");
+			table.setInfo("垃圾信息"+i);
+			tablelist.add(table);
+		}
+		map.put("rows", tablelist);
+		return map;
+	}
 	
-	
-	
-	
+	/*该方法参数是一个table对象，保存在数据库中*/
+	@ResponseBody
+	@RequestMapping("/savetable")
+	public Json saveTable(@RequestBody Table table){
+		Json json  = new Json();
+		if(table != null){
+			System.out.println(table);
+			json.setSuccess(true);
+		}else{
+			json.setSuccess(false);
+		}
+		return json;
+	}
 	
 	
 	
