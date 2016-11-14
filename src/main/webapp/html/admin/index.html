@@ -2,9 +2,33 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>admin界面</title>
 </head>
-<body>
-
+<!-- 注意这里引入的jquery的js文件是easyui自带的，而不是别的文件，否者在layout组件的时候会出现异常 -->
+<script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.min.js"></script>
+<script type="text/javascript" src="../../js/configure/config.js"></script>
+<script type="text/javascript">
+	$.init("../../");//引入easyui的组件js文件
+	$(function() {
+	})
+</script>
+<body class="easyui-layout" id="newTableLayout">
+	<!-- 北部界面 -->
+    <div data-options="region:'north',title:'主页面',split:true" style="height:100px;"></div>
+    
+    <!-- 南部界面，即为登录界面 -->
+    <div data-options="region:'south',href:'login.html'" style="height:10px;"></div>
+    
+    <!-- 东部界面 -->
+    <div data-options="region:'east',title:'浏览界面',split:true,collapsed:true" style="width:100px;"></div>
+    
+    <!-- 西部界面 -->
+    <div data-options="region:'west',title:'菜单',href:'west.html',split:true" style="width:200px;"></div>
+    
+    <!-- center界面 -->
+    <div data-options="region:'center'" >
+		
+	</div>
+    	
 </body>
 </html>

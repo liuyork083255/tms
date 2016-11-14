@@ -1,0 +1,63 @@
+<!-- 西部界面 -->
+<body>
+	<!-- JS代码 -->
+	<script type="text/javascript">
+		$(function() {
+			$("#west_tree").tree({
+				lines : true, //tree结构虚线显示
+				onClick : function(node) { //tree的结点点击事件
+					if (node.text == "查看已有模板") {
+						$("#newTableLayout").layout('panel', 'center').panel({
+							href : 'showAllTables.html'
+						});
+					} else if(node.text == "新建模板"){
+						$("#newTableLayout").layout('panel', 'center').panel({
+							href : 'center_newTable.html'
+						});
+					}
+						
+				}
+			});
+		})
+	</script>
+
+
+	<ul id="west_tree" class="easyui-tree">
+		<li><span>表单管理</span>
+			<ul>
+				<li><span>查看已有模板</span></li>
+				<li><span>新建模板</span></li>
+				<li><span>编辑模板</span></li>
+			</ul>
+		</li>
+
+
+		<li><span>教师信息管理</span>
+			<ul>
+				<li><span>file1</span></li>
+				<li><span>file2</span></li>
+				<li><span>file3</span></li>
+			</ul>
+		</li>
+
+
+		<li><span>用户信息管理</span>
+			<ul>
+				<li><span>file1</span></li>
+				<li><span>file2</span></li>
+				<li><span>file3</span></li>
+			</ul>
+		</li>
+
+
+		<li><span>个人信息管理</span>
+			<ul>
+				<li><span>file1</span></li>
+				<li><span>file2</span></li>
+				<li><span>file3</span></li>
+			</ul>
+		</li>
+	</ul>
+
+
+</body>

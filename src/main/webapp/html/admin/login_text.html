@@ -1,14 +1,20 @@
-
-<body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理员登陆</title>
+</head>
+<!-- 注意这里引入的jquery的js文件是easyui自带的，而不是别的文件，否者在layout组件的时候会出现异常 -->
+<script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.min.js"></script>
+<script type="text/javascript" src="../../js/configure/config.js"></script>
 <script type="text/javascript">
-	//$.init("../../");//引入easyui的组件js文件
+	$.init("../../");//引入easyui的组件js文件
 	$(function() {
 		$('#dialog_login').dialog({
 			title : '管理员登陆',
 			width : 350,
 			height : 200,
-			closed : true,
-			closable:true,
+			closed : false,
 			cache : false,
 			modal : true,   //是否背景不可选
 			closable:true,  //是否显示关闭按钮
@@ -45,6 +51,7 @@
 		});
 	})
 </script>
+<body>
 	<!-- 登陆div -->
 	<div id="dialog_login">
 		<form id="form_login" method="post">
@@ -67,3 +74,4 @@
 		</form>
 	</div>
 </body>
+</html>
