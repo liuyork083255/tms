@@ -8,5 +8,8 @@ jQuery.extend({
 	getGlobalModel:function(){return $.globalModel;},
 	setGlobalModel:function(model){$.globalModel = model;},
 	
+	globalTableId:undefined,
+	getGlobalTableId:function(){return $.globalTableId;},
+	setGlobalTableId:function(table_id){$.globalTableId = table_id;}
 	
 })

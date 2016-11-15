@@ -24,11 +24,11 @@ jQuery.extend({
 		
 
 		for(var i=0;i<rows.length;i++){
-			if(rows[i].textType == "select"){
+			if(rows[i].type == "select"){
 				
 				selectList.push($.selectToJson(rows[i]));//将text行json转化为后台javabean对应的json对象，并返回该该对象
 				
-			}else if(rows[i].textType == "textarea"){
+			}else if(rows[i].type == "textarea"){
 				
 				textareaList.push($.textareaToJson(rows[i]));//将select行json转化为后台javabean对应的json对象，并返回该该对象
 				
@@ -52,9 +52,9 @@ jQuery.extend({
 	//这下面是辅助上面自定义方法的函数
 	inputToJson:function(i){
 		var input = {};
-		input["name"] = i.textName;
+		input["name"] = i.name;
 		input["required"] = i.required;
-		input["type"] = i.textType;
+		input["type"] = i.type;
 		
 		
 		/*以下这些判断是为后期做扩展功能准备的*/
@@ -71,16 +71,16 @@ jQuery.extend({
 	},
 	selectToJson:function(s){
 		var select = {};
-		select["name"] = s.textName;
-		select["type"] = s.textType;
-		select["values"] = s.textExtraInfo;
+		select["name"] = s.name;
+		select["type"] = s.type;
+		select["info"] = s.info;
 		return select;
 	},
 	textareaToJson:function(t){
 		var textarea = {};
-		textarea["name"] = t.textName;
-		textarea["type"] = t.textType;
-		textarea["info"] = t.textExtraInfo;
+		textarea["name"] = t.name;
+		textarea["type"] = t.type;
+		textarea["info"] = t.info;
 		return textarea;
 	}
   

@@ -13,18 +13,23 @@
 				return;
 		}
 		
-		var modelName = model.name;
-		var modelId = model.table_id;
+		console.info(model);
 		
-		var textList = model.textList;
+		var name = model.name;
+		var table_id = model.table_id;
+		var user_id = model.user_id;
+		
+		var inputList = model.inputList;
 		var selectList = model.selectList;
-		var datetList = model.datetList;
-		var upfileList = model.uploatList;
+		var textareaList = model.textareaList;
 		
-		/*文本字段*/
-		if(textList != null || textList != undefined){
-			for(var i=0;i<textList.length;i++){
-				createNode("text",textList[i]);
+		/*input字段*/
+		if(inputList != null || inputList != undefined){
+			for(var i=0;i<inputList.length;i++){
+				var required = '';
+				if(inputList[i].required == "true")
+					required = ' required="true" ';
+				createNode("input",inputList[i],required);
 			}
 			
 		}
@@ -36,28 +41,20 @@
 			}
 		}
 		
-		/*日期字段*/
-		if(datetList != null || datetList != undefined){
-			for(var i=0;i<datetList.length;i++){
-				createNode("date",datetList[i]);
+		/*textarea字段*/
+		if(textareaList != null || textareaList != undefined){
+			for(var i=0;i<textareaList.length;i++){
+				createNode("textarea",textareaList[i]);
 				
 			}
 		}
 		
-		/*文件上传字段*/
-		if(upfileList != null || upfileList != undefined){
-			for(var i=0;i<upfileList.length;i++){
-				createNode("file",upfileList[i]);
-			}
-		}
-		
-		
 		
 
 		/* 根据对应的类型对象创建对应的dom节点 */
-		function createNode(type,obj) {
+		function createNode(type,obj,required) {
 
-			if (type == "text") {
+			if (type == "input") {
 				/* 创建四个字段，为一行的内容 */
 				var tr = $('<tr style="height:30px"></tr>');
 				var td1 = $('<td style="width:100px;"></td>');
@@ -69,25 +66,20 @@
 				td1.append(label);
 				
 				/* 为第二个td添加名称dom标签 */
-				$("<input>",{
-			        "id":"",
-			        css:{
-			            "border":"1px solid #000",
-			            "font-size":"20px"
-			        },
-			        value:"",
-			        focusin:function(){
-			            $(this).css("border","2px solid #FF3300");
-			        },
-			        focusout:function(){
-			            $(this).css("border","1px solid #000");
-			        }
-			    }).appendTo(td2);
+				var lable2 = undefined;
+				if(obj.type == "text"){lable2 = $('<input type="text" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "file"){lable2 = $('<input type="file" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "image"){lable2 = $('<input type="image" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "date"){lable2 = $('<input type="" class="easyui-datebox" '+required+'" />')};
+				if(obj.type == "datetime"){lable2 = $('<input type="" class="easyui-datetimebox" '+required+'" />')};
+				if(obj.type == "email"){lable2 = $('<input type="" class="easyui-validatebox" '+required+'" validType="email" />')};
+				if(obj.type == "number"){lable2 = $('<input type="number" class="easyui-validatebox" '+required+'" />')};
 				
+				td2.append(lable2);
 				
 				
 				/* 为第三个td添加名称dom标签 */
-				var labelInfo = $('<label>'+'该字段为 : '+type+' 类型'+'</label>');
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
 				td3.append(labelInfo);
 				
 				
@@ -110,7 +102,7 @@
 				
 				/* 为第二个td添加名称dom标签 */
 				var selectNode = $('<select class="easyui-combobox" style="width:200px;"></select>');
-				var options = obj.selectValues.split('&');
+				var options = obj.info.split('&');
 				for(var i=0;i<options.length;i++){
 					selectNode.append('<option>'+options[i]+'</option>');
 				}
@@ -118,13 +110,13 @@
 				td2.append(selectNode);
 				
 				/* 为第三个td添加名称dom标签 */
-				var labelInfo = $('<label>'+'该字段为 : '+type+' 类型'+'</label>');
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
 				td3.append(labelInfo);
 				
 				tr.append(td1);tr.append(td2);tr.append(td3);
 				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
 			}
-			if (type == "date") {
+			if (type == "textarea") {
 				/* 创建四个字段，为一行的内容 */
 				var tr = $('<tr style="height:30px"></tr>');
 				var td1 = $('<td style="width:100px;"></td>');
@@ -136,42 +128,19 @@
 				td1.append(label);
 				
 				/* 为第二个td添加名称dom标签 */
-				var dateNode = $('<input type="text" class="easyui-datebox" required="required" width=100px/>');
+				var dateNode = $('<textarea rows="5" cols="20"></textarea>');
 				
 				
 				td2.append(dateNode);
 				
 				/* 为第三个td添加名称dom标签 */
-				var labelInfo = $('<label>'+'该字段为 : '+type+' 类型'+'</label>');
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
 				td3.append(labelInfo);
 				
 				tr.append(td1);tr.append(td2);tr.append(td3);
 				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
 			}
-			if (type == "file") {
-				/* 创建四个字段，为一行的内容 */
-				var tr = $('<tr style="height:30px"></tr>');
-				var td1 = $('<td style="width:100px;"></td>');
-				var td2 = $('<td style="width:250px;"></td>');
-				var td3 = $('<td style="width:200px;"></td>');
-				
-				/* 为第一个td添加名称dom标签 */
-				var label = $('<label>'+obj.name+'</label>');
-				td1.append(label);
-				
-				/* 为第二个td添加名称dom标签 */
-				var fileNode = $('<input type="file" style="height:30px;width:200px" />');
-				
-				
-				td2.append(fileNode);
-				
-				/* 为第三个td添加名称dom标签 */
-				var labelInfo = $('<label>'+'该字段为 : '+type+' 类型'+'</label>');
-				td3.append(labelInfo);
-				
-				tr.append(td1);tr.append(td2);tr.append(td3);
-				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
-			}
+			
 		}
 		
 	})
