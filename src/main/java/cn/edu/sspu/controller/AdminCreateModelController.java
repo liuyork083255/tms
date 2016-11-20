@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
+import cn.edu.sspu.pojo.User;
 
 @Controller
 @RequestMapping("/admin/create")
 public class AdminCreateModelController {
 
 	@RequestMapping("/test1")
-	public void test1(){
-		System.out.println("zhuan fa  success");
+	public void test1(String userName){
+		System.out.println(userName);
 	}
 
 }
