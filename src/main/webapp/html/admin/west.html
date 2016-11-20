@@ -1,75 +1,89 @@
 <!-- 西部界面 -->
 <body>
-	<!-- JS代码 -->
-	<script type="text/javascript">
-		$(function() {
-			$("#west_tree").tree({
-				lines : true, //tree结构虚线显示
-				onClick : function(node) { //tree的结点点击事件
-					if (node.text == "查看已有模板") {
-						$("#newTableLayout").layout('panel', 'center').panel({
-							href : 'showAllTables.html'
-						});
-					} else if(node.text == "新建模板"){
-						$("#newTableLayout").layout('panel', 'center').panel({
-							href : 'center_newTable.html'
-						});
-					}else if(node.text == "编辑模板"){
-						$("#newTableLayout").layout('panel', 'center').panel({
-							href : 'center_editTable.html'
-						});
-					}
-						
-				}
-			});
-		})
-	</script>
 
 
-	<ul id="west_tree" class="easyui-tree">
-		<li><span>表单管理</span>
-			<ul>
-				<li><span>查看已有模板</span></li>
-				<li><span>新建模板</span></li>
-				<li><span>编辑模板</span></li>
-				
-				<li><span>查看字段模板</span>
-					<ul>
-						<li><span>input模板</span></li>
-						<li><span>select模板</span></li>
-						<li><span>textarea模板</span></li>
-					</ul>
-				</li>
-			</ul>
-		</li>
+<div id="east-zedie1" class="easyui-accordion" data-options="fit:true">
+    <div title="Model模板" data-options="iconCls:'icon-save',selected:true" style="overflow:auto;padding:10px;">
+		<!-- <h1 >模板</h1> -->
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(1);">新增模板add</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(2);">编辑模板edit</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(3);">查看模板search</a><br/></h3>
+		<hr/>
+		<!-- <h1 >标签模板查看</h1> -->
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(4);">input标签集合</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(5);">select标签集合</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(6);">checkbox标签集合</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(7);">radio标签集合</a><br/></h3>
+		<h3><a href="#"  style="color:#0099FF;" onclick="a_click(8);">integer标签集合</a><br/></h3>
+		<hr/>
+    </div>
+    <div title="教师填写浏览" data-options="iconCls:'icon-reload'" style="padding:10px;">
+		content2
+    </div>
+    <div title="用户信息" data-options="iconCls:'icon-help'" style="padding:10px;">
+		content3
+    </div>
+    <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
+		content3
+    </div>
+</div>
 
 
-		<li><span>教师信息管理</span>
-			<ul>
-				<li><span>file1</span></li>
-				<li><span>file2</span></li>
-				<li><span>file3</span></li>
-			</ul>
-		</li>
 
 
-		<li><span>用户信息管理</span>
-			<ul>
-				<li><span>file1</span></li>
-				<li><span>file2</span></li>
-				<li><span>file3</span></li>
-			</ul>
-		</li>
+<style type="text/css">
+a:link,a:visited{
+ text-decoration:none;  /*超链接无下划线*/
+}
+a:hover{
+ text-decoration:underline;  /*鼠标放上去有下划线*/
+}
+</style>
 
 
-		<li><span>个人信息管理</span>
-			<ul>
-				<li><span>file1</span></li>
-				<li><span>file2</span></li>
-				<li><span>file3</span></li>
-			</ul>
-		</li>
-	</ul>
+<!-- JS代码 -->
+<script type="text/javascript">
+/* 当点击超链接的时候执行该方法，index参数判断是哪一个超链接 */
+function a_click(index){
+	if(index == 1){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_newTable.html'
+		});
+	}
+	else if(index == 2){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_editTable.html'
+		});
+	}
+	else if(index == 3){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showTable.html'
+		});
+	}
+	else if(index == 4){}
+	else if(index == 5){}
+	else if(index == 6){}
+	else if(index == 7){}
+	else if(index == 8){}
+	else{}
+}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
 </body>
