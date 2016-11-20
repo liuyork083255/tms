@@ -1,0 +1,175 @@
+<!-- ��ҳ������admin�鿴model����ʹ�� -->
+<body>
+<!-- <script type="text/javascript" src=""></script> -->
+<script type="text/javascript">
+	$(function(){
+		/* 获得到好展示的model */
+		var model = $.getGlobalModel();
+		/* 获取当前页面的table标签dom对象，好往里面添加字段标签 */
+		var htmlTable = $("#showModel_admianCheck");
+		/* 如果model为空，没有传进来，异常处理 */
+		if(model == undefined || model == null){
+				$.messager.alert("提示","当前模板展示失败","error");
+				return;
+		}
+		
+		console.info(model);
+		
+		var name = model.name;
+		var table_id = model.table_id;
+		var user_id = model.user_id;
+		
+		var inputList = model.inputList;
+		var selectList = model.selectList;
+		var textareaList = model.textareaList;
+		
+		/*input字段*/
+		if(inputList != null || inputList != undefined){
+			for(var i=0;i<inputList.length;i++){
+				var required = '';
+				if(inputList[i].required == "true")
+					required = ' required="true" ';
+				createNode("input",inputList[i],required);
+			}
+			
+		}
+		
+		/*select选项字段*/
+		if(selectList != null || selectList != undefined){
+			for(var i=0;i<selectList.length;i++){
+				createNode("select",selectList[i]);
+			}
+		}
+		
+		/*textarea字段*/
+		if(textareaList != null || textareaList != undefined){
+			for(var i=0;i<textareaList.length;i++){
+				createNode("textarea",textareaList[i]);
+				
+			}
+		}
+		
+		
+
+		/* 根据对应的类型对象创建对应的dom节点 */
+		function createNode(type,obj,required) {
+
+			if (type == "input") {
+				/* 创建四个字段，为一行的内容 */
+				var tr = $('<tr style="height:30px"></tr>');
+				var td1 = $('<td style="width:100px;"></td>');
+				var td2 = $('<td style="width:250px;"></td>');
+				var td3 = $('<td style="width:200px;"></td>');
+				
+				/* 为第一个td添加名称dom标签 */
+				var label = $('<label>'+obj.name+'</label>');
+				td1.append(label);
+				
+				/* 为第二个td添加名称dom标签 */
+				var lable2 = undefined;
+				if(obj.type == "text"){lable2 = $('<input type="text" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "file"){lable2 = $('<input type="file" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "image"){lable2 = $('<input type="image" class="easyui-validatebox" '+required+'" />')};
+				if(obj.type == "date"){lable2 = $('<input type="" class="easyui-datebox" '+required+'" />')};
+				if(obj.type == "datetime"){lable2 = $('<input type="" class="easyui-datetimebox" '+required+'" />')};
+				if(obj.type == "email"){lable2 = $('<input type="" class="easyui-validatebox" '+required+'" validType="email" />')};
+				if(obj.type == "number"){lable2 = $('<input type="number" class="easyui-validatebox" '+required+'" />')};
+				
+				td2.append(lable2);
+				
+				
+				/* 为第三个td添加名称dom标签 */
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
+				td3.append(labelInfo);
+				
+				
+				
+				
+				tr.append(td1);tr.append(td2);tr.append(td3);
+				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
+				
+			}
+			if (type == "select") {
+				/* 创建四个字段，为一行的内容 */
+				var tr = $('<tr style="height:30px"></tr>');
+				var td1 = $('<td style="width:100px;"></td>');
+				var td2 = $('<td style="width:250px;"></td>');
+				var td3 = $('<td style="width:200px;"></td>');
+				
+				/* 为第一个td添加名称dom标签 */
+				var label = $('<label>'+obj.name+'</label>');
+				td1.append(label);
+				
+				/* 为第二个td添加名称dom标签 */
+				var selectNode = $('<select class="easyui-combobox" style="width:200px;"></select>');
+				var options = obj.info.split('&');
+				for(var i=0;i<options.length;i++){
+					selectNode.append('<option>'+options[i]+'</option>');
+				}
+				
+				td2.append(selectNode);
+				
+				/* 为第三个td添加名称dom标签 */
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
+				td3.append(labelInfo);
+				
+				tr.append(td1);tr.append(td2);tr.append(td3);
+				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
+			}
+			if (type == "textarea") {
+				/* 创建四个字段，为一行的内容 */
+				var tr = $('<tr style="height:30px"></tr>');
+				var td1 = $('<td style="width:100px;"></td>');
+				var td2 = $('<td style="width:250px;"></td>');
+				var td3 = $('<td style="width:200px;"></td>');
+				
+				/* 为第一个td添加名称dom标签 */
+				var label = $('<label>'+obj.name+'</label>');
+				td1.append(label);
+				
+				/* 为第二个td添加名称dom标签 */
+				var dateNode = $('<textarea rows="5" cols="20"></textarea>');
+				
+				
+				td2.append(dateNode);
+				
+				/* 为第三个td添加名称dom标签 */
+				var labelInfo = $('<label>'+'该字段为 : '+obj.type+' 类型'+'</label>');
+				td3.append(labelInfo);
+				
+				tr.append(td1);tr.append(td2);tr.append(td3);
+				htmlTable.append(tr);	//将新建的dom节点添加至table节点中
+			}
+			
+		}
+		
+	})
+	
+</script>
+
+
+<table border="1" style="font-size:15p;text-align:center" id="showModel_admianCheck">
+	<tr style="height:30px">
+		<th style="width:100px;">字段名称</th>
+		<th style="width:250px;">填写内容</th>
+		<th style="width:200px;">字段说明</th>
+	</tr>
+
+</table>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
