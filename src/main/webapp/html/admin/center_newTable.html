@@ -8,7 +8,7 @@
 </table>
 
 <!-- 校验字段，这里采用dialog形式，显示隐藏，当指定的事件触发后就显示出来 -->
-<div id="dialog-1" title="My Dialog" style="width:400px;height:400px;" hidden="true" >
+<div id="dialog-1" title="My Dialog" style="width:300px;height:300px;" hidden="true" >
 	<div id="east-zedie1" class="easyui-accordion" data-options="fit:true">
 		<div title="校验类型选择" data-options="iconCls:'icon-tip',selected:true">
 			<form id="validate-form">
@@ -24,6 +24,26 @@
     	
 	</div>
 </div>
+
+
+<!-- 这个模块是用于select被选中后跳出的界面 -->
+
+
+<!-- 这个模块是用于checkbox被选中后跳出的界面 -->
+
+
+<!-- 这个模块是用于radio被选中后跳出的界面 -->
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -128,22 +148,21 @@ $('#datagrid_newTable').datagrid({
 							value: 'false'
 						}]}
 				}},
-			{field:'validatetype',title:'校验设置',width:200,
+			{field:'validatetype',title:'校验设置',width:250,
 					editor:{
 						type:'validatebox',
 						options:{
 							//required:true
 							}
 					}},
-		{field:'info',title:'字段附加选项',width:400,editor:'text'},
-		{field:'textExplaination',title:'本字段说明项',width:400,
-			editor:{
-				type:'validatebox',
-				options:{
-					readonly:true
-				}
-			}
-		}
+		{field:'param',title:'相关参数设置',width:200,
+					editor:{
+						type:'validatebox',
+						options:{
+						editable:false//只读 
+						}}
+		},
+		{field:'info',title:'用于展示给用户信息',width:350,editor:'text'}
     ]],
     /* 定义工具栏按钮 */
     toolbar:[{
@@ -194,7 +213,7 @@ function addRow(){
 	/* 调用获取校验字段的编辑器，同时为其绑定获取焦点的实践 */
 	
 	
-	getValidateType();
+	getValidateType();//开启校验表格事件的绑定
 	
 }
 
@@ -360,7 +379,7 @@ function doubleClickRow(index,row){
 	
 	$('#datagrid_newTable').datagrid('beginEdit',index);
 	editRow = index;
-	getValidateType();
+	getValidateType();//开启校验表格事件的绑定
 }
 
 /* combox只改变触发事件 */
@@ -372,21 +391,18 @@ function comboxValueChang(newValue,oldValue){
 	
 	/* 这个if做一个简单的筛选，只有在改变值的时候才执行有效的代码 */
 	if(newValue =="select" ){
-		/* 获取到当前行的texExtraInfo编辑器 */
-		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'info'});
-		$(ed1.target).val("&&&");	//调用target则是获取到jquery对象
-		
-		var ed2 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'textExplaination'});
-		$(ed2.target).val("请用&(英文环境)进行分割option子选项，例如 'A&B&C',无空格！ ");	//调用target则是获取到jquery对象
-		$(ed2.target).css("color","red");
+		/* 开启获取values字段方法 */
+		getSelectValues();
 	}else{
 		
 		//这里其实还要写入很多判断，因为每一个字段都应该有对应的说明
 		
-		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'info'});
+		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
 		$(ed1.target).val("");	//调用target则是获取到jquery对象
+		$(ed1.target).unbind();//尝试了很多解绑的方法，目前就这个有用
+		$(ed1.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
 		
-		var ed2 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'textExplaination'});
+		var ed2 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'info'});
 		$(ed2.target).val("");	//调用target则是获取到jquery对象
 	}
 }
@@ -458,24 +474,25 @@ function getValidateType(){
 if(editRow != undefined){
 	
 		var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'validatetype'});
+		$(ed.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
 	    $(ed.target).bind('focus', function () {
 	    	$("#validate-form-table tr").remove();
 	    	
 	    	$("#validate-form-table").append('<tr>'
-	    			+'<th>类型1：</th><th><input type="checkbox" name="validate-checkbox" value="11" /></th>'
-	    			+'<th>类型2：</th><th><input type="checkbox" name="validate-checkbox" value="222" /></th>'
+	    			+'<th>电话格式：</th><th><input type="checkbox" name="validate-checkbox" value="phone" /></th>'
+	    			+'<th>手机格式：</th><th><input type="checkbox" name="validate-checkbox" value="mobile" /></th>'
 	    			+'</tr>');
 	    	$("#validate-form-table").append('<tr>'
-	    			+'<th>类型1：</th><th><input type="checkbox" name="validate-checkbox" value="3ewq" /></th>'
-	    			+'<th>类型2：</th><th><input type="checkbox" name="validate-checkbox" value="4dsds" /></th>'
+	    			+'<th>身份证格式：</th><th><input type="checkbox" name="validate-checkbox" value="idcard" /></th>'
+	    			+'<th>邮件格式：</th><th><input type="checkbox" name="validate-checkbox" value="email" /></th>'
 	    			+'</tr>');
 	    	$("#validate-form-table").append('<tr>'
-	    			+'<th>类型1：</th><th><input type="checkbox" name="validate-checkbox" value="5sd" /></th>'
-	    			+'<th>类型2：</th><th><input type="checkbox" name="validate-checkbox" value="6ds" /></th>'
+	    			+'<th>英文格式：</th><th><input type="checkbox" name="validate-checkbox" value="english" /></th>'
+	    			+'<th>中文格式：</th><th><input type="checkbox" name="validate-checkbox" value="chinese" /></th>'
 	    			+'</tr>');
 	    	$("#validate-form-table").append('<tr>'
-	    			+'<th>类型1：</th><th><input type="checkbox" name="validate-checkbox" value="7d" /></th>'
-	    			+'<th>类型2：</th><th><input type="checkbox" name="validate-checkbox" value="8ds" /></th>'
+	    			+'<th>整型格式：</th><th><input type="checkbox" name="validate-checkbox" value="integer" /></th>'
+	    			+'<th>传真格式：</th><th><input type="checkbox" name="validate-checkbox" value="faxno" /></th>'
 	    			+'</tr>');
 	    	
 	    	var value = $(ed.target).val();
@@ -535,7 +552,14 @@ if(editRow != undefined){
 }
 
 
-
+/* 开启select事件绑定焦点 */
+function getSelectValues(){
+	var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+	$(ed.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
+	$(ed.target).bind('focus', function () {
+		console.info("java");
+	});
+}
 
 
 
