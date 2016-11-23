@@ -50,8 +50,9 @@
 
 
 
-<input type="button" id="ab1" value="open"/>
+<input type="button" id="ab1" value="open" />
 <input type="button" id="ab2" value="close"/>
+
 <br>
 
 
@@ -160,7 +161,7 @@ $('#datagrid_newTable').datagrid({
 					editor:{
 						type:'validatebox',
 						options:{
-						editable:false//只读 
+						//editable:false//只读 
 						}}
 		},
 		{field:'info',title:'用于展示给用户信息',width:350,editor:'text'}
@@ -394,11 +395,16 @@ function comboxValueChang(newValue,oldValue){
 	if(newValue =="select" ){
 		/* 开启获取values字段方法 */
 		getSelectValues();
+	}else if(newValue =="checkbox" ){
+		/* 开启获取values字段方法 */
+		getCheckboxValues();
+	}else if(newValue =="radio" ){
+		/* 开启获取values字段方法 */
+		getRadioValues();
 	}else{
 		
-		//这里其实还要写入很多判断，因为每一个字段都应该有对应的说明
-		
 		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+		$(ed1.target).attr("readonly","readonly");
 		$(ed1.target).val("");	//调用target则是获取到jquery对象
 		$(ed1.target).unbind();//尝试了很多解绑的方法，目前就这个有用
 		$(ed1.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
@@ -475,7 +481,7 @@ function getValidateType(){
 if(editRow != undefined){
 	
 		var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'validatetype'});
-		$(ed.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
+		//$(ed.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
 	    $(ed.target).bind('focus', function () {
 	    	$("#validate-form-table tr").remove();
 	    	
@@ -518,6 +524,7 @@ if(editRow != undefined){
 	    		closable:true,  //是否显示关闭按钮
 	    		buttons:[{
 					text:'确定',
+					iconCls:'icon-ok',
 					handler:function(){
 						var checks = $("#validate-form input");//获取所有的input组件
 						var length = checks.length;//获取所有input的长度
@@ -535,6 +542,7 @@ if(editRow != undefined){
 					}
 				},{
 					text:'重置',
+					iconCls:'icon-cancel',
 					handler:function(){
 						//重置因为jquery没有reset方法，所以借用dom的方法来实现
 						//document.getElementById("validate-form").reset(); 注意这里不能用这个重置，因为遇到事先就选中的是无法重置的
@@ -556,7 +564,11 @@ if(editRow != undefined){
 /* 开启select事件绑定焦点 */
 function getSelectValues(){
 	var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
-	$(ed.target).css("background","#D4D4D4");//将这个方格设置成灰色背景，表示用户不可输入
+	//$(ed.target).val("点击获取select的option参数");
+	//$(ed.target).css("color","red");
+	$(ed.target).removeAttr("readonly");
+	$(ed.target).attr("required","required");
+	$(ed.target).css("background","white");
 	$(ed.target).bind('focus', function () {
 		console.info("java");
 	});
@@ -564,10 +576,39 @@ function getSelectValues(){
 
 
 
+/* 开启checkbox事件绑定焦点 */
+function getCheckboxValues(){
+	var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+	$(ed.target).removeAttr("readonly");
+	
+	$(ed.target).attr("required","required");
+	
+	
+	
+	$(ed.target).css("background","white");
+	$(ed.target).val("点击获取checkbox的check选项");
+	$(ed.target).css("color","red");
+}
 
 
 
+/* 开启radio事件绑定焦点 */
+function getRadioValues(){
+	var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+	$(ed.target).removeAttr("readonly");
+	$(ed.target).css("background","white");
+	$(ed.target).val("点击获取radio的check选项");
+	$(ed.target).css("color","red");
+}
 
+
+/* 新增的一个校验，用于校验如果要新增一行或者是保存的时候，type是select checkbox radio 则param编辑器里面必须有数据 */
+function validateParamEditor(){
+	if(editRow != undefined){
+		var row = $('#datagrid_newTable').datagrid("getRows")[editRow];
+		console.info(row.type);
+	}
+}
 
 
 
