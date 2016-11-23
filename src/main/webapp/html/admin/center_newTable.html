@@ -560,14 +560,15 @@ if(editRow != undefined){
 	}
 }
 
+//var paramEdit = $('#datagrid_newTable').datagrid('getColumnOption',"param");  这是可以设置editor属性的获取方法 
 
 /* 开启select事件绑定焦点 */
 function getSelectValues(){
 	var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
-	//$(ed.target).val("点击获取select的option参数");
-	//$(ed.target).css("color","red");
 	$(ed.target).removeAttr("readonly");
-	$(ed.target).attr("required","required");
+	$(ed.target).val("请输入文字");
+	$(ed.target).attr("onfocus","if(this.value=='请输入文字'){this.value=''}");
+	$(ed.target).attr("onblur","if(this.value==''){this.value='请输入文字'}");
 	$(ed.target).css("background","white");
 	$(ed.target).bind('focus', function () {
 		console.info("java");
