@@ -32,7 +32,7 @@ public class AdminDBController {
 	
 	/*该方法是接收一个tableName参数，判断数据库是否存在，存在则Json返回false，否则返回true*/
 	@ResponseBody
-	@RequestMapping("/selectTableByName")
+	@RequestMapping("/selecttablebyname")
 	public Json selectTableByName(String name){
 		System.out.println("selectTableByName() 访问成功");
 		
