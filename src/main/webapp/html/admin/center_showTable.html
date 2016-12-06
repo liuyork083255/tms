@@ -1,7 +1,6 @@
 
 <body>
 <!-- JS代码 -->
-<script type="text/javascript" src="../../js/extendJs/json_Html.js"></script>
 <script type="text/javascript">
 	$(function(){
 		
@@ -162,6 +161,7 @@
 		
 		
 		/* 回滚编辑状态 */
+		//这个注意一下：就是保存了以后，再回滚，那么还是会回滚改之前的数据，所以这里要加一个重新加载操作
 		function cancelEdit(){
 			editRow = undefined;
 			$('#datagrid_showAllTables').datagrid('rejectChanges');//编辑回滚方法
@@ -236,12 +236,12 @@
 						   if(data){	//如果返回的数据不为空null
 							   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
 							   $.setGlobalModel(data);
-						   
+						   	
 						   	   /* 展开左边的面板，并且将页面注入当中 */
 						   	   $("#newTableLayout").layout('expand', 'east');
 						   	   
 							   $("#newTableLayout").layout('panel', 'east').panel({
-									href : 'showModel_adminCheck.html',
+									href : 'east_showTable.html',
 									width:650
 								});
 						   }
@@ -274,7 +274,7 @@
 				$.setGlobalTableId(row.table_id);
 				$("#newTableLayout").layout('panel', 'center').panel({
 					href : 'center_editTable.html'
-				}); 	
+				});
 			}
 		}
 		

@@ -199,10 +199,6 @@ $('#datagrid_newTable').datagrid({
 		iconCls: 'icon-remove',
 		handler: function(){removeRow();}	//调用删除选中的datagrid行函数
 	},'-',{
-		text:'编辑行',
-		iconCls: 'icon-edit',
-		handler: function(){beginEdit();}	//调用选中行的编辑模式 
-	},'-',{
 		text:'插入行',
 		iconCls: 'icon-add',
 		handler: function(){insertRow();}	//调用插入行方法 
@@ -458,8 +454,10 @@ function upLoadTable(){
 				   data:"name="+r,
 				   success: function(data){
 					   if(data.success){
+						   
 							var table = $.datagridToJson($('#datagrid_newTable').datagrid('getRows'),r);
 							
+							console.info("转换后：");
 							console.info(table);
 							
 							$.ajax({

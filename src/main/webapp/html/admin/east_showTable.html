@@ -1,0 +1,141 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+
+	<h2>表单查看</h2>
+	<div style="margin:20px 0;"></div>
+	<div class="easyui-panel" title="New Topic" style="width:400px">
+		<div style="padding:10px 60px 20px 60px">
+	    <form id="east_showtable_form" method="post">
+	    	<table cellpadding="5" id="east_showtable_form_table">
+
+	    		<tr>
+	    			<td>Email:</td>
+	    			<td><input class="easyui-textbox" type="text" name="email" data-options="required:true"></input></td>
+	    		</tr>
+	    		<tr>
+	    			<td>Checkbox:</td>
+	    			<td>
+	    				<label><input name="Fruit" type="checkbox" value="" />苹果</label> 
+	    				<label><input name="Fruit" type="checkbox" value="" />桃子 </label> 
+	    				<label><input name="Fruit" type="checkbox" value="" />香蕉 </label> 
+	    				<label><input name="Fruit" type="checkbox" value="" />梨 </label>
+	    			</td>
+	    		</tr>
+	    		<tr>
+	    			<td>Checkbox:</td>
+	    			<td>
+						<label><input name="Fruit" type="radio" value="" />苹果 </label> 
+						<label><input name="Fruit" type="radio" value="" />桃子 </label> 
+						<label><input name="Fruit" type="radio" value="" />香蕉 </label> 
+						<label><input name="Fruit" type="radio" value="" />梨 </label> 
+	    			</td>
+	    		</tr>
+
+	    		<tr>
+	    			<td>Language:</td>
+					<td>
+						<select class="easyui-combobox" name="language">
+							<option value="ar">Arabic</option>
+							<option value="bg">Bulgarian</option>
+							<option value="ca">Catalan</option>
+							<option value="uk">Ukrainian</option>
+							<option value="vi">Vietnamese</option>
+						</select>
+					</td>
+				</tr>
+	    		<tr>
+	    			<td>File:</td>
+	    			<td>
+	    				<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:100%">
+	    			</td>
+	    		</tr>
+	    	</table>
+	    </form>
+	    <div style="text-align:center;padding:5px">
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+	    </div>
+	    </div>
+	</div>
+
+
+
+
+
+<script type="text/javascript">
+
+/* 获得到好展示的model */
+var model = $.getGlobalModel();
+/* 获取当前页面的table对象，好往里面添加字段标签 */
+var formTable = $("#east_showtable_form_table");
+/* 如果model为空，没有传进来，异常处理 */
+if(model == undefined || model == null || model == ""){
+		$.messager.alert("提示","当前模板展示失败","error");
+		
+}else{
+ 	var name = model.name;
+	var table_id = model.table_id;
+	var user_id = model.user_id;
+	
+	var inputList = model.inputList;
+	
+	if(inputList != null || inputList != undefined){
+		for(var i=0;i<inputList.length;i++){
+			
+			var obj = inputList[i];
+			
+			var required = '';
+			if(obj.required == "true")
+				required = ' required="true" ';
+			
+			var validatetype = '';
+			var info = '';
+			
+			var tr = $('<tr></tr>');
+			var td1 = $('<td></td>');
+			var td2 = $('<td></td>');
+			
+			td1.append(obj.name);
+			
+			if(obj.type == "select"){
+				var param = '';
+				
+				
+			}else if(obj.type == "checkbox"){
+				var param = '';
+				
+				
+			}else if(obj.type == "radio"){
+				var param = '';
+				
+				
+			}else{
+				td2.append($('<input class="easyui-textbox" type="xxx" name="email" data-options="required:true,validType:[\'email\']"></input>'));
+			}
+			
+			tr.append(td1);
+			tr.append(td2);
+			formTable.append(tr);
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+}
+
+
+
+function submitForm(){
+	$('#east_showtable_form').form('submit');
+}
+function clearForm(){
+	$('#east_showtable_form').form('clear');
+}
+</script>
+</body>
+

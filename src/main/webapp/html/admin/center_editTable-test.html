@@ -1,0 +1,421 @@
+<!-- 新建表单 页面 -->
+<body>
+<!-- JS代码 -->
+<script type="text/javascript">
+	$(function(){
+		
+		/* 定义一个编辑行的变量，该变量指向的是正在编辑的一行 */
+		var editRow = undefined;
+		$('#datagrid_editTable').datagrid({
+		    url:$.projectUrl + "/admin/db/getinputlist.do?table_id="+$.getGlobalTableId(),//获取全局变量table的id
+		    title:'表单设计',
+		    iconCls:'icon-large-clipart',
+		    checkOnSelect:false,
+		    fitColumns:false,
+		    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+		    onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},
+		    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+		    //pagination:true,
+		    /* 定义列属性 */
+		    columns:[[
+				{field:'table_id',title:'id',width:20,checkbox:true},  
+				{field:'name',title:'模板名称',width:100,
+					editor:{
+						type:'validatebox',
+						options:{
+							required:true
+						}
+					}
+						},
+				{field:'type',title:'字段类型',width:100,
+					editor:{
+						type:'combobox',
+						options:{
+							valueField: 'value',
+							textField: 'value',
+							editable:false,//只读 
+							required:true,
+							onChange:function(newValue,oldValue){comboxValueChang(newValue,oldValue);},
+							data: [{
+								label: 'text',
+								value: 'text'
+							},{
+								label: 'textarea',
+								value: 'textarea'
+							},{
+								label: 'file',
+								value: 'file'
+							},{
+								label: 'image',
+								value: 'image'
+							},{
+								label: 'date',
+								value: 'date'
+							},{
+								label: 'datetime',
+								value: 'datetime'
+							},{
+								label: 'email',
+								value: 'email'
+							},{
+								label: 'number',
+								value: 'number'
+							},{
+								label: 'select',
+								value: 'select'
+							}]}
+					}},
+					{field:'required',title:'是否必须',width:100,
+						editor:{
+							type:'combobox',
+							options:{
+								valueField: 'value',
+								textField: 'value',
+								editable:false,//只读 
+								required:true,
+								data: [{
+									label: 'true',
+									value: 'true'
+								},{
+									label: 'false',
+									value: 'false'
+								}]}
+						}},
+				{field:'info',title:'字段附加选项',width:350,editor:'text'},
+				{field:'textExplaination',title:'本字段说明项',width:400,
+					editor:{
+						type:'validatebox',
+						options:{
+							readonly:true
+						}
+					}
+				},
+				{field:'save',title:'保存',width:50,
+						formatter:function(){
+							return '<input type="button" style="height:20px;width:45px" value="保存" />';
+						}}
+		    ]],
+		    /* 定义工具栏按钮 */
+		    toolbar:[{
+		    	text:'添加行',
+				iconCls: 'icon-add',
+				handler: function(){addRow();}	//调用给datagrid新增行函数
+			},'-',{
+				text:'删除行',
+				iconCls: 'icon-remove',
+				handler: function(){removeRow();}	//调用删除选中的datagrid行函数
+			},'-',{
+				text:'编辑行',
+				iconCls: 'icon-edit',
+				handler: function(){beginEdit();}	//调用选中行的编辑模式 
+			},'-',{
+				text:'插入行',
+				iconCls: 'icon-add',
+				handler: function(){insertRow();}	//调用插入行方法 
+			},'-',{
+				text:'刷新尺寸',
+				iconCls: 'icon-reload',
+				handler: function(){flushSize();}	//调用插入行方法 
+			},'-',{
+				text:'保存',
+				iconCls: 'icon-save',
+				handler: function(){saveRow();}	//调用插入行方法 
+			}]
+		});
+		
+		//datagrid新增行函数
+		function addRow(){
+			if(!validateEditRowIsNull($('#datagrid_editTable').datagrid('getRows').length)){
+				return ;
+			};
+			
+			
+			$('#datagrid_editTable').datagrid('appendRow',{
+			});
+			
+			/* 添加一行，并且让当前行的编辑状态开启 */
+			$('#datagrid_editTable').datagrid('beginEdit',$('#datagrid_editTable').datagrid('getRows').length-1);
+			
+		}
+		
+		//删除选中的datagrid行函数
+		function removeRow(){
+			
+			//注意这里不能使用getSelections属性，因为我是用的行首的复选框来作为是否被选中，
+			//而easyui中datagrid组件每点击一行就会有一个颜色标记，也是被选中状态，这个选中就是用 getSelections 来获取，
+			//而要根据复选框是否被选中来判断是否被选中则要使用 getChecked 
+			var rows = $('#datagrid_editTable').datagrid('getChecked');
+			if(rows.length > 0){
+				$.messager.confirm('请确认','您确定要删除当前选中的所有行吗？',function(flag){
+					if(flag){
+						for(var i =0;i<rows.length;i++){	
+				            var index = $('#datagrid_editTable').datagrid('getRowIndex',rows[i]);//该方法可以根据给定的行记录返回它在datagrid中的索引值
+				            
+				            /* 为了让在编辑变量还没有保存的时候就进行删除，并且让删除后编辑变量的还是对应到原来的行 */
+				            if(index < editRow){
+				            	editRow--;
+				            }else if(index == editRow){
+				            	editRow = undefined;
+				            }
+				            
+				            $('#datagrid_editTable').datagrid('deleteRow',index);
+					 }
+					}
+				});
+				 
+			}else{
+				$.messager.alert('提示','请选择要删除的记录','error');
+			}			
+			
+		}
+		
+		/* 开启编辑行模式 */
+		function beginEdit(){
+			var rows = $('#datagrid_editTable').datagrid('getChecked');
+			if(rows.length != 1){
+				$.messager.show({
+					title:'提示',
+					msg:'请选中一行进行编辑 ！ ',
+					timeout:2000
+				});
+				return;
+			}
+			
+			//获取当前选中的行的索引
+			var index = $('#datagrid_editTable').datagrid('getRowIndex',rows[0]);
+			if(index != editRow && editRow != undefined){
+				if (!validateEditRowIsNull($('#datagrid_editTable').datagrid('getRows').length)) {
+					return;
+				}
+			}
+			$('#datagrid_editTable').datagrid('beginEdit',index);
+			editRow = index;
+		}
+
+		/* 插入在选中行前插入一行 */
+		function insertRow() {
+			/* 先判断是否选中一行 */
+			var rows = $('#datagrid_editTable').datagrid('getChecked');
+			if (rows.length != 1) {
+				$.messager.show({
+					title : '提示',
+					msg : '请选中在哪一行前面插入  ！ ',
+					timeout : 2000
+				});
+				return;
+			}
+
+			var index = $('#datagrid_editTable')
+					.datagrid('getRowIndex', rows[0]);//获取当前选中的行的索引
+
+			/* 然后判断是否有编辑的行，如果有是否编辑完毕 */
+			if (!validateEditRowIsNull(index)) {
+				return;
+			}
+			;
+
+			/* 插入行 */
+			$('#datagrid_editTable').datagrid('insertRow', {
+				index : index,
+				row : {}
+			});
+			/* 让新增当前行的编辑状态开启 */
+			$('#datagrid_editTable').datagrid('beginEdit', index);
+
+		}
+
+		/* 保存行记录 */
+		function saveRow() {
+			/* 判断是否有行 */
+			if ($('#datagrid_editTable').datagrid('getRows').length < 1) {
+				$.messager.show({
+					title : '提示',
+					msg : '请创建行模式 ！！！ ',
+					timeout : 2000
+				});
+				return false;
+			}
+			/* 判断最后一个编辑行是否通过校验 */
+			if (!$('#datagrid_editTable').datagrid('validateRow', editRow)) {
+				$.messager.show({
+					title : '提示',
+					msg : '请完成当前行的编辑 ！ ',
+					timeout : 2000
+				});
+				return false;
+			}
+			$('#datagrid_editTable').datagrid('endEdit', editRow);
+			editRow = undefined;
+			return true;
+		}
+
+		/* 判断编辑行变量是否有值，如果有值那么在编辑另一行的时候关闭前一行的编辑状态，如果没有值，那么就将当前行赋给该变量  */
+		function validateEditRowIsNull(index) {
+
+			if (editRow != undefined) {
+
+				if (!$('#datagrid_editTable').datagrid('validateRow', editRow)) {
+					$.messager.show({
+						title : '提示',
+						msg : '请完成当前行的编辑 ！ ',
+						timeout : 2000
+					});
+					return false;
+				}
+
+				$('#datagrid_editTable').datagrid('endEdit', editRow);
+				editRow = undefined;
+			}
+			editRow = index;
+			return true;
+		}
+
+		/* 双击事件函数 */
+		function doubleClickRow(index,row){
+			/* 判断是否还有未完成编辑的行 */
+			if (editRow != undefined) {
+				if (!$('#datagrid_editTable').datagrid('validateRow', editRow)) {
+					$.messager.show({
+						title : '提示',
+						msg : '请完成当前行的编辑 ！ ',
+						timeout : 2000
+					});
+					return false;
+				}
+				$('#datagrid_editTable').datagrid('endEdit', editRow);
+				$('#datagrid_editTable').datagrid('uncheckRow', editRow);
+				editRow = undefined;
+			}
+			/* 取消所有行被选择项 */
+			$('#datagrid_editTable').datagrid('uncheckAll');
+			
+			$('#datagrid_editTable').datagrid('checkRow',index);
+			
+			$('#datagrid_editTable').datagrid('beginEdit',index);
+			editRow = index;
+		}
+		
+		/* combox只改变触发事件 */
+		function comboxValueChang(newValue,oldValue){
+			
+			/* 由于点击编辑或者插入或者新增按钮，都会执行这个事件，而这个时候editRow的值是undefined，所以拦截 */
+			if(editRow == undefined)
+				return;
+			
+			/* 这个if做一个简单的筛选，只有在改变值的时候才执行有效的代码 */
+			if(newValue =="select" ){
+				/* 获取到当前行的texExtraInfo编辑器 */
+				var ed1 = $('#datagrid_editTable').datagrid('getEditor',{index:editRow,field:'info'});
+				$(ed1.target).val("&&&");	//调用target则是获取到jquery对象
+				
+				var ed2 = $('#datagrid_editTable').datagrid('getEditor',{index:editRow,field:'textExplaination'});
+				$(ed2.target).val("请用&(英文环境)进行分割option子选项，例如 'A&B&C',无空格！ ");	//调用target则是获取到jquery对象
+				$(ed2.target).css("color","red");
+			}else{
+				
+				//这里其实还要写入很多判断，因为每一个字段都应该有对应的说明
+				
+				var ed1 = $('#datagrid_editTable').datagrid('getEditor',{index:editRow,field:'info'});
+				$(ed1.target).val("");	//调用target则是获取到jquery对象
+				
+				var ed2 = $('#datagrid_editTable').datagrid('getEditor',{index:editRow,field:'textExplaination'});
+				$(ed2.target).val("");	//调用target则是获取到jquery对象
+			}
+		}
+		
+		
+		
+		
+		
+		/* 有时候会出现datagrid尺寸不能随着界面大小改变而改变，故需要进行刷新 */
+		function flushSize(){
+			$('#datagrid_editTable').datagrid({
+				fit:true
+			});
+		}
+		
+		
+		function clickCell(rowIndex, field, value){
+			/* 这个if判断如果点击的是保存按钮，那么将本条记录保存至数据库 */
+			if(field == "save"){
+				saveRow();
+				var row = $('#datagrid_editTable').datagrid('getRows')[rowIndex];
+				
+				/* 注意：因为这里是修改model，所以采取的是一行一行的保存的方式，那么就有可能会出现新增的一行没有table_id，导致无法插入 */
+				row.table_id = $('#datagrid_editTable').datagrid('getRows')[0].table_id;
+				if(row.table_id == undefined || row.table_id == "" || row.table_id == null){
+					$.messager.alert('提示','该行没有table_id值，无法保存！！! ','error');
+				}else{
+					
+					var modelUrl = undefined;
+
+					if (row.type == "select")
+						modelUrl = $.projectUrl + "/admin/db/saveselect.do";
+					else if (row.type == "textarea")
+						modelUrl = $.projectUrl + "/admin/db/savetextarea.do";
+					else
+						modelUrl = $.projectUrl + "/admin/db/saveinput.do";
+
+					$.ajax({
+						type : "POST",
+						url : modelUrl,
+						dataType : "json",
+						contentType : "application/json;charset=utf-8",
+						//注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+						data : JSON.stringify(row),
+						success : function(data) {//返回的数据是json对象
+							console.info(data);
+						},
+						error : function() {
+							$.messager.alert('提示', '保存失败，请联系管理员 !', 'error');
+						}
+					});
+				}
+
+			}
+		}
+
+		/* 以下是一些测试方法，可以删除 */
+		$("#ab2").click(function() {
+
+			$("#newTableLayout").layout('collapse', 'north');
+
+		})
+		$("#ab2").click(function() {
+
+		})
+
+	})
+</script>
+
+
+<table id="datagrid_editTable">
+</table>
+
+
+<input type="button" id="ab1" value="open"/>
+<input type="button" id="ab2" value="close"/>
+
+<!-- 以下是测试标签，可以删除 -->
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
