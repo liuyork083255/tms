@@ -1,7 +1,7 @@
 package cn.edu.sspu.controller;
 
-import java.time.temporal.IsoFields;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.mysql.cj.mysqlx.protobuf.MysqlxDatatypes.Array;
 
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
-import cn.edu.sspu.models.Select;
 import cn.edu.sspu.models.Table;
-import cn.edu.sspu.models.Textarea;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -27,24 +26,17 @@ import cn.edu.sspu.utils.AdminUtils;
 @RequestMapping("/admin/db")
 public class AdminDBController {
 	
-	/*这是测试对象，可以删除*/
+	//测试Model
 	private Model model;
 	
 	/*该方法是接收一个tableName参数，判断数据库是否存在，存在则Json返回false，否则返回true*/
 	@ResponseBody
 	@RequestMapping("/selecttablebyname")
 	public Json selectTableByName(String name){
-		System.out.println("selectTableByName() 访问成功");
-		
+		System.out.println(name);
 		Json json = new Json();
-		if(name !=null && name.equals("table")){
-			json.setSuccess(true);
-			json.setMsg("tableName验证成功！");
-		}else{
-			json.setSuccess(false);
-			json.setMsg("tableName验证失败！");
-		}
-		System.out.println(json);
+		json.setMsg("");
+		json.setSuccess(true);
 		return json;
 	}
 
@@ -53,15 +45,13 @@ public class AdminDBController {
 	@RequestMapping("/savemodel")
 	public Json saveModel(@RequestBody Model model){
 		Json json = new Json();
-		if (model != null) {
-			System.out.println(JSON.toJSONString(model, true));
-			model.setTable_id("随意一个测试table_id:001");
-			json.setSuccess(true);this.model = model;
-			json.setMsg("model保存成功");
-		}else{
-			json.setSuccess(false);
-			json.setMsg("model保存失败");
-		}
+		System.out.println("转换前：");
+		System.out.println(JSON.toJSONString(model, true));
+		
+		this.model = AdminUtils.setModelIdAndInputId(model);
+		System.out.println("转换前：");
+		System.out.println(JSON.toJSONString(this.model, true));
+		
 		return json;
 	}
 
@@ -89,13 +79,8 @@ public class AdminDBController {
 	@ResponseBody
 	@RequestMapping("/savetable")
 	public Json saveTable(@RequestBody Table table){
-		Json json  = new Json();
-		if(table != null){
-			System.out.println(table);
-			json.setSuccess(true);
-		}else{
-			json.setSuccess(false);
-		}
+		Json json = new Json();
+		System.out.println(JSON.toJSONString(table, true));
 		return json;
 	}
 	
@@ -103,55 +88,44 @@ public class AdminDBController {
 	@ResponseBody
 	@RequestMapping("/getmodelbytableid")
 	public Model getModelByTableId(String table_id){
-		if(this.model != null){
-			return this.model;
-		}
-		return null;
+		System.out.println("请求参数：" + table_id);
+		return this.model;
 	}
 	
-	/*该方法没有参数，返回model模板，用于前端编辑修改*/
+	/*该方法参数是table_id，返回inputList模板，之所以不返回model，因为前段用dadagrid显示，要求是list类型*/
 	@ResponseBody
-	@RequestMapping("/getmodel")
-	public List<Object> getModel(String table_id){
-		if(this.model != null){
-			System.out.println(this.model);
-			return AdminUtils.modelToList(model,table_id);
-		}
-		else{
-			System.out.println("model is null");
-			return null;
-		}
+	@RequestMapping("/getinputlist")
+	public List<Input> getModel(String table_id){
+		System.out.println(table_id);
+		if(this.model != null)
+			return this.model.getInputList();
+		return null;
 	}
 	
 	/*该方法是接收一个input对象，然后保存入库，这个对象必须有table_id，不然无法保存*/
 	@ResponseBody
 	@RequestMapping("/saveinput")
-	public void saveInput(@RequestBody Input input){
-		System.out.println(JSON.toJSONString(input, true));
+	public Json saveInput(@RequestBody Input input){
+		Json json = new Json();
+		System.out.println(JSON.toJSONString(AdminUtils.setInputId(input), true));
+		return json;
 	}
-	/*该方法是接收一个select对象，然后保存入库，这个对象必须有table_id，不然无法保存*/
+	
+	/*该方法是接收一个input的id参数集合，然后转为list集合，将里面的所有input_id全部删除*/
 	@ResponseBody
-	@RequestMapping("/saveselect")
-	public void saveSelect(@RequestBody Select select){
-		System.out.println(JSON.toJSONString(select, true));
+	@RequestMapping("/deleteinput")
+	public Json deleteInput(String input_ids){
+		Json json = new Json();
+		
+		String[] inputString = input_ids.split("-");
+		
+		List<String> inputList = Arrays.asList(inputString);
+		
+		for(String s : inputList)
+			System.out.println(s);
+		json.setSuccess(true);
+		return json;
 	}
-	/*该方法是接收一个textarea对象，然后保存入库，这个对象必须有table_id，不然无法保存*/
-	@ResponseBody
-	@RequestMapping("/savetextarea")
-	public void saveTextarea(@RequestBody Textarea textarea){
-		System.out.println(JSON.toJSONString(textarea, true));
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

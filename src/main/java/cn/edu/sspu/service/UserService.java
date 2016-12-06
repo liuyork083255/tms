@@ -1,6 +1,7 @@
 package cn.edu.sspu.service;
 
-import cn.edu.sspu.pojo.User;
+import cn.edu.sspu.models.User;
+
 
 public interface UserService {
 	

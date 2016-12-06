@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.edu.sspu.dao.mapper.UserMapper" >
 
-  <select id="selectUserByName" resultType="cn.edu.sspu.pojo.User" parameterType="java.lang.String" >
+  <select id="selectUserByName" resultType="cn.edu.sspu.models.User" parameterType="java.lang.String" >
     select * from users where userName = #{name}
   </select>
   

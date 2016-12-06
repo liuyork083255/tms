@@ -3,12 +3,15 @@ package cn.edu.sspu.models;
 public class Input {
 	private String input_id;
 	private String name;
-	private String value;
 	private String type;
+	private String value;
 	private String param;
 	private String info;
 	private String required;
-	private String tableown;
+	
+	private int sort;
+	private String validatetype;
+	
 	private String user_id;
 	private String table_id;
 	public String getInput_id() {
@@ -23,17 +26,17 @@ public class Input {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
 	public String getType() {
 		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
 	}
 	public String getParam() {
 		return param;
@@ -53,11 +56,17 @@ public class Input {
 	public void setRequired(String required) {
 		this.required = required;
 	}
-	public String getTableown() {
-		return tableown;
+	public int getSort() {
+		return sort;
 	}
-	public void setTableown(String tableown) {
-		this.tableown = tableown;
+	public void setSort(int sort) {
+		this.sort = sort;
+	}
+	public String getValidatetype() {
+		return validatetype;
+	}
+	public void setValidatetype(String validatetype) {
+		this.validatetype = validatetype;
 	}
 	public String getUser_id() {
 		return user_id;
@@ -73,11 +82,13 @@ public class Input {
 	}
 	@Override
 	public String toString() {
-		return "Input [input_id=" + input_id + ", name=" + name + ", value="
-				+ value + ", type=" + type + ", param=" + param + ", info="
-				+ info + ", required=" + required + ", tableown=" + tableown
-				+ ", user_id=" + user_id + ", table_id=" + table_id + "]";
+		return "Input [input_id=" + input_id + ", name=" + name + ", type="
+				+ type + ", value=" + value + ", param=" + param + ", info="
+				+ info + ", required=" + required + ", sort=" + sort
+				+ ", validatetype=" + validatetype + ", user_id=" + user_id
+				+ ", table_id=" + table_id + "]";
 	}
+	
 	
 	
 }

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.edu.sspu.dao.mapper.UserMapper;
-import cn.edu.sspu.pojo.User;
+import cn.edu.sspu.models.User;
 import cn.edu.sspu.service.UserService;
 
 @Service

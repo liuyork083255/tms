@@ -7,8 +7,6 @@ public class Model {
 	private String user_id;
 	private String name;
 	private List<Input> inputList;
-	private List<Select> selectList;
-	private List<Textarea> textareaList;
 	public String getTable_id() {
 		return table_id;
 	}
@@ -33,24 +31,11 @@ public class Model {
 	public void setInputList(List<Input> inputList) {
 		this.inputList = inputList;
 	}
-	public List<Select> getSelectList() {
-		return selectList;
-	}
-	public void setSelectList(List<Select> selectList) {
-		this.selectList = selectList;
-	}
-	public List<Textarea> getTextareaList() {
-		return textareaList;
-	}
-	public void setTextareaList(List<Textarea> textareaList) {
-		this.textareaList = textareaList;
-	}
 	@Override
 	public String toString() {
 		return "Model [table_id=" + table_id + ", user_id=" + user_id
-				+ ", name=" + name + ", inputList=" + inputList
-				+ ", selectList=" + selectList + ", textareaList="
-				+ textareaList + "]";
+				+ ", name=" + name + ", inputList=" + inputList + "]";
 	}
+	
 	
 }

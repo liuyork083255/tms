@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import cn.edu.sspu.pojo.User;
+import cn.edu.sspu.models.User;
 import cn.edu.sspu.service.UserService;
 
 @Controller
