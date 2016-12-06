@@ -11,77 +11,40 @@ jQuery.extend({
 		 * 
 		 * */
 		
-		
-		var table_id;
-		var user_id;
-		var name;
 		var inputList = [];
-		var selectList = [];
-		var textareaList = [];
 		var model = {};
-		
-		name = tableName;
 		
 
 		for(var i=0;i<rows.length;i++){
-			if(rows[i].type == "select"){
-				
-				selectList.push($.selectToJson(rows[i]));//将text行json转化为后台javabean对应的json对象，并返回该该对象
-				
-			}else if(rows[i].type == "textarea"){
-				
-				textareaList.push($.textareaToJson(rows[i]));//将select行json转化为后台javabean对应的json对象，并返回该该对象
-				
-			}else{
-				inputList.push($.inputToJson(rows[i]));//将text行json转化为后台javabean对应的json对象，并返回该该对象
+			var input = {};
+			//input["id"] = "";
+			input["name"] = rows[i].name;
+			input["type"] = rows[i].type;
+			
+			if(rows[i].type == "select" || rows[i].type == "checkbox" || rows[i].type == "radio"){
+				input["param"] = rows[i].param;
 			}
+			
+			//input["value"] = "";
+			input["info"] = rows[i].info;
+			input["required"] = rows[i].required;
+			
+			input["validatetype"] = rows[i].validatetype;
+			input["sort"] = i;
+			//input["table_id"] = "";
+			//input["user_id"] = "";
+			
+			//以上有四个属性不设置，为了让后台得到的对应的值显示为 null ，而不是空字符串类型
+			
+			inputList.push(input);
 		}
 		
 		if(inputList.length > 0)model["inputList"]=inputList;
-		if(selectList.length > 0)model["selectList"]=selectList;
-		if(textareaList.length > 0)model["textareaList"]=textareaList;
 		
-		model["table_id"]="";
-		model["name"]=name;
+		//model["table_id"]="";
+		model["name"]=tableName;
 		
 		return model;
-	},
-	
-	
-	
-	//这下面是辅助上面自定义方法的函数
-	inputToJson:function(i){
-		var input = {};
-		input["name"] = i.name;
-		input["required"] = i.required;
-		input["type"] = i.type;
-		
-		
-		/*以下这些判断是为后期做扩展功能准备的*/
-		if(i.textType == "text"){}
-		if(i.textType == "number"){}
-		if(i.textType == "file"){}
-		if(i.textType == "image"){}
-		if(i.textType == "date"){}
-		if(i.textType == "datetime"){}
-		if(i.textType == "email"){}
-		
-		return input;
-		
-	},
-	selectToJson:function(s){
-		var select = {};
-		select["name"] = s.name;
-		select["type"] = s.type;
-		select["info"] = s.info;
-		return select;
-	},
-	textareaToJson:function(t){
-		var textarea = {};
-		textarea["name"] = t.name;
-		textarea["type"] = t.type;
-		textarea["info"] = t.info;
-		return textarea;
 	}
   
 });
