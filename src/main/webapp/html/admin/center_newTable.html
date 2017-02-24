@@ -418,10 +418,18 @@ function comboxValueChang(newValue,oldValue){
 		bindParamDialog(newValue);
 	}else if(newValue =="checkbox" ){
 		/* 开启获取values字段方法 */
-		bindParamDialog(newValue);
+		bindParamDialog(newValue);                               
+		
+		
+		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+		$(ed1.target).val("");	//调用target则是获取到jquery对象
 	}else if(newValue =="radio" ){
 		/* 开启获取values字段方法 */
-		bindParamDialog(newValue);
+		bindParamDialog(newValue);                               
+		
+		
+		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+		$(ed1.target).val("");	//调用target则是获取到jquery对象
 	}else{
 		
 		var ed1 = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
@@ -641,7 +649,7 @@ function bindParamDialog(typeValue){
 						handler:function(){
 							$(ed.target).val("");
 							$("#dialog_select_table").empty();
-							$('#dialog_select').dialog({closed:true});//关闭dialog 
+							//$('#dialog_select').dialog({closed:true});//关闭dialog 
 						}
 					}]
 		    	})
@@ -695,7 +703,7 @@ function bindParamDialog(typeValue){
 						handler:function(){
 							$(ed.target).val("");
 							$("#dialog_checkbox_table").empty();
-							$('#dialog_checkbox').dialog({closed:true});//关闭dialog
+							//$('#dialog_checkbox').dialog({closed:true});//关闭dialog
 						}
 					}]
 		    	})
@@ -749,7 +757,7 @@ function bindParamDialog(typeValue){
 						handler:function(){
 							$(ed.target).val("");
 							$("#dialog_radio_table").empty();
-							$('#dialog_radio').dialog({closed:true});//关闭dialog
+							//$('#dialog_radio').dialog({closed:true});//关闭dialog
 						}
 					}]
 		    	})
