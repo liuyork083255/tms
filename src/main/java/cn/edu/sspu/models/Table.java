@@ -2,7 +2,7 @@ package cn.edu.sspu.models;
 
 import java.util.Date;
 
-public class Form {
+public class Table {
 	private String table_id;
 	private String name;
 	private String createtime;
