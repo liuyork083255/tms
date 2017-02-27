@@ -16,7 +16,7 @@ import com.mysql.cj.mysqlx.protobuf.MysqlxDatatypes.Array;
 
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
-import cn.edu.sspu.models.Table;
+import cn.edu.sspu.models.Form;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -62,9 +62,9 @@ public class AdminDBController {
 	public Map<String,Object> getAllTables(int page,int rows){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("total", 100);//---------------------------------这里要查询真实数据库中的总记录
-		List<Table> tablelist = new ArrayList<Table>();
+		List<Form> tablelist = new ArrayList<Form>();
 		for(int i=0;i<rows;i++){
-			Table table = new Table();
+			Form table = new Form();
 			table.setTable_id("0000" + i);
 			table.setName("name" + i);
 			table.setCreatetime("2016-11-13 19:34:45");
@@ -78,7 +78,7 @@ public class AdminDBController {
 	/*该方法参数是一个table对象，保存在数据库中*/
 	@ResponseBody
 	@RequestMapping("/savetable")
-	public Json saveTable(@RequestBody Table table){
+	public Json saveTable(@RequestBody Form table){
 		Json json = new Json();
 		System.out.println(JSON.toJSONString(table, true));
 		return json;
