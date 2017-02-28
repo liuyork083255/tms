@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>admin界面</title>
+<title>Insert title here</title>
 </head>
 <!-- 注意这里引入的jquery的js文件是easyui自带的，而不是别的文件，否者在layout组件的时候会出现异常 -->
 <script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.min.js" charset='utf-8'></script>
@@ -17,7 +17,7 @@
 
 <body class="easyui-layout" id="newTableLayout">
 	<!-- 北部界面 -->
-    <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:100px;">
+        <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:100px;">
     	<a href="javascript:changeTheme('default')" class="easyui-linkbutton" style="height:100%;">Default Theme</a>
     	<a href="javascript:changeTheme('black')" class="easyui-linkbutton" style="height:100%;">Black Theme</a>
     	<a href="javascript:changeTheme('gray')" class="easyui-linkbutton" style="height:100%;">Gray Theme</a>
@@ -50,6 +50,7 @@
 	</div>
 	
 </body>
+
 <!-- 以后养成习惯，js代码尽量写在body后面，不然会出现一些不必要的调试错误 -->
 <script type="text/javascript">
 
@@ -81,6 +82,5 @@ function changeTheme(color){
 
 
 </script>
-
 
 </html>
