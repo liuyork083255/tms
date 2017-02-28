@@ -1,5 +1,7 @@
 package cn.edu.sspu.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -51,5 +53,28 @@ public class UserController {
 		return json;
 	}
 	
-
+	@ResponseBody
+	@RequestMapping("/getAllUser")
+	public Json getAllUser(){
+		Json json = new Json();
+		
+		List<User> userList = null;
+		try {
+			userList = userService.getAllUser();
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e){
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setObj(userList);
+		json.setSuccess(true);
+		
+		return json;
+	}
+	
 }

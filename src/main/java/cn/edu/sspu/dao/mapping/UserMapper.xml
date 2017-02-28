@@ -14,4 +14,8 @@
     select * from user where name = #{name,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
   </select>
   
+   <select id="getAllUser" resultType="cn.edu.sspu.models.User" >
+    select * from user
+  </select>
+  
 </mapper>

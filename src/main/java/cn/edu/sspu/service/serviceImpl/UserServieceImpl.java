@@ -1,5 +1,7 @@
 package cn.edu.sspu.service.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,18 @@ public class UserServieceImpl implements UserService{
 			throw new ServiceException("按name和password查找user为空");
 		}
 		return user;
+		
+	}
+
+	public List<User> getAllUser() throws ServiceException{
+		
+		List<User> userList = userMapper.getAllUser();
+		
+		if(userList == null){
+			throw new ServiceException("获取所有user为空");
+		}
+		
+		return userList;
 		
 	}
 }
