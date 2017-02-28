@@ -1,5 +1,6 @@
 package cn.edu.sspu.service.serviceImpl;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,4 +58,58 @@ public class UserServieceImpl implements UserService{
 		return userList;
 		
 	}
+
+	public int updateUser(User user)  throws ServiceException{
+		int n = userMapper.updateUser(user);
+		//n为0 表示update影响的行数，说明update失败
+		if(n == 0){
+			throw new ServiceException("update user 表失败");
+		}
+		return n;
+	}
+
+	public int deleteUserByName(String name) throws ServiceException {
+		int n = 0;
+		try{
+			n = userMapper.deleteUserByName(name);
+		}catch(Exception e){
+			if(e.getMessage().contains("SQLIntegrityConstraintViolationException")){
+				throw new ServiceException("主键 or 外键依赖 异常");
+			}
+		}
+		if(n == 0){
+			throw new ServiceException("通过name删除user失败");
+		}
+		return n;
+	}
+
+	public int deleteUserById(String user_id) throws ServiceException {
+		int n = 0;
+		try{
+			n = userMapper.deleteUserById(user_id);
+		}catch(Exception e){
+			if(e.getMessage().contains("SQLIntegrityConstraintViolationException")){
+				throw new ServiceException("主键 or 外键依赖 异常");
+			}
+		}
+		if(n == 0){
+			throw new ServiceException("通过user_id删除user失败");
+		}
+		return n;
+	}
+
+	public int insertUser(User user) throws ServiceException{
+		int n = 0;
+		try{
+			n = userMapper.insertUser(user);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new ServiceException("insert 操作未知异常");
+		}
+		if(n ==  0){
+			throw new ServiceException("insert 插入失败");
+		}
+		return n;
+	}
+	
 }

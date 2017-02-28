@@ -18,4 +18,39 @@
     select * from user
   </select>
   
+  <update id="updateUser" parameterType="cn.edu.sspu.models.User">
+  	UPDATE user
+	<trim prefix="set" suffixOverrides=",">
+		<if test="name!=null">name=#{name},</if>
+		<if test="password!=null">password=#{password},</if>
+		<if test="email">email=#{email},</if>
+		 <if test="type!=null">type=#{type},</if>
+ 	</trim>
+ 	WHERE user_id = #{user_id}
+  </update>
+  
+  <delete id="deleteUserByName" parameterType="java.lang.String">
+  	delete from user where name = #{name}
+  </delete>
+    <delete id="deleteUserById" parameterType="java.lang.String">
+  	delete from user where user_id = #{user_id}
+  </delete>
+  
+  <insert id="insertUser" parameterType="cn.edu.sspu.models.User">
+  	insert user <include refid="insertUserSet" />
+  </insert>
+  
+  <sql id="insertUserSet">
+  	<set>
+  		<if test="user_id != null">user_id = #{user_id,jdbcType=VARCHAR},</if>
+  		<if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+  		<if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
+  		<if test="email != null">email = #{email,jdbcType=VARCHAR},</if>
+  		<if test="type != null">type = #{type,jdbcType=INT},</if>
+  	</set>
+  </sql>
+  
+  
+  
+  
 </mapper>

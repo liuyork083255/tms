@@ -16,4 +16,11 @@ public interface UserService {
 	
 	public List<User> getAllUser() throws ServiceException;
 	
+	public int updateUser(User user) throws ServiceException;
+	
+	public int deleteUserByName(String name) throws ServiceException;
+	
+	public int deleteUserById(String user_id) throws ServiceException;
+	
+	public int insertUser(User user) throws ServiceException;
 }

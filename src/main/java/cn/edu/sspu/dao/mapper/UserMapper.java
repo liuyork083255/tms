@@ -16,5 +16,13 @@ public interface UserMapper {
 	public User selectUserByNameAndPassword(@Param("name")String name,@Param("password") String password);
 	
 	public List<User> getAllUser();
+	
+	public int updateUser(User user);
+	
+	public int deleteUserByName(String name);
+	
+	public int deleteUserById(String user_id);
 
+	public int insertUser(User user);
+	
 }
