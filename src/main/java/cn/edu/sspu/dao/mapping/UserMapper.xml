@@ -3,11 +3,15 @@
 <mapper namespace="cn.edu.sspu.dao.mapper.UserMapper" >
 
   <select id="selectUserByName" resultType="cn.edu.sspu.models.User" parameterType="java.lang.String" >
-    select * from users where name = #{name}
+    select * from user where name = #{name}
   </select>
   
   <select id="selectUserById" resultType="cn.edu.sspu.models.User" parameterType="java.lang.String" >
-    select * from users where user_id = #{user_id}
+    select * from user where user_id = #{user_id}
+  </select>
+  
+   <select id="selectUserByNameAndPassword" resultType="cn.edu.sspu.models.User">
+    select * from user where name = #{name,jdbcType=VARCHAR} and password = #{password,jdbcType=VARCHAR}
   </select>
   
 </mapper>
