@@ -10,6 +10,11 @@ jQuery.extend({
 	
 	globalTableId:undefined,
 	getGlobalTableId:function(){return $.globalTableId;},
-	setGlobalTableId:function(table_id){$.globalTableId = table_id;}
+	setGlobalTableId:function(table_id){$.globalTableId = table_id;},
+	
+	
+	globalUser:undefined,
+	getGlobalUser:function(){return $.globalUser;},
+	setGlobalUser:function(user){$.globalUser = user;}
 	
 })

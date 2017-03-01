@@ -5,7 +5,7 @@ public class User {
 	private String name;
 	private String password;
 	private String email;
-	private String type;//这个type是权限的字段
+	private String type = "1";//这个type是权限的字段
 	public String getUser_id() {
 		return user_id;
 	}

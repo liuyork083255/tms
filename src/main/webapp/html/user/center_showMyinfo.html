@@ -1,0 +1,151 @@
+
+<body>
+	<h2>我的信息管理</h2>
+	
+	<div style="margin:20px 0 10px 0;"></div>
+	<div class="easyui-tabs" style="width:100%;height:500px">
+		<div title="我的信息" style="padding:10px">
+			<div class="easyui-panel" title="信息展示" style="width:400px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post">
+				    	<table cellpadding="5">
+				    		<tr>
+				    			<td>Name:</td>
+				    			<td><input id="myinfo-name" class="easyui-textbox" type="text" name="name" readonly="readonly"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>Password:</td>
+				    			<td><input id="myinfo-password" class="easyui-textbox" type="text" name="email" readonly="readonly"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>Email:</td>
+				    			<td><input id="myinfo-email" class="easyui-textbox" type="text" name="email" readonly="readonly"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>Type:</td>
+				    			<td><input id="myinfo-type" class="easyui-textbox" type="text" name="subject" readonly="readonly"></input></td>
+				    		</tr>
+				    		
+				    	</table>
+				    </form>
+			    </div>
+			</div>
+		</div>
+		
+		<!-- ----------------------------------------------------------------------------------------------- -->
+		
+		<div title="修改信息" style="padding:10px">
+		    <form id="showinfo_edit_form" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>Name:</td>
+		    			<td><input id="showinfo_edit_form_name" class="easyui-textbox" type="text" name="name"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password:</td>
+		    			<td><input id="showinfo_edit_form_password" class="easyui-textbox" type="text" name="email"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Email:</td>
+		    			<td><input id="showinfo_edit_form_email" class="easyui-textbox" type="text" name="email"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Type:</td>
+		    			<td><input id="showinfo_edit_form_type" class="easyui-textbox" type="text" value="1" readonly="readonly"></input></td>
+		    		</tr>
+		    	</table>
+		    </form>
+		    <div style="text-align:center;padding:5px">
+	    		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
+	    		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+	    	</div>
+		</div>
+		
+		<!-- ----------------------------------------------------------------------------------------------- -->
+		
+		<div title="Help" data-options="iconCls:'icon-help',closable:true" style="padding:10px">
+			This is the help content.
+		</div>
+	</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+function getUserInfo(){
+	$.ajax({
+		type:"POST",
+		url:$.projectUrl+"/user/getUserThroughSession.do",
+		success: function(json){
+			if(json.success){
+				$("#myinfo-name").textbox("setValue",json.obj.name);
+				$("#myinfo-password").textbox("setValue",json.obj.password);
+				$("#myinfo-email").textbox("setValue",json.obj.email);
+				if(json.obj.type == "0")
+					$("#myinfo-type").textbox("setValue","管理员身份");
+				else
+					$("#myinfo-type").textbox("setValue","普通用户"); 
+			}else{
+		 		 $.messager.show({
+						title:'提示',
+						msg:'你还没有登陆  ',
+						timeout:5000
+					 });
+			}
+		}
+			
+	});
+}getUserInfo();//直接调用该方法获取user 
+
+function submitForm(){
+	$('#showinfo_edit_form').form('submit',{
+	    onSubmit: function(){
+	    	//首先开启检验功能 
+	    	var flag = $('#showinfo_edit_form').form('validate');
+	    	if(flag == false){
+	    		return false;
+	    	}
+	    	else{
+	    		var user = {};
+	    		user["name"] = $("#showinfo_edit_form_name").val();
+	    		user["password"] = $("#showinfo_edit_form_password").val();
+	    		user["email"] = $("#showinfo_edit_form_email").val();
+	    		user["type"] = $("#showinfo_edit_form_type").val();
+	    		
+	     		$.ajax({
+				   type: "POST",
+				   url: $.projectUrl+"/user/updateUser.do",
+				   dataType:"json",
+				   contentType:"application/json;charset=utf-8",
+				 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+				   data:JSON.stringify(user),
+				   success: function(data){
+				     if(data.success){
+				 		 $.messager.show({
+							title:'提示',
+							msg:'修改成功  ',
+							timeout:3000
+						 });
+				     }else{
+				 		 $.messager.show({
+								title:'提示',
+								msg:'修改失败  '+ data.msg,
+								timeout:5000
+						});
+				     }
+				   }
+				});
+					
+	    		//return true;
+	    	}
+	    		
+	    }
+	});
+}
+function clearForm(){}
+</script>
+</body>

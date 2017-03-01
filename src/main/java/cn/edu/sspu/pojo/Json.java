@@ -22,11 +22,7 @@ public class Json {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	@Override
-	public String toString() {
-		return "Json [obj=" + obj + ", success=" + success + ", msg=" + msg
-				+ "]";
-	}
+
 	
 	
 

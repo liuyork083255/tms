@@ -1,0 +1,165 @@
+
+<body>
+	<!-- 登陆div -->
+<div id="window_user_login" class="easyui-window" style="width:600px;height:400px"
+	data-options="modal:true">
+	<div id="tags" class="easyui-tabs" data-options="fit:true">
+	    <div title="登陆" style="padding:10px">
+
+			<form id="window_user_login_form_login" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>Name:</td>
+		    			<td><input id="window_user_login_form_login_name" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password:</td>
+		    			<td><input id="window_user_login_form_login_password" class="easyui-textbox" type="text" name="email" data-options="required:true"></input></td>
+		    		</tr>
+		    	</table>
+	    	</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm(1)">Submit</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm(1)">Clear</a>
+		    </div>
+	    </div>
+	    <!-- ---------------------------------------------------------------------------------------------- -->
+	    <div title="注册" style="padding:10px">
+	    
+			<form id="window_user_login_form_register" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>Name:</td>
+		    			<td><input id="window_user_login_form_register_name" class="easyui-textbox" type="text" name="name" data-options="required:true"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password:</td>
+		    			<td><input id="window_user_login_form_register_password" class="easyui-textbox" type="text" data-options="required:true"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Email:</td>
+		    			<td><input id="window_user_login_form_register_email" class="easyui-textbox" type="text" data-options="required:true,validType:'email'"></input></td>
+		    		</tr>
+		    	</table>
+	    	</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm(2)">Submit</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm(2)">Clear</a>
+		    </div>
+	    </div>
+	    <!-- ---------------------------------------------------------------------------------------------- -->
+	    <div title="帮助" style="padding:10px">
+			tab3
+	    </div>
+	</div>
+</div>
+
+<script>
+function submitForm(n){
+	if(n == 1){
+		$('#window_user_login_form_login').form('submit',{
+		    onSubmit: function(){
+		    	//首先开启检验功能 
+		    	var flag = $('#window_user_login_form_login').form('validate');
+		    	if(flag == false){
+		    		return false;
+		    	}
+		    	else{
+		    		var user = {};
+		    		user["name"] = $("#window_user_login_form_login_name").val();
+		    		user["password"] = $("#window_user_login_form_login_password").val();
+		    		
+		     		$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/user/login.do",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+					   data:"name="+user.name+"&password="+user.password,
+					   success: function(data){
+						   console.info(data);
+					     if(data.success){
+					    	 //此处将当前用户存入全局变量中 
+					    	 $.setGlobalUser(data.obj);
+					    	 
+					    	 $("#window_user_login").window('close');
+					 		 $.messager.show({
+								title:'提示',
+								msg:'欢迎 '+user.name,
+								timeout:5000
+							 });
+					     }else{
+					    	 
+					     }
+					   }
+					});
+						
+		    		//return true;
+		    	}
+		    		
+		    }
+		});
+	}
+	if(n == 2){
+		$('#window_user_login_form_register').form('submit',{
+ 			onSubmit: function(){
+			//首先开启检验功能 
+	    	var flag = $('#window_user_login_form_register').form('validate');
+	    	if(flag == false){
+	    		return false;
+	    	}
+	    	else{
+	    		var user = {};
+	    		user["name"] = $("#window_user_login_form_register_name").val();
+	    		user["password"] = $("#window_user_login_form_register_password").val();
+	    		user["email"] = $("#window_user_login_form_register_email").val();
+	    		console.info(user);
+	     		$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/user/registerUser.do",
+					   dataType:"json",
+					   contentType:"application/json;charset=utf-8",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+					   data:JSON.stringify(user),
+					   success: function(data){
+						   //console.info(data);
+					     if(data.success){
+					    	//此处将当前用户存入全局变量中 
+					    	 $.setGlobalUser(data.obj);
+					    	 
+					    	 $("#window_user_login").window('close');
+					 		 $.messager.show({
+								title:'提示',
+								msg:'恭喜,注册成功  ',
+								timeout:5000
+							 });
+					     }else{
+					 		 $.messager.show({
+									title:'提示',
+									msg:'注册失败  ' + data.msg,
+									timeout:6000
+								 });
+					     }
+					   }
+					});
+	    		}
+			} 
+		});
+	}
+	if(n == 3){}
+
+}
+function clearForm(n){
+	if(n == 1)
+		$('#window_user_login_form_login').form('clear');
+	if(n == 2)
+		$('#window_user_login_form_register').form('clear');
+	if(n == 3){
+		$('#window_user_login_form_help').form('clear');
+	}
+}
+<!-- ---------------------------------------------------------------------------------------------- -->
+
+
+
+<!-- ---------------------------------------------------------------------------------------------- -->
+</script>
+</body>

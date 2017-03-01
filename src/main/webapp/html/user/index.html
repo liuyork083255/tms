@@ -13,15 +13,14 @@
 <script type="text/javascript" src="../../js/extendJs/gv.js"  charset='utf-8'></script>
 <script type="text/javascript" src="../../js/extendJs/validator.js"  charset='utf-8'></script>
 <!-- 控制主题代码 -->
-<link id="easyuiTheme" rel="stylesheet" href="../../js/jquery-easyui-1.5/themes/black/easyui.css" />
+<link id="easyuiTheme" rel="stylesheet" href="../../js/jquery-easyui-1.5/themes/ui-dark-hive/easyui.css" />
 
-<body class="easyui-layout" id="newTableLayout">
+<body class="easyui-layout" id="userTableLayout">
 	<!-- 北部界面 -->
         <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:100px;">
     	<a href="javascript:changeTheme('default')" class="easyui-linkbutton" style="height:100%;">Default Theme</a>
     	<a href="javascript:changeTheme('black')" class="easyui-linkbutton" style="height:100%;">Black Theme</a>
     	<a href="javascript:changeTheme('gray')" class="easyui-linkbutton" style="height:100%;">Gray Theme</a>
-    	<a href="javascript:changeTheme('icons')" class="easyui-linkbutton" style="height:100%;">Icons Theme</a>
     	<a href="javascript:changeTheme('material')" class="easyui-linkbutton" style="height:100%;">Material Theme</a>
     	<a href="javascript:changeTheme('metro')" class="easyui-linkbutton" style="height:100%;">Metro Theme</a>
     	<a href="javascript:changeTheme('metro-blue')" class="easyui-linkbutton" style="height:100%;">Metro-blue Theme</a>
@@ -62,21 +61,6 @@ function changeTheme(color){
 	//alert(themeUrl);
 	$("#easyuiTheme").attr("href",themeUrl);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

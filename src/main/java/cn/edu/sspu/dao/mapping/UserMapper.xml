@@ -46,7 +46,7 @@
   		<if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
   		<if test="password != null">password = #{password,jdbcType=VARCHAR},</if>
   		<if test="email != null">email = #{email,jdbcType=VARCHAR},</if>
-  		<if test="type != null">type = #{type,jdbcType=INT},</if>
+  		<if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
   	</set>
   </sql>
   
