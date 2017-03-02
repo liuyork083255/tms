@@ -7,7 +7,7 @@
 		var editRow = undefined;
 		
 		$('#datagrid_showAllTables').datagrid({
-		    url:$.projectUrl+"/admin/db/getalltables.do",
+		    url:$.projectUrl+"/admin/db/getAllTableByPage.do",
 		    title:'表单查看',
 		    iconCls:'icon-large-clipart',
 		    checkOnSelect:false,
@@ -228,14 +228,14 @@
 				var row = $('#datagrid_showAllTables').datagrid('getRows')[rowIndex];
 				$.ajax({
 					   type: "POST",
-					   url: $.projectUrl+"/admin/db/getmodelbytableid.do",
+					   url: $.projectUrl+"/admin/db/getModelReturnJson.do",
 					   dataType:"json",
 					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
 					   data:"table_id="+row.table_id,
 					   success: function(data){
-						   if(data){	//如果返回的数据不为空null
+						   if(data.success){	//
 							   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
-							   $.setGlobalModel(data);
+							   $.setGlobalModel(data.obj);
 						   
 						   	   /* 展开左边的面板，并且将页面注入当中 */
 						   	   $("#newTableLayout").layout('expand', 'east');

@@ -82,7 +82,7 @@
 var editRow = undefined;
 
 $('#datagrid_editTable').datagrid({
-	url:$.projectUrl + "/admin/db/getinputlist.do?table_id="+$.getGlobalTableId(),//获取全局变量table的id
+	url:$.projectUrl + "/admin/db/getModelReturnInputList.do?table_id="+$.getGlobalTableId(),//获取全局变量table的id
     title:'表单设计',
     iconCls:'icon-large-clipart',
     checkOnSelect:false,
@@ -93,7 +93,7 @@ $('#datagrid_editTable').datagrid({
     //pagination:true,
     /* 定义列属性 */
     columns:[[
-		{field:'id',title:'id',width:20,checkbox:true},  
+		{field:'table_id',title:'id',width:20,checkbox:true},  
 		{field:'name',title:'字段名称',width:100,
 			editor:{
 				type:'validatebox',

@@ -1,5 +1,7 @@
 package cn.edu.sspu.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,5 +41,9 @@ public class AdminUtils {
 	
 	public static String getUUID(){
 		return UUID.randomUUID().toString().replace("-", "").toUpperCase();
+	}
+	
+	public static String getCurrentTime(){
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	}
 }

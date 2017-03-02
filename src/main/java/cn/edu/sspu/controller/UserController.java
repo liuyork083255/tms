@@ -89,9 +89,11 @@ public class UserController {
 	public Json getUserThroughSession(HttpServletRequest request){
 		User user = (User)request.getSession().getAttribute("user");
 		Json json = new Json();
+		
 		if(user == null){
 			json.setMsg("session中获取user失败");
 			json.setSuccess(false);
+			return json;
 		}
 		json.setObj(user);
 		json.setSuccess(true);
@@ -209,6 +211,7 @@ public class UserController {
 	public Json updateUser(@RequestBody User user,HttpServletRequest request){
 		Json json = new Json();
 		if(user == null){
+			
 			json.setMsg("获取参数封装user失败");
 			json.setSuccess(false);
 			return json;
@@ -237,7 +240,7 @@ public class UserController {
 		}
 		json.setObj(new Integer(n));
 		json.setSuccess(true);
-
+		request.getSession().setAttribute("user", user);
 		return json;
 	}
 
@@ -338,6 +341,10 @@ public class UserController {
 		json.setSuccess(true);
 		
 		return json;
+	}
+	
+	public User getSessionUser(HttpServletRequest request){
+		return (User)request.getSession().getAttribute("user");
 	}
 	
 	

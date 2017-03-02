@@ -3,11 +3,35 @@
 <mapper namespace="cn.edu.sspu.dao.mapper.TableMapper" >
 
   <select id="selectTableByName" resultType="cn.edu.sspu.models.Table" parameterType="java.lang.String" >
-    select * from table where name = #{name}
+    select * from `table` where name = #{name}
   </select>
   
   <select id="selectTableById" resultType="cn.edu.sspu.models.Table" parameterType="java.lang.String" >
-    select * from table where table_id = #{table_id}
+    select * from `table` where table_id = #{table_id}
   </select>
+  
+  
+  <select id="selectTableTotal" resultType="int">
+    select count(*) from `table`
+  </select>
+  
+  <select id="selectTableByPage" resultType="cn.edu.sspu.models.Table">
+    select * from `table` limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
+  </select>
+  
+  
+  
+  <insert id="insertTable" parameterType="cn.edu.sspu.models.Table">
+  	insert `table` <include refid="insertTableSet" />
+  </insert>
+  
+  <sql id="insertTableSet">
+  	<set>
+  		<if test="table_id != null">table_id = #{table_id,jdbcType=VARCHAR},</if>
+  		<if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+  		<if test="createtime != null">createtime = #{createtime,jdbcType=VARCHAR},</if>
+  		<if test="info != null">info = #{info,jdbcType=VARCHAR},</if>
+  	</set>
+  </sql>
   
 </mapper>
