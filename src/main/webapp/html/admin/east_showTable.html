@@ -1,54 +1,11 @@
 <!-- 这个页面用于admin查看模板的具体的显示信息 -->
 <body>
-
-	<h2>表单查看</h2>
 	<div style="margin:20px 0;"></div>
-	<div class="easyui-panel" title="New Topic" style="width:400px">
+	<div class="easyui-panel" title="模板样本" style="width:500px">
 		<div style="padding:10px 60px 20px 60px">
 	    <form id="east_showtable_form" method="post">
 	    	<table cellpadding="5" id="east_showtable_form_table">
-
-	    		<tr>
-	    			<td>Email:</td>
-	    			<td><input class="easyui-textbox" type="text" name="email" data-options="required:true"></input></td>
-	    		</tr>
-	    		<tr>
-	    			<td>Checkbox:</td>
-	    			<td>
-	    				<label><input name="Fruit" type="checkbox" value="" />苹果</label> 
-	    				<label><input name="Fruit" type="checkbox" value="" />桃子 </label> 
-	    				<label><input name="Fruit" type="checkbox" value="" />香蕉 </label> 
-	    				<label><input name="Fruit" type="checkbox" value="" />梨 </label>
-	    			</td>
-	    		</tr>
-	    		<tr>
-	    			<td>Checkbox:</td>
-	    			<td>
-						<label><input name="Fruit" type="radio" value="" />苹果 </label> 
-						<label><input name="Fruit" type="radio" value="" />桃子 </label> 
-						<label><input name="Fruit" type="radio" value="" />香蕉 </label> 
-						<label><input name="Fruit" type="radio" value="" />梨 </label> 
-	    			</td>
-	    		</tr>
-
-	    		<tr>
-	    			<td>Language:</td>
-					<td>
-						<select class="easyui-combobox" name="language">
-							<option value="ar">Arabic</option>
-							<option value="bg">Bulgarian</option>
-							<option value="ca">Catalan</option>
-							<option value="uk">Ukrainian</option>
-							<option value="vi">Vietnamese</option>
-						</select>
-					</td>
-				</tr>
-	    		<tr>
-	    			<td>File:</td>
-	    			<td>
-	    				<input class="easyui-filebox" name="file1" data-options="prompt:'Choose a file...'" style="width:100%">
-	    			</td>
-	    		</tr>
+	    		
 	    	</table>
 	    </form>
 	    <div style="text-align:center;padding:5px">
@@ -80,6 +37,41 @@ if(model == undefined || model == null || model == ""){
 	var inputList = model.inputList;
 	
 	if(inputList != null || inputList != undefined){
+		for(var i=0;i<inputList.length;i++){
+			var input = inputList[i];
+			
+			var td2String = undefined;
+			
+			if(input.type == "text"){td2String =showInputTypeIsText(formTable,input);}
+ 			else if(input.type == "textarea"){td2String =showInputTypeIsTextarea(formTable,input);}
+			else if(input.type == "file"){td2String =showInputTypeIsFile(formTable,input);}
+			else if(input.type == "date"){td2String =showInputTypeIsDate(formTable,input);}
+			else if(input.type == "datetime"){td2String =showInputTypeIsDatetime(formTable,input);}
+			else if(input.type == "email"){td2String =showInputTypeIsEmail(formTable,input);}
+			else if(input.type == "number"){td2String =showInputTypeIsNumber(formTable,input);}
+			else if(input.type == "select"){td2String =showInputTypeIsSelect(formTable,input);}
+			else if(input.type == "checkbox"){td2String =showInputTypeIsCheckbox(formTable,input);}
+			else if(input.type == "radio"){td2String =showInputTypeIsRadio(formTable,input);}
+			else{//该判断用于收集无效的input 
+				
+			}
+			
+			var tr = $('<tr></tr>');
+			var td1 = $('<td></td>');
+			var td2 = $('<td></td>');
+			//字段名称 添加 
+			td1.append(input.name);
+			
+			td2.append(td2String);
+			tr.append(td1);
+			tr.append(td2);
+			formTable.append(tr);
+			
+		}
+		
+	}
+	
+/* 	if(inputList != null || inputList != undefined){
 		for(var i=0;i<inputList.length;i++){
 			
 			var obj = inputList[i];
@@ -115,17 +107,165 @@ if(model == undefined || model == null || model == ""){
 			
 			tr.append(td1);
 			tr.append(td2);
-			formTable.append(tr);
+			formTable.append(tr);formTable.append(tr);
 			
 		}
 		
+	} */
+	
+	
+	
+	
+	
+	
+}
+
+function showInputTypeIsText(formTable,input){
+	
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+			
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	
+	return $(input_string);
+}
+
+function showInputTypeIsTextarea(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	//额外添加一个属性 textarea 
+	data_options = data_options + ',multiline:true';
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	
+	return $(input_string);
+}
+function showInputTypeIsFile(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	//额外添加一个属性  
+	data_options = data_options + ',prompt:\'Choose a file...\'';
+	
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-filebox" data-options="'+data_options+'" />';
+	
+	var fileupButtonHtml = $('<a href="#" class="easyui-linkbutton" data-options="iconCls:\'icon-redo\'" style="width:80px">点击上传</a>'); 
+	
+	var divHtml = $('<div></div>'); 
+	
+	divHtml.append($(input_string));
+	divHtml.append(fileupButtonHtml);
+	
+	
+	return divHtml;
+}
+function showInputTypeIsDate(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="'+data_options+'" />';
+	return $(input_string);
+	
+}
+function showInputTypeIsDatetime(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="'+data_options+'" />';
+	return $(input_string);
+	
+
+}
+function showInputTypeIsEmail(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	return $(input_string);
+}
+function showInputTypeIsNumber(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	console.info(data_options);
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	return $(input_string);
+}
+function showInputTypeIsSelect(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="'+data_options+'" style="width:100px;" ></select>');
+	
+	if(input.param.length > 0){
+		var options = input.param.split("&");
+		for(var i =0;i<options.length;i++){
+			var option = $('<option value="'+options[i]+'">'+options[i]+'</option>');
+			selectHtml.append(option);
+		}
 	}
+	console.info(selectHtml);
+	
+	return selectHtml;
+}
+function showInputTypeIsCheckbox(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	
+	var divHtml = $('<div></div>');
+	if(input.param.length > 0){
+		var checkboxs = input.param.split("&");
+		for(var i =0;i<checkboxs.length;i++){
+			divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'" />'+checkboxs[i]+' </label>'));
+		}
+	}
+	return divHtml;
+}
+function showInputTypeIsRadio(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	
+	var divHtml = $('<div></div>');
+	if(input.param.length > 0){
+		var radioboxs = input.param.split("&");
+		for(var i =0;i<radioboxs.length;i++){
+			divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="radio" value="'+radioboxs[i]+'" />'+radioboxs[i]+' </label>'));
+		}
+	}
+	return divHtml;
+}
+
+function getData_optionsString(input){
+	var data_options = '';
+	if(input.required == "true")
+		data_options = data_options + 'required:true,';
+	else
+		data_options = data_options + 'required:false,';
 	
 	
+	if(input.validatetype.length > 0){
+		var types = input.validatetype.split("&");
+		var type_string = 'validType:[';
+		for(var i =0;i<types.length;i++){
+			type_string  = type_string + '\'' +types[i] +  '\',';
+		}
+ 		type_string = type_string.substring(0,type_string.length-1);
+ 		
+ 		type_string = type_string + ']';
+		data_options = data_options + type_string;
+	}else
+		data_options = data_options.substring(0,data_options.length-1);
 	
-	
-	
-	
+	return data_options;
 }
 
 

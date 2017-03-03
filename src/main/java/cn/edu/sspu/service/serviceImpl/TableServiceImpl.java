@@ -77,8 +77,8 @@ public class TableServiceImpl implements TableService{
 		
 		//4 插入数据
 		try {
-			tableMapper.insertTable(table);
-			//tableMapper.insertInputList();
+			tableMapper.insertTable(table);//插入table
+			insertInputList(inputList);//插入table对应的input集合
 			
 			trManager.commit(status);
 		} catch (Exception e) {
@@ -100,6 +100,24 @@ public class TableServiceImpl implements TableService{
 		return tableMapper.selectTableByPage(num1,num2);
 	}
 	
+	
+	public int updateTable(Table table) throws ServiceException {
+		
+		int n = tableMapper.updateTable(table);
+		
+		if(n == 0)
+			throw new ServiceException("update Table表失败");
+		
+		return n;
+	}
+	
+	
+	public int insertInputList(List<Input> inputList){
+		
+		tableMapper.insertInputList(inputList);
+		
+		return 0;
+	}
 	
 	public void testTr(Table table){
 		if(trManager != null){

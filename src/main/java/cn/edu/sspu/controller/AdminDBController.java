@@ -20,6 +20,7 @@ import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -30,6 +31,9 @@ import cn.edu.sspu.utils.AdminUtils;
 public class AdminDBController {
 	@Autowired
 	private TableService tableService = null;
+	
+	@Autowired
+	private InputService inputService;
 	
 	//测试Model
 	private Model model;
@@ -111,10 +115,29 @@ public class AdminDBController {
 	
 	/*该方法参数是一个table对象，保存在数据库中*/
 	@ResponseBody
-	@RequestMapping("/savetable")
-	public Json saveTable(@RequestBody Table table){
+	@RequestMapping("/updateTable")
+	public Json updateTable(@RequestBody Table table){
 		Json json = new Json();
-		System.out.println(JSON.toJSONString(table, true));
+		if(table.getTable_id() == null){
+			json.setMsg("table参数中没有包含table_id");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		int n = 0;
+		try {
+			n = tableService.updateTable(table);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setSuccess(true);
 		return json;
 	}
 	
@@ -124,8 +147,31 @@ public class AdminDBController {
 	public Json getModelReturnJson(String table_id){
 		Json json = new Json();
 		
+		if(table_id == null){
+			json.setMsg("获取table_id失败 ");
+			json.setSuccess(false);
+			return json;
+		}
 		
+		Model model = new Model();
 		
+		try {
+			model.setInputList(inputService.selectInputByTableId(table_id));//设施inputList
+			model.setTable_id(table_id);//设置table_id
+			model.setName(tableService.selectTableById(table_id).getName());
+			
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e) {
+			e.printStackTrace();
+			json.setMsg("获取input未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setObj(model);
 		json.setSuccess(true);
 		return json;
 	}
@@ -134,46 +180,143 @@ public class AdminDBController {
 	@ResponseBody
 	@RequestMapping("/getModelReturnInputList")
 	public List<Input> getModelReturnInputList(String table_id){
-		/*System.out.println(table_id);
-		if(this.model != null)
-			return this.model.getInputList();*/
+		
+		if(table_id == null){
+			return null;
+		}
+		
+		List<Input> inputList = null;
+		
+		try {
+			inputList = inputService.selectInputByTableId(table_id);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		if(inputList == null)
+			return null;
+		
+		/*由于这里返回的inputList没有顺序，所以这里进行排序*/
 		
 		
 		
-		
-		
-		
-		
-		return null;
+		return inputList;
 	}
 	
 	/*该方法是接收一个input对象，然后保存入库，这个对象必须有table_id，不然无法保存*/
 	@ResponseBody
-	@RequestMapping("/saveinput")
+	@RequestMapping("/saveInput")
 	public Json saveInput(@RequestBody Input input){
+		/*这个方法注意了，因为前面可能是更改input然后保存，也有可能是新增input然后是保存
+		所以这里要判断是update还是insert操作*/
 		Json json = new Json();
-		System.out.println(JSON.toJSONString(AdminUtils.setInputId(input), true));
+		if(input == null){
+			json.setMsg("封装input参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		System.out.println(input);
+		
+		if(input.getInput_id() == null){
+			/*input_id为null，说明这个input是新增的，必须为其添加一个input_id*/
+			input.setInput_id(AdminUtils.getUUID());
+			json = insertInput(input);
+		}else{
+			/*如果不为null，说明是update操作*/
+			json = updateInput(input);
+		}
 		return json;
 	}
 	
 	/*该方法是接收一个input的id参数集合，然后转为list集合，将里面的所有input_id全部删除*/
 	@ResponseBody
-	@RequestMapping("/deleteinput")
+	@RequestMapping("/deleteInput")
 	public Json deleteInput(String input_ids){
 		Json json = new Json();
 		
-		String[] inputString = input_ids.split("-");
+		if(input_ids == null){
+			json.setMsg("获取参数input_ids失败");
+			json.setSuccess(false);
+			return json;
+		}
+		String[] input_idList =  input_ids.split("-");
 		
-		List<String> inputList = Arrays.asList(inputString);
+		for (String input_id : input_idList) {
+			if(input_id.length() == 32){
+				try {
+					inputService.deleteInput(input_id);
+				} catch (ServiceException e) {
+					json.setMsg(e.getMessage());
+					json.setSuccess(false);
+					return json;
+				}catch (Exception e) {
+					json.setMsg("位置异常");
+					json.setSuccess(false);
+					return json;
+				}
+			}
+		}
 		
-		for(String s : inputList)
-			System.out.println(s);
 		json.setSuccess(true);
+		json.setMsg("删除成功");
 		return json;
 	}
 	
 	
+	@ResponseBody
+	@RequestMapping("/updateInput")
+	public Json updateInput(@RequestBody Input input){
+		Json json = new Json();
+		
+		if(input == null || input.getInput_id() == null){
+			json.setMsg("封装input参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		int n = 0;
+		try {
+			n = inputService.updateInput(input);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e) {
+			json.setMsg("未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setSuccess(true);
+		return json;
+	}
 	
+	@ResponseBody
+	@RequestMapping("/insertInput")
+	public Json insertInput(@RequestBody Input input){
+		Json json = new Json();
+		if(input.getTable_id() == null){
+			json.setMsg("该input类没有table_id，无法插入对应的table中");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		int n = 0;
+		try {
+			n = inputService.insertInput(input);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e) {
+			json.setMsg("insert操作未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("插入成功 ");
+		json.setSuccess(true);
+		return json;
+	}
 	
 	@RequestMapping("/testFun")
 	public void testFun(int num1,int num2){

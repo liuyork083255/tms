@@ -2,12 +2,60 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="cn.edu.sspu.dao.mapper.InputMapper" >
 
-  <select id="selectInputByName" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
-    select * from input where name = #{name}
+
+  <!-- 注意：下面这个查询要加上相反的限制条件，查table_id，那么user_id就要为null，不然会有重复的数据 -->
+  <select id="selectInputByTableId" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
+    select * from input where table_id = #{table_id} and user_id is null  ORDER BY sort<!-- 此处用is匹配 -->
   </select>
   
-  <select id="selectInputById" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
-    select * from input where input_id = #{input_id}
+  <!-- 注意：下面这个查询user_id，必须还要加上table_id限制，不然就会查出所有的user_id -->
+  <select id="selectInputByUserIdAndTableId" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
+    select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  ORDER BY sort
   </select>
+  
+  <delete id="deleteInput" parameterType="java.lang.String">
+  	delete from input where input_id = #{input_id}
+  </delete>
+  
+  
+  
+  <update id="updateInput" parameterType="cn.edu.sspu.models.Input">
+  	UPDATE input
+	<trim prefix="set" suffixOverrides=",">
+  		<if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+  		<if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
+  		<if test="value != null">value = #{value,jdbcType=VARCHAR},</if>
+  		<if test="param != null">param = #{param,jdbcType=VARCHAR},</if>
+  		<if test="info != null">info = #{info,jdbcType=VARCHAR},</if>
+  		<if test="required != null">required = #{required,jdbcType=VARCHAR},</if>
+  		<if test="validatetype != null">validatetype = #{validatetype,jdbcType=VARCHAR},</if>
+  		<if test="sort != null">sort = #{sort,jdbcType=BIT},</if>
+ 	</trim>
+ 	WHERE input_id = #{input_id}
+  </update>
+  
+  
+  
+  <insert id="insertInput" parameterType="cn.edu.sspu.models.Input">
+  	insert input <include refid="insertInputSet" />
+  </insert>
+  
+  <sql id="insertInputSet">
+  	<set>
+  		<if test="input_id != null">input_id = #{input_id,jdbcType=VARCHAR},</if>
+  		<if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+  		<if test="type != null">type = #{type,jdbcType=VARCHAR},</if>
+  		<if test="value != null">value = #{value,jdbcType=VARCHAR},</if>
+  		<if test="param != null">param = #{param,jdbcType=VARCHAR},</if>
+  		<if test="info != null">info = #{info,jdbcType=VARCHAR},</if>
+  		<if test="required != null">required = #{required,jdbcType=VARCHAR},</if>
+  		<if test="validatetype != null">validatetype = #{validatetype,jdbcType=VARCHAR},</if>
+  		<if test="user_id != null">user_id = #{user_id,jdbcType=VARCHAR},</if>
+  		<if test="table_id != null">table_id = #{table_id,jdbcType=VARCHAR},</if>
+  		<if test="sort != null">sort = #{sort,jdbcType=BIT},</if>
+  	</set>
+  </sql>
+  
+  
   
 </mapper>

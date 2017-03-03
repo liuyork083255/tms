@@ -246,7 +246,7 @@ function removeRow(){
 					
 					$.ajax({
 						   type: "POST",
-						   url: $.projectUrl+"/admin/db/deleteinput.do",
+						   url: $.projectUrl+"/admin/db/deleteInput.do",
 						   dataType:"json",
 						 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
 						   data:"input_ids="+input_ids,
@@ -884,6 +884,11 @@ function validateParamEditor(){
 function clickCell(rowIndex, field, value){
 	if(field == "save"){
 		saveRow();
+		
+		if(!saveRow())
+			return;
+		
+		
 		var row = $('#datagrid_editTable').datagrid('getRows')[rowIndex];
 		
 		
@@ -894,7 +899,7 @@ function clickCell(rowIndex, field, value){
 		}else{
 			$.ajax({
 				type : "POST",
-				url: $.projectUrl+"/admin/db/saveinput.do",
+				url: $.projectUrl+"/admin/db/saveInput.do",
 				dataType : "json",
 				contentType : "application/json;charset=utf-8",
 				//注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型

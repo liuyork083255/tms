@@ -23,7 +23,7 @@
 	<trim prefix="set" suffixOverrides=",">
 		<if test="name!=null">name=#{name},</if>
 		<if test="password!=null">password=#{password},</if>
-		<if test="email">email=#{email},</if>
+		<if test="email!=null">email=#{email},</if>
 		 <if test="type!=null">type=#{type},</if>
  	</trim>
  	WHERE user_id = #{user_id}
@@ -32,7 +32,7 @@
   <delete id="deleteUserByName" parameterType="java.lang.String">
   	delete from user where name = #{name}
   </delete>
-    <delete id="deleteUserById" parameterType="java.lang.String">
+  <delete id="deleteUserById" parameterType="java.lang.String">
   	delete from user where user_id = #{user_id}
   </delete>
   

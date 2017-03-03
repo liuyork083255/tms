@@ -244,6 +244,13 @@
 									href : 'east_showTable.html',
 									width:650
 								});
+						   }else{
+								$.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:4000,
+									showType:'slide'
+								});
 						   }
 					   }
 					});
@@ -254,16 +261,27 @@
 				var row = $('#datagrid_showAllTables').datagrid('getRows')[rowIndex];
 				$.ajax({
 					   type: "POST",
-					   url: $.projectUrl+"/admin/db/savetable.do",
+					   url: $.projectUrl+"/admin/db/updateTable.do",
 					   dataType:"json",
 					   contentType:"application/json;charset=utf-8",
 					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
 					   data:JSON.stringify(row),
 					   success: function(data){//返回的数据是json对象
-						   console.info(data);
-					   },
-					   error:function(){
-						   $.messager.alert('提示','保存失败，请联系管理员 !','error');
+						   if(data.success){
+								$.messager.show({
+									title:'提示',
+									msg:'修改成功 ',
+									timeout:2000,
+									showType:'slide'
+								});
+						   }else{
+								$.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:2000,
+									showType:'slide'
+								});
+						   }
 					   }
 					});
 			}

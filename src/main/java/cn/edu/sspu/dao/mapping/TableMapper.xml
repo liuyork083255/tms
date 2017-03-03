@@ -15,14 +15,48 @@
     select count(*) from `table`
   </select>
   
+  
   <select id="selectTableByPage" resultType="cn.edu.sspu.models.Table">
     select * from `table` limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
   </select>
   
-  
+  <update id="updateTable" parameterType="cn.edu.sspu.models.Table">
+ 	update `table`
+		<trim prefix="set" suffixOverrides=",">
+		<if test="name!=null">name=#{name},</if>
+		<if test="createtime!=null">createtime=#{createtime},</if>
+		<if test="info!=null">info=#{info},</if>
+		</trim>
+		WHERE table_id = #{table_id}
+  </update>
   
   <insert id="insertTable" parameterType="cn.edu.sspu.models.Table">
   	insert `table` <include refid="insertTableSet" />
+  </insert>
+  
+  <!-- 此处是插入list集合 -->
+  <!-- 下面代码插入成功，注意，如果是input的某一个参数为空，下面代码则默认插入NULL来代替 -->
+  <insert id="insertInputList" parameterType="java.util.List">
+  	<selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+  		SELECT LAST_INSERT_ID()
+  	</selectKey>
+  	insert into input (input_id,name,type,value,param,info,required,validatetype,user_id,table_id,sort)
+  	values
+  	<foreach collection="list" item="input" index="index" separator=",">
+  		(
+	  		#{input.input_id},
+	  		#{input.name},
+	  		#{input.type},
+	  		#{input.value},
+	  		#{input.param},
+	  		#{input.info},
+	  		#{input.required},
+	  		#{input.validatetype},
+	  		#{input.user_id},
+	  		#{input.table_id},
+	  		#{input.sort}
+  		)
+  	</foreach>
   </insert>
   
   <sql id="insertTableSet">
