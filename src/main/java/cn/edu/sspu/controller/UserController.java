@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.UserService;
@@ -343,9 +344,9 @@ public class UserController {
 		return json;
 	}
 	
-	public User getSessionUser(HttpServletRequest request){
-		return (User)request.getSession().getAttribute("user");
-	}
 	
+
+	
+
 	
 }

@@ -1,0 +1,404 @@
+<!-- 这个页面用于user填写模板的具体信息 -->
+<body>
+	<div style="margin:20px 0;"></div>
+	<div class="easyui-panel" title="模板填写" data-options="fit:'true'">
+		<div style="padding:1% 25% 10% 25%">
+	    <form id="center_userEditTable" method="post">
+	    	<table cellpadding="5" id="center_userEditTable_table">
+	    		
+	    	</table>
+	    </form>
+	    <div style="text-align:center;padding:5px">
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
+	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+	    </div>
+	    </div>
+	</div>
+
+
+
+
+
+<script type="text/javascript">
+
+/* 获得到好展示的model */
+var model = $.getGlobalModel();
+/* 获取当前页面的table对象，好往里面添加字段标签 */
+var formTable = $("#center_userEditTable_table");
+/* 如果model为空，没有传进来，异常处理 */
+if(model == undefined || model == null || model == ""){
+		$.messager.alert("提示","当前模板展示失败","error");
+		
+}else{
+ 	var name = model.name;
+	var table_id = model.table_id;
+	var user_id = model.user_id;
+	
+	var inputList = model.inputList;
+	
+	if(inputList != null || inputList != undefined){
+		for(var i=0;i<inputList.length;i++){
+			var input = inputList[i];
+			
+			var td2String = undefined;
+			
+			if(input.type == "text"){td2String =showInputTypeIsText(formTable,input);}
+ 			else if(input.type == "textarea"){td2String =showInputTypeIsTextarea(formTable,input);}
+			else if(input.type == "file"){td2String =showInputTypeIsFile(formTable,input);}
+			else if(input.type == "date"){td2String =showInputTypeIsDate(formTable,input);}
+			else if(input.type == "datetime"){td2String =showInputTypeIsDatetime(formTable,input);}
+			else if(input.type == "email"){td2String =showInputTypeIsEmail(formTable,input);}
+			else if(input.type == "number"){td2String =showInputTypeIsNumber(formTable,input);}
+			else if(input.type == "select"){td2String =showInputTypeIsSelect(formTable,input);}
+			else if(input.type == "checkbox"){td2String =showInputTypeIsCheckbox(formTable,input);}
+			else if(input.type == "radio"){td2String =showInputTypeIsRadio(formTable,input);}
+			else{//该判断用于收集无效的input 
+				
+			}
+			
+			var tr = $('<tr></tr>');
+			var td1 = $('<td></td>');
+			var td2 = $('<td></td>');
+			//字段名称 添加 
+			td1.append(input.name);
+			
+			td2.append(td2String);
+			tr.append(td1);
+			tr.append(td2);
+			formTable.append(tr);
+			
+		}
+		
+	}
+	
+/* 	if(inputList != null || inputList != undefined){
+		for(var i=0;i<inputList.length;i++){
+			
+			var obj = inputList[i];
+			
+			var required = '';
+			if(obj.required == "true")
+				required = ' required="true" ';
+			
+			var validatetype = '';
+			var info = '';
+			
+			var tr = $('<tr></tr>');
+			var td1 = $('<td></td>');
+			var td2 = $('<td></td>');
+			
+			td1.append(obj.name);
+			
+			if(obj.type == "select"){
+				var param = '';
+				
+				
+			}else if(obj.type == "checkbox"){
+				var param = '';
+				
+				
+			}else if(obj.type == "radio"){
+				var param = '';
+				
+				
+			}else{
+				td2.append($('<input class="easyui-textbox" type="xxx" name="email" data-options="required:true,validType:[\'email\']"></input>'));
+			}
+			
+			tr.append(td1);
+			tr.append(td2);
+			formTable.append(tr);formTable.append(tr);
+			
+		}
+		
+	} */
+	
+	
+	
+	
+	
+	
+}
+
+function showInputTypeIsText(formTable,input){
+	
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+			
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	
+	return $(input_string);
+}
+
+function showInputTypeIsTextarea(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	//额外添加一个属性 textarea 
+	data_options = data_options + ',multiline:true';
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	
+	return $(input_string);
+}
+function showInputTypeIsFile(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	//额外添加一个属性  
+	data_options = data_options + ',prompt:\'Choose a file...\'';
+
+	
+	var input_string = '<input class="easyui-filebox" name="file" data-options="'+data_options+'" />';
+	
+	var status = $('<img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/cancel.png">');
+	
+	var fileupButtonHtml = $('<a href="#" onclick="fileUpByInputId(\''+input.input_id+'\');" class="easyui-linkbutton" data-options="iconCls:\'icon-redo\'" style="width:80px">点击上传</a>'); 
+	
+	var formHtml = $('<form id="'+input.input_id+'" method="post" enctype="multipart/form-data"></form>');
+	
+	formHtml.append($(input_string));
+	formHtml.append(fileupButtonHtml);
+	formHtml.append(status);
+	
+	
+	return formHtml;
+}
+function showInputTypeIsDate(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="'+data_options+'" />';
+	return $(input_string);
+	
+}
+function showInputTypeIsDatetime(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="'+data_options+'" />';
+	return $(input_string);
+	
+
+}
+function showInputTypeIsEmail(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	return $(input_string);
+}
+function showInputTypeIsNumber(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	return $(input_string);
+}
+function showInputTypeIsSelect(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);	
+	
+	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="'+data_options+'" style="width:100px;" ></select>');
+	
+	if(input.param.length > 0){
+		var options = input.param.split("&");
+		for(var i =0;i<options.length;i++){
+			var option = $('<option value="'+options[i]+'">'+options[i]+'</option>');
+			selectHtml.append(option);
+		}
+	}
+	
+	return selectHtml;
+}
+function showInputTypeIsCheckbox(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	
+	var divHtml = $('<div id="'+input.input_id+'" ></div>');
+	if(input.param.length > 0){
+		var checkboxs = input.param.split("&");
+		for(var i =0;i<checkboxs.length;i++){
+			divHtml.append($('<label><input name="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'" />'+checkboxs[i]+' </label>'));
+		}
+	}
+	return divHtml;
+}
+function showInputTypeIsRadio(formTable,input){
+	//调用方法得到data_options的校验规则 
+	var data_options = getData_optionsString(input);
+	
+	var divHtml = $('<div id="'+input.input_id+'" ></div>');
+	if(input.param.length > 0){
+		var radioboxs = input.param.split("&");
+		for(var i =0;i<radioboxs.length;i++){
+			divHtml.append($('<label><input name="'+input.input_id+'" type="radio" value="'+radioboxs[i]+'" />'+radioboxs[i]+' </label>'));
+		}
+	}
+	return divHtml;
+}
+
+function getData_optionsString(input){
+	var data_options = '';
+	if(input.required == "true")
+		data_options = data_options + 'required:true,';
+	else
+		data_options = data_options + 'required:false,';
+	
+	
+	if(input.validatetype.length > 0){
+		var types = input.validatetype.split("&");
+		var type_string = 'validType:[';
+		for(var i =0;i<types.length;i++){
+			type_string  = type_string + '\'' +types[i] +  '\',';
+		}
+ 		type_string = type_string.substring(0,type_string.length-1);
+ 		
+ 		type_string = type_string + ']';
+		data_options = data_options + type_string;
+	}else
+		data_options = data_options.substring(0,data_options.length-1);
+	
+	return data_options;
+}
+
+
+function submitForm(){
+	$('#center_userEditTable').form('submit',{
+		onSubmit: function(){
+			//首先开启检验功能 
+	    	var flag = $('#center_userEditTable').form('validate');
+	    	if(flag == false) return false;
+	    	else{
+	    		var model = $.getGlobalModel();
+	    		var inputList =  model.inputList;
+	    		model.inputList = setValue(inputList);
+	    		
+	    	}
+		}
+	});
+}
+
+function setValue(inputList){
+	for(var i=0;i<inputList.length;i++){
+		var input = inputList[i];
+		
+		if(input.type == "text"){
+			input.value = $("#"+input.input_id+"").val();
+		}
+		else if(input.type == "textarea"){
+			input.value = $("#"+input.input_id+"").val();
+		}
+		else if(input.type == "file"){
+			input.value = $("#"+input.input_id+"").val();
+		}
+		else if(input.type == "date"){
+			input.value = $("#"+input.input_id+"").datebox("getValue");
+		}
+		else if(input.type == "datetime"){
+			input.value = $("#"+input.input_id+"").datebox("getValue");
+		}
+		else if(input.type == "email"){
+			input.value = $("#"+input.input_id+"").val();
+		}
+		else if(input.type == "number"){
+			input.value = $("#"+input.input_id+"").val();
+		}
+		else if(input.type == "select"){
+			input.value = $("#"+input.input_id+"").combobox("getValue");
+		}
+		else if(input.type == "checkbox"){
+			var checkboxInput = $("#"+input.input_id+"").find("input");
+			var checkboxValue = "";
+  			for(var ii=0;ii<checkboxInput.length;ii++){
+  				if($(checkboxInput[ii]).is(":checked"))
+  					checkboxValue = checkboxValue + $(checkboxInput[ii]).val() + "&";
+			}
+  			if(checkboxValue.length > 0)
+  				checkboxValue = checkboxValue.substring(0,checkboxValue.length-1);
+  			input.value = checkboxValue;
+		}
+		else if(input.type == "radio"){
+			var radioInput = $("#"+input.input_id+"").find("input");
+			var radioValue = "";
+  			for(var ii=0;ii<radioInput.length;ii++){
+  				if($(radioInput[ii]).is(":checked")){
+  					input.value = $(radioInput[ii]).val();
+  					break;
+  				}
+  					
+			}
+		}
+		else{//该判断用于收集无效的input 
+			
+		}
+	}
+	return inputList;
+}
+
+
+function fileUpByInputId(input_id){
+	var file = $("#"+input_id+"")[0];
+	var formData = new FormData(file);
+	 
+      $.ajax({
+        type:"post",
+        url:$.projectUrl+"/userTable/savaFileToSession.do?input_id="+input_id,
+        async:false,
+        contentType: false,    //这个一定要写
+        processData: false, //这个也一定要写，不然会报错
+        data:formData,
+        dataType:'text',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+        success:function(data){
+        	try{
+        		var data = JSON.parse(data);
+        		if(data.success){
+                	$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
+        		}else{
+        			$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        		}
+        	}catch(e){
+        		$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        		alert(data);
+        	}
+        }          
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function clearForm(){
+	$('#center_userEditTable').form('clear');
+}
+
+</script>
+</body>
+

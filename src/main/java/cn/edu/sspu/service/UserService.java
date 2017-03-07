@@ -3,7 +3,9 @@ package cn.edu.sspu.service;
 import java.util.List;
 
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
+
 
 
 public interface UserService {
@@ -23,4 +25,6 @@ public interface UserService {
 	public int deleteUserById(String user_id) throws ServiceException;
 	
 	public int insertUser(User user) throws ServiceException;
+
+
 }

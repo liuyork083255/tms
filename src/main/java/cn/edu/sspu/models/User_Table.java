@@ -1,9 +1,23 @@
 package cn.edu.sspu.models;
 
 public class User_Table {
+	private String table_name;
+	private String user_name;
 	private String user_id;
 	private String table_id;
 	private String user_table_time;
+	public String getTable_name() {
+		return table_name;
+	}
+	public void setTable_name(String table_name) {
+		this.table_name = table_name;
+	}
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
 	public String getUser_id() {
 		return user_id;
 	}
@@ -24,8 +38,10 @@ public class User_Table {
 	}
 	@Override
 	public String toString() {
-		return "User_Table [user_id=" + user_id + ", table_id=" + table_id + ", user_table_time=" + user_table_time
-				+ "]";
+		return "User_Table [table_name=" + table_name + ", user_name="
+				+ user_name + ", user_id=" + user_id + ", table_id=" + table_id
+				+ ", user_table_time=" + user_table_time + "]";
 	}
+	
 	
 }

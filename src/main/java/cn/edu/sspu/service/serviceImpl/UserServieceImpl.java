@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.edu.sspu.dao.mapper.TableMapper;
 import cn.edu.sspu.dao.mapper.UserMapper;
 import cn.edu.sspu.exception.ExceptionType;
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.service.UserService;
 
@@ -17,6 +19,9 @@ public class UserServieceImpl implements UserService{
 	
 	@Autowired
 	private UserMapper userMapper = null ;
+	
+	@Autowired
+	private TableMapper tableMapper = null;
 
 	public User selectUserByName(String name) throws ServiceException {
 		User user = userMapper.selectUserByName(name);
@@ -112,4 +117,29 @@ public class UserServieceImpl implements UserService{
 		return n;
 	}
 	
+	
+
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

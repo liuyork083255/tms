@@ -87,7 +87,11 @@ function submitForm(n){
 								timeout:5000
 							 });
 					     }else{
-					    	 
+					 		 $.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:5000
+								 });
 					     }
 					   }
 					});

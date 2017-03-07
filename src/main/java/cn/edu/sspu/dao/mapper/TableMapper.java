@@ -22,4 +22,7 @@ public interface TableMapper {
 	
 	public int insertInputList(List<Input> inputList);
 	
+	public List<Table> selectTableUnwriteByUserId(String user_id);
+	
+	
 }

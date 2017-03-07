@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sspu.dao.mapper.UserTableMapper" >
+
+    <!-- 该方法是查询指定用户还没有填写的table，采用嵌套的select语句 -->
+  <select id="selectTableUnwriteByUserId" resultType="cn.edu.sspu.models.Table">
+  	SELECT * FROM `table`
+		WHERE 
+	table_id NOT IN 
+	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR}) LIMIT #{num1,jdbcType=BIT},#{num2,jdbcType=BIT};
+
+  </select>
+  <!-- 该方法是获取指定用户还没有填写的table列表的总数 -->
+  <select id="selectTableUnwriteTotal" resultType="int">
+  	SELECT COUNT(*) FROM `table`
+		WHERE 
+	table_id NOT IN 
+	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR});
+
+  </select>
+  
+</mapper>

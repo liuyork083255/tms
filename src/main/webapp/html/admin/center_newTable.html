@@ -3,7 +3,6 @@
 <!-- JS引入特定的文件 -->
 <script type="text/javascript" src="../../js/extendJs/Object_Json.js"></script>
 
-
 <table id="datagrid_newTable">
 </table>
 
@@ -70,16 +69,25 @@
 
 
 <table id="xxx"></table>
+<form id="importFileForm" method="post" enctype="multipart/form-data" action="/tms/userTable/savaFileToSession.do">
 
-<input class="easyui-textbox" multiple="multiple" name="message" style="height:60px" ></input>
+<input class="easyui-filebox"  name="file" id="file" style="width:260px;">
 
-<input type="button" id="ab1" value="open" />
-<input type="button" id="ab2" value="close"/>
-
+<input type="submit" value="上传图片" id="upload" onclick="fileup();" /> 
+</form>
 <br>
 
+<a href="#" onclick="fileup()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">Add</a>
+<img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/ok.png">
+<script>
 
 
+function fileup(){
+	$("#wwwww").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+}
+
+
+</script>
 
 
 
