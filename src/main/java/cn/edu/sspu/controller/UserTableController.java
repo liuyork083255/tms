@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+
 import sun.awt.RequestFocusController;
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
@@ -76,19 +79,71 @@ public class UserTableController {
 			return null;
 		}
 		
-		cn.edu.sspu.models.File sessionFile = new cn.edu.sspu.models.File();
-		
-		sessionFile.setFilename(file.getOriginalFilename());
-		sessionFile.setFiletype(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
-		sessionFile.setUploadtime(AdminUtils.getCurrentTime());
-		
-		request.getSession().setAttribute(input_id, sessionFile);
+		request.getSession().setAttribute(input_id, file);System.out.println(file);
 		
 		json.setMsg("上传成功");
 		json.setSuccess(true);
 		return json;
 	}
 	
+	@ResponseBody
+	@RequestMapping("/saveUserEditModel")
+	public Json saveUserEditModel(@RequestBody Model model,HttpServletRequest request){
+		Json json = new Json();
+		//判断session中是否有user
+		User sessionUser = null;
+		try{
+			sessionUser = (User)request.getSession().getAttribute("user");
+			if(sessionUser == null){
+				json.setMsg("session中没有当前用户，请重新登录");
+				json.setSuccess(false);
+				return json;
+			}
+		}catch(Exception e){
+			json.setMsg("session中没有当前用户，请重新登录");
+			json.setSuccess(false);
+			return json;
+		}
+		// 判断model中的必要参数
+		if(model == null || model.getInputList() == null || model.getTable_id() == null){
+			json.setMsg("保存数据model中参数封装失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		//设置model的user_id
+		model.setUser_id(sessionUser.getUser_id());
+		//设置所有input的user_id
+		model.setInputList(AdminUtils.setAllnputUserId(model.getInputList(), model.getUser_id()));
+		
+		// 数据到数据库，file交给service层来处理，如果file写入硬盘报错，那么就回滚事务
+		
+		
+		
+		boolean flag;
+		try {
+			flag = userTableService.saveUserEditModel(model, request.getSession());
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		if(!flag){
+			json.setMsg("插入失败，异常未知");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setMsg("保存成功！！！");
+		json.setSuccess(true);
+		return json;
+	}
 	
 	
 	
@@ -104,6 +159,10 @@ public class UserTableController {
 			return json;
 		}
 		
+		request.getSession().setAttribute("testfile", file);
+		
+		
+		MultipartFile testfile = (MultipartFile)request.getSession().getAttribute("testfile");
 		
 		String filePath = "F:\\develop\\fileup\\";
 
@@ -112,7 +171,7 @@ public class UserTableController {
 		File fileIO = new File(filePath + newFileName);
 		
 		try {
-			file.transferTo(fileIO);
+			testfile.transferTo(fileIO);
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setMsg("文件写入内存失败");

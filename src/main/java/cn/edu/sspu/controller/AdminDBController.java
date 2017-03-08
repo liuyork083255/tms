@@ -144,7 +144,7 @@ public class AdminDBController {
 	/*该方法接收一个table_id参数，返回model对象*/
 	@ResponseBody
 	@RequestMapping("/getModelReturnJson")
-	public Json getModelReturnJson(String table_id){
+	public Json getModelReturnJson(String table_id,String param){
 		Json json = new Json();
 		
 		if(table_id == null){
@@ -156,7 +156,10 @@ public class AdminDBController {
 		Model model = new Model();
 		
 		try {
-			model.setInputList(inputService.selectInputByTableId(table_id));//设施inputList
+			List<Input> inputList = inputService.selectInputByTableId(table_id);
+			if(param != null && param.equals("change"))//此处判断获取该inputList是不是从用户填写模板界面发起的，如果是，那么就要重新设置input_id，否则主键报错
+				inputList = AdminUtils.setInputId(inputList);
+			model.setInputList(inputList);//设施inputList
 			model.setTable_id(table_id);//设置table_id
 			model.setName(tableService.selectTableById(table_id).getName());
 			
@@ -170,7 +173,6 @@ public class AdminDBController {
 			json.setSuccess(false);
 			return json;
 		}
-		
 		json.setObj(model);
 		json.setSuccess(true);
 		return json;

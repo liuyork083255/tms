@@ -17,6 +17,17 @@ public class AdminUtils {
 		return null;
 	}
 	
+	public static List<Input> setAllnputUserId(List<Input> inputList,String user_id){
+		if(inputList != null && user_id != null){
+				for(Input input : inputList){
+					input.setUser_id(user_id);
+				}
+			}
+		return inputList;
+	}
+	
+	
+	
 	//该方法参数是Model类型，作用是设置model中的table_id和input_id,并返回model
 	public static Model setModelIdAndInputId(Model model){
 		if(model != null){
@@ -29,6 +40,15 @@ public class AdminUtils {
 			}
 		}
 		return model;
+	}
+	
+	public static List<Input> setInputId(List<Input> inputList){
+		if(inputList != null){
+				for(Input input : inputList){
+					input.setInput_id(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+				}
+			}
+		return inputList;
 	}
 	
 	

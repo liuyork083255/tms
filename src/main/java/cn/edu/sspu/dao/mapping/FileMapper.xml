@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.sspu.dao.mapper.FileMapper" >
+
+  <insert id="insertFile" parameterType="cn.edu.sspu.models.File">
+  	insert file <include refid="insertFileSet" />
+  </insert>
+  
+  <sql id="insertFileSet">
+  	<set>
+  		<if test="input_id != null">input_id = #{input_id,jdbcType=VARCHAR},</if>
+  		<if test="user_id != null">user_id = #{user_id,jdbcType=VARCHAR},</if>
+  		<if test="filename != null">filename = #{filename,jdbcType=VARCHAR},</if>
+  		<if test="uploadtime != null">uploadtime = #{uploadtime,jdbcType=VARCHAR},</if>
+  		<if test="filetype != null">filetype = #{filetype,jdbcType=VARCHAR},</if>
+  	</set>
+  </sql>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

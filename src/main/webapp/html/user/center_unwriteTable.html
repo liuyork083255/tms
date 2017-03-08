@@ -91,7 +91,7 @@ function clickCell(rowIndex, field, value){
 	if(field == "edit"){console.info(row);
 	$.ajax({
 		   type: "POST",
-		   url: $.projectUrl+"/admin/db/getModelReturnJson.do",
+		   url: $.projectUrl+"/admin/db/getModelReturnJson.do?param=change",
 		   dataType:"json",
 		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
 		   data:"table_id="+row.table_id,

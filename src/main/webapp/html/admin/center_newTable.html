@@ -83,7 +83,20 @@
 
 
 function fileup(){
-	$("#wwwww").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+	var file = $("#importFileForm")[0];
+	var formData = new FormData(file);
+    $.ajax({
+        type:"post",
+        url:$.projectUrl+"/userTable/fileUpTest.do?",
+        async:false,
+        contentType: false,    //这个一定要写
+        processData: false, //这个也一定要写，不然会报错
+        data:formData,
+        dataType:'text',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+        success:function(data){
+
+        }          
+    });
 }
 
 
