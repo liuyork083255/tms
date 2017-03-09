@@ -4,17 +4,35 @@
 
     <!-- 该方法是查询指定用户还没有填写的table，采用嵌套的select语句 -->
   <select id="selectTableUnwriteByUserId" resultType="cn.edu.sspu.models.Table">
-  	SELECT * FROM `table`
+  	SELECT * FROM `table` t
 		WHERE 
-	table_id NOT IN 
+	t.table_id NOT IN 
 	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR}) LIMIT #{num1,jdbcType=BIT},#{num2,jdbcType=BIT};
 
   </select>
   <!-- 该方法是获取指定用户还没有填写的table列表的总数 -->
   <select id="selectTableUnwriteTotal" resultType="int">
-  	SELECT COUNT(*) FROM `table`
+  	SELECT COUNT(*) FROM `table` t
 		WHERE 
-	table_id NOT IN 
+	t.table_id NOT IN 
+	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR});
+
+  </select>
+  
+  
+      <!-- 该方法是查询指定用户还已经填写的table，采用嵌套的select语句 -->
+  <select id="selectTableWriteByUserId" resultType="cn.edu.sspu.models.Table">
+  	SELECT * FROM `table` t
+		WHERE 
+	t.table_id IN 
+	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR}) LIMIT #{num1,jdbcType=BIT},#{num2,jdbcType=BIT};
+
+  </select>
+  <!-- 该方法是获取指定用户已经填写的table列表的总数 -->
+  <select id="selectTableWriteTotal" resultType="int">
+  	SELECT COUNT(*) FROM `table` t
+		WHERE 
+	t.table_id IN 
 	(SELECT table_id FROM user_table WHERE user_id=#{user_id,jdbcType=VARCHAR});
 
   </select>

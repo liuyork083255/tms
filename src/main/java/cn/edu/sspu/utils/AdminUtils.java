@@ -1,8 +1,11 @@
 package cn.edu.sspu.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import cn.edu.sspu.models.Input;
@@ -26,6 +29,23 @@ public class AdminUtils {
 		return inputList;
 	}
 	
+	
+	public static String getFileUploadPath(String pathName){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (String)pps.get(pathName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
 	
 	
 	//该方法参数是Model类型，作用是设置model中的table_id和input_id,并返回model

@@ -1,60 +1,180 @@
+<!-- user已经填写过得的table列表 -->
 <body>
-	<script type="text/javascript">
-		var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
-		function fileChange(target) {
-			var fileSize = 0;
-			var filetypes = [ ".jpg", ".png", ".rar", ".txt", ".zip", ".doc",
-					".ppt", ".xls", ".pdf", ".docx", ".xlsx" ];
-			var filepath = target.value;
-			var filemaxsize = 10;//2M 
-			if (filepath) {
-				var isnext = false;
-				var fileend = filepath.substring(filepath.indexOf("."));
-				if (filetypes && filetypes.length > 0) {
-					for (var i = 0; i < filetypes.length; i++) {
-						if (filetypes[i] == fileend) {
-							isnext = true;
-							break;
-						}
-					}
-				}
-				if (!isnext) {
-					alert("不接受此文件类型！");
-					target.value = "";
-					return false;
-				}
-			} else {
-				return false;
-			}
-			if (isIE && !target.files) {
-				var filePath = target.value;
-				var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-				if (!fileSystem.FileExists(filePath)) {
-					alert("附件不存在，请重新输入！");
-					return false;
-				}
-				var file = fileSystem.GetFile(filePath);
-				fileSize = file.Size;
-			} else {
-				fileSize = target.files[0].size;
-			}
-			console.info(fileSize);
-			var size = fileSize / 1024;
-			if (size > filemaxsize) {
-				alert("附件大小不能大于" + filemaxsize / 1024 + "M！");
-				target.value = "";
-				return false;
-			}
-			if (size <= 0) {
-				alert("附件大小不能为0M！");
-				target.value = "";
-				return false;
-			}
-		}
-	</script>
+<table id="datagrid_wirtedTableList">
+</table>
 
-</head>
-<body> 
-<input class="easyui-filebox" name="contractFileName" style="width: 500px;" onchange="fileChange(this);"/> 
+<input type="button" />
+
+<script type="text/javascript">
+$('#datagrid_wirtedTableList').datagrid({
+    url:$.projectUrl+"/userTable/selectTableWriteByUserId.do",
+    title:'已填写的表单',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    //nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    onLoadError:function(){$.messager.show({title:'提示',msg:"加载失败，你可能还没有登陆，或者Session中的User已过期",timeout:4000,showType:'slide'});},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'table_id',title:'table的id',width:20,checkbox:true},  
+		{field:'name',title:'模板名称',width:150,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true
+				}
+			}},
+		{field:'createtime',title:'发布时间',width:300,
+			editor:{
+				type:"datetimebox",
+				options:{
+					required:true,
+					editable:false	//定义用户不可编辑 
+				}
+			}},
+		{field:'clickShow',title:'查看模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击查看表单'/>";
+			}},
+		{field:'alter',title:'修改模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击修改表单'/>";
+			}},
+		{field:'delete',title:'删除模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击删除表单'/>";
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){}	//调用插入行方法 
+	}]
+});
+
+function clickCell(rowIndex, field, value){
+	var row = $('#datagrid_wirtedTableList').datagrid('getRows')[rowIndex];
+	if(field == "clickShow"){
+		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/userTable/getModel_WritedInput.do",
+			   dataType:"json",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+			   data:"table_id="+row.table_id,
+			   success: function(data){
+				   if(data.success){	//
+					   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+					   $.setGlobalModel(data.obj);console.info(data.obj);
+				   	   /* 展开左边的面板，并且将页面注入当中 */
+				   	   $("#userTableLayout").layout('expand', 'east');
+				   	   
+					   $("#userTableLayout").layout('panel', 'east').panel({
+							href : 'east_showWriteTable.html',
+							width:650
+						});
+				   }else{
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:4000,
+							showType:'slide'
+						});
+				   }
+			   }
+			});
+	}
+	if(field == "alter"){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/userTable/getModel_WritedInput.do",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"table_id="+row.table_id,
+		   success: function(data){
+			   if(data.success){	//
+				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+				   $.setGlobalModel(data.obj);
+			   
+					$("#userTableLayout").layout('panel', 'center').panel({
+						href : 'center_alterTable.html'
+					});
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:4000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+	}
+	if(field == "delete"){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/admin/db/getModelReturnJson.do?param=change",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"table_id="+row.table_id,
+		   success: function(data){
+			   if(data.success){	//
+				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+				   $.setGlobalModel(data.obj);
+			   
+					$("#userTableLayout").layout('panel', 'center').panel({
+						href : 'center_editTable.html'
+					});
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:4000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
 </body>
-

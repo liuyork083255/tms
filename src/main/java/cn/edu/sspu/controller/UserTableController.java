@@ -22,10 +22,13 @@ import com.alibaba.fastjson.JSON;
 
 import sun.awt.RequestFocusController;
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.InputService;
+import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -34,7 +37,12 @@ import cn.edu.sspu.utils.AdminUtils;
 public class UserTableController {
 	@Autowired
 	private UserTableService userTableService;
-
+	@Autowired
+	private TableService tableService;
+	@Autowired
+	private InputService inputService;
+	
+	
 	/**
 	 * 这个方法是查询一个指定用户还没有填写的所有表单
 	 * 这个user_id参数是从session中获取，而不是直接传进来的
@@ -42,17 +50,22 @@ public class UserTableController {
 	 * @param request
 	 * @return
 	 * @throws ServiceException 
+	 * @throws IOException 
+	 * @throws ServletException 
 	 */
 	@ResponseBody
 	@RequestMapping("/selectTableUnwriteByUserId")
-	public Map<String,Object> selectTableUnwriteByUserId(HttpServletRequest request,int page,int rows) throws ServiceException{
-		/*获取总数*/
-		int total = userTableService.selectTableUnwriteTotal();
+	public Map<String,Object> selectTableUnwriteByUserId(HttpServletRequest request,HttpServletResponse response, int page,int rows) throws Exception{
 		List<Table> tableList = null;
 		User sessionUser = (User)request.getSession().getAttribute("user");
-		if(sessionUser != null){
-			tableList = userTableService.selectTableUnwriteByUserId(sessionUser.getUser_id(),(page-1)*rows, rows);
+		if(sessionUser == null){
+			request.setAttribute("msg", "获取session中的User失败，请重新登录");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
 		}
+		tableList = userTableService.selectTableUnwriteByUserId(sessionUser.getUser_id(),(page-1)*rows, rows);
+		/*获取总数*/
+		int total = userTableService.selectTableUnwriteTotal(sessionUser.getUser_id());
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		
@@ -63,6 +76,48 @@ public class UserTableController {
 
 	}
 	
+	/**
+	 * 该方法是根据一个指定的用户查询已经填写的table
+	 * 这个user_id参数是从session中获取，而不是直接传进来的
+	 * 这个方式返回值是map类型，采用了分页
+	 * @param request
+	 * @param page
+	 * @param rows
+	 * @return
+	 * @throws ServiceException
+	 */
+	@ResponseBody
+	@RequestMapping("/selectTableWriteByUserId")
+	public Map<String,Object> selectTableWriteByUserId(HttpServletRequest request,HttpServletResponse response, int page,int rows) throws Exception{
+		List<Table> tableList = null;
+		User sessionUser = (User)request.getSession().getAttribute("user");
+		if(sessionUser == null){
+			request.setAttribute("msg", "获取session中的User失败，请重新登录");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		tableList = userTableService.selectTableWriteByUserId(sessionUser.getUser_id(),(page-1)*rows, rows);
+		
+		/*获取总数*/
+		int total = userTableService.selectTableWriteTotal(sessionUser.getUser_id());
+		Map<String,Object> map = new HashMap<String,Object>();
+		
+		map.put("total", total);//---------------------------------这里要查询真实数据库中的总记录
+
+		map.put("rows", tableList);
+		return map;
+	}
+	
+	/**
+	 * 这个方法将上传的文件存入硬盘，同时将路径保存在session中，如果保存
+	 * model报错，那么就要根据这个路径将文件删除
+	 * @param response
+	 * @param request
+	 * @param input_id
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping("/savaFileToSession")
 	public Json savaFileToSession(HttpServletResponse response,HttpServletRequest request,
@@ -78,12 +133,54 @@ public class UserTableController {
 			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
 			return null;
 		}
+		User user = (User)request.getSession().getAttribute("user");
+		if(user == null){
+			request.setAttribute("msg", "Session中获取当前用户失败，可能是登陆已过期");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
 		
-		request.getSession().setAttribute(input_id, file);System.out.println(file);
+		String newFileName = input_id + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		
+		
+		cn.edu.sspu.models.File sessionFile = new cn.edu.sspu.models.File();  
+		sessionFile.setInput_id(input_id);
+		sessionFile.setUser_id(user.getUser_id());
+		sessionFile.setFilename(file.getOriginalFilename());
+		sessionFile.setUploadtime(AdminUtils.getCurrentTime());
+		sessionFile.setFiletype(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
+		
+		System.out.println(JSON.toJSONString(sessionFile, true));
+		
+		request.getSession().setAttribute(input_id, sessionFile);
+		
+		String filePath = AdminUtils.getFileUploadPath("fileUploadPath");
+		if(filePath == null){
+			request.setAttribute("msg", "获取配置文件上传路径失败");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		
+		File fileIO = new File(filePath + user.getUser_id() + "\\" + newFileName);
+		
+		if(!fileIO.exists()){
+			boolean mkdirFlag = fileIO.mkdirs();
+			if(!mkdirFlag)
+				throw new ServiceException("创建文件路径失败");
+		}
+		
+		try {
+			file.transferTo(fileIO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setMsg("文件写入内存失败");
+			json.setSuccess(false);
+			return json;
+		}
 		json.setMsg("上传成功");
 		json.setSuccess(true);
 		return json;
+
 	}
 	
 	@ResponseBody
@@ -145,41 +242,56 @@ public class UserTableController {
 		return json;
 	}
 	
+	/**
+	 * 该方法是获取指定user填写了的input集合，返回以model集合返回
+	 * @param request
+	 * @param table_id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/getModel_WritedInput")
+	public Json getModel_WritedInput(HttpServletRequest request,String table_id){
+		Json json = new Json();
+		User sessionUser = (User)request.getSession().getAttribute("user");
+		if(sessionUser == null || table_id == null){
+			json.setMsg("获取session中User 或者 封装table_id参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		Model model = new Model();
+		//封装model数据
+		model.setTable_id(table_id);
+		model.setUser_id(sessionUser.getUser_id());
+		Table table = tableService.selectTableById(table_id);
+		if(table == null){
+			json.setMsg("根据table_id查询table失败");
+			json.setSuccess(false);
+			return json;
+		}
+		model.setName(table.getName());
+		List<Input> inputList = null;
+		try {
+			inputList= inputService.selectInputByUserIdAndTableId(table_id, sessionUser.getUser_id());
+		} catch (ServiceException e) {
+			json.setMsg("根据table_id和user_id查询input集合失败");
+			json.setSuccess(false);
+			return json;
+		}
+		model.setInputList(inputList);
+		
+		System.out.println(JSON.toJSONString(model, true));
+		json.setObj(model);
+		json.setSuccess(true);
+		return json;
+	}
+	
+	
 	
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")
-	public Json fileUpTest(HttpServletResponse response,HttpServletRequest request,String input_id,
-            @RequestParam(value="file", required=true) MultipartFile file) throws IOException{
+	public Json fileUpTest() throws IOException{
 		Json json = new Json();
-		
-		if(file == null || file.getOriginalFilename() == null || file.getOriginalFilename() == ""){
-			json.setMsg("上传的文件为空");
-			json.setSuccess(false);
-			return json;
-		}
-		
-		request.getSession().setAttribute("testfile", file);
-		
-		
-		MultipartFile testfile = (MultipartFile)request.getSession().getAttribute("testfile");
-		
-		String filePath = "F:\\develop\\fileup\\";
-
-		String newFileName = input_id + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-		
-		File fileIO = new File(filePath + newFileName);
-		
-		try {
-			testfile.transferTo(fileIO);
-		} catch (Exception e) {
-			e.printStackTrace();
-			json.setMsg("文件写入内存失败");
-			json.setSuccess(false);
-			return json;
-		}
-		json.setMsg("上传成功");
-		json.setSuccess(true);
 		return json;
 	}
 	

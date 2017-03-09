@@ -54,9 +54,23 @@ public class UserTableServiceImpl implements UserTableService{
 			throw new ServiceException("查询指定用户未填写的table列表失败");
 		return tableList;
 	}
+	
 
-	public int selectTableUnwriteTotal(){
-		int n = userTableMapper.selectTableUnwriteTotal();
+	public List<Table> selectTableWriteByUserId(String user_id, int num1,int num2) throws ServiceException {
+		List<Table> tableList = userTableMapper.selectTableWriteByUserId(user_id,num1,num2);
+		
+		if(tableList == null)
+			throw new ServiceException("查询指定用户已填写的table列表失败");
+		return tableList;
+	}
+
+	public int selectTableWriteTotal(String user_id) {
+		int n = userTableMapper.selectTableWriteTotal(user_id);
+		return n;
+	}
+
+	public int selectTableUnwriteTotal(String user_id){
+		int n = userTableMapper.selectTableUnwriteTotal(user_id);
 		return n;
 	}
 
@@ -72,41 +86,19 @@ public class UserTableServiceImpl implements UserTableService{
 		try {
 			for(Input input : inputList){
 				if(input.getType().equals("file")){//如果是file类型，说明还要插入file表
-					MultipartFile sessionFile = (MultipartFile)session.getAttribute(input.getInput_id());//获取session中input对应的file
-					System.out.println(sessionFile);
+					File sessionFile = (File)session.getAttribute(input.getInput_id());//获取session中input对应的file
 					if(sessionFile == null){
 						throw new ServiceException("获取Session中input对应的file失败");
 					}
-					//封装File对象然后存入数据库
-					File file = new File();
-					file.setInput_id(input.getInput_id());
-					file.setUser_id(model.getUser_id());
-					file.setFilename(sessionFile.getOriginalFilename());
-					file.setUploadtime(AdminUtils.getCurrentTime());
-					file.setFiletype(sessionFile.getOriginalFilename().substring(sessionFile.getOriginalFilename().lastIndexOf(".")));
 					
-					
-					
-					input.setValue(file.getInput_id());//这里设置id其实就是 input的id
-					int fileInsertFlag = fileMapper.insertFile(file);//插入file表
+					input.setValue(sessionFile.getFilename());//这里设置id其实就是 input的id
+					int fileInsertFlag = fileMapper.insertFile(sessionFile);//插入file表
 					if(fileInsertFlag == 0)//插入失败抛出异常
 						throw new ServiceException("插入file表失败");
 					
 					int inputInsertFlag = inputMapper.insertInput(input);//插入input表
 					if(inputInsertFlag == 0)//插入失败抛出异常
 						throw new ServiceException("插入input表失败");
-					
-					//这个时候就可以写入硬盘
-					String filePath = "F:\\develop\\fileup\\"+model.getUser_id()+"\\";
-					String newFileName = file.getInput_id() + file.getFiletype();System.out.println(filePath + newFileName);
-					java.io.File fileIO = new java.io.File(filePath + newFileName);
-					if(!fileIO.exists()){
-						boolean mkdirFlag = fileIO.mkdirs();
-						if(!mkdirFlag)
-							throw new ServiceException("创建文件路径失败");
-					}
-					
-					sessionFile.transferTo(fileIO);//插入硬盘，如果报错会自动抛出异常被try-catch捕获
 					
 				}else{//如果不是file类型，那就直接插入input表就可以了
 					int inputInsertFlag = inputMapper.insertInput(input);//插入input表
@@ -141,4 +133,5 @@ public class UserTableServiceImpl implements UserTableService{
 		}
 		return true;
 	}
+
 }

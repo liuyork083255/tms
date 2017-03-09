@@ -25,4 +25,5 @@ public interface TableMapper {
 	public List<Table> selectTableUnwriteByUserId(String user_id);
 	
 	
+	
 }

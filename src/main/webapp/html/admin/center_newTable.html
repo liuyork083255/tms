@@ -71,11 +71,15 @@
 <table id="xxx"></table>
 <form id="importFileForm" method="post" enctype="multipart/form-data" action="/tms/userTable/savaFileToSession.do">
 
-<input class="easyui-filebox"  name="file" id="file" style="width:260px;">
+<input class="easyui-filebox"  name="file" id="file" style="width:260px;" value="wakaka">
+<input class="easyui-textbox" readonly="readonly"  name="file" id="file" style="width:260px;">
 
 <input type="submit" value="上传图片" id="upload" onclick="fileup();" /> 
 </form>
 <br>
+<input  class="easyui-filebox"  name="file" value="file" data-options="onChange:function(){fileup();}">
+
+<input type="checkbox" onclick="fileup();"  />
 
 <a href="#" onclick="fileup()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">Add</a>
 <img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/ok.png">
@@ -83,20 +87,7 @@
 
 
 function fileup(){
-	var file = $("#importFileForm")[0];
-	var formData = new FormData(file);
-    $.ajax({
-        type:"post",
-        url:$.projectUrl+"/userTable/fileUpTest.do?",
-        async:false,
-        contentType: false,    //这个一定要写
-        processData: false, //这个也一定要写，不然会报错
-        data:formData,
-        dataType:'text',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
-        success:function(data){
-
-        }          
-    });
+console.info("hello");
 }
 
 

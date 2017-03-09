@@ -29,7 +29,7 @@ public class TableServiceImpl implements TableService{
 	@Autowired
 	private TableMapper tableMapper = null;
 
-	public Table selectTableById(String table_id) throws Exception{
+	public Table selectTableById(String table_id){
 		Table table = tableMapper.selectTableById(table_id);
 		return table;
 	}

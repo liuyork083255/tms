@@ -1,17 +1,13 @@
-<!-- 这个页面用于user填写模板的具体信息 -->
+<!-- 这个页面用于user修改模板的具体信息 -->
 <body>
 	<div style="margin:20px 0;"></div>
 	<div class="easyui-panel" title="模板填写" data-options="fit:'true'">
 		<div style="padding:1% 25% 10% 25%">
-	    <form id="center_userEditTable" method="post">
-	    	<table cellpadding="5" id="center_userEditTable_table">
-	    		
-	    	</table>
-	    </form>
-	    <div style="text-align:center;padding:5px">
-	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
-	    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
-	    </div>
+		    <form id="center_userAlterTable" method="post">
+		    	<table cellpadding="5" id="center_userAlterTable_table">
+		    		
+		    	</table>
+		    </form>
 	    </div>
 	</div>
 
@@ -24,7 +20,7 @@
 /* 获得到好展示的model */
 var model = $.getGlobalModel();
 /* 获取当前页面的table对象，好往里面添加字段标签 */
-var formTable = $("#center_userEditTable_table");
+var formTable = $("#center_userAlterTable_table");
 /* 如果model为空，没有传进来，异常处理 */
 if(model == undefined || model == null || model == ""){
 		$.messager.alert("提示","当前模板展示失败","error");
@@ -122,86 +118,128 @@ if(model == undefined || model == null || model == ""){
 
 function showInputTypeIsText(formTable,input){
 	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 			
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'" />';
 	
 	return $(input_string);
 }
 
 function showInputTypeIsTextarea(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 	//额外添加一个属性 textarea 
 	data_options = data_options + ',multiline:true';
+	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	
 	return $(input_string);
 }
 function showInputTypeIsFile(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 	//额外添加一个属性  
 	data_options = data_options + ',prompt:\'Choose a file...\'';
+	
+
 
 	
-	var input_string = '<input class="easyui-filebox" name="file" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'" />';
+	var showfilename = $('<label >原始文件名称 ： '+input_value+'</label><br />');
+	var input_string = '<input class="easyui-filebox" name="file" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  />';
 	
 	var status = $('<img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/cancel.png">');
 	
 	var fileupButtonHtml = $('<a href="#" onclick="fileUpByInputId(\''+input.input_id+'\');" class="easyui-linkbutton" data-options="iconCls:\'icon-redo\'" style="width:80px">点击上传</a>'); 
 	
 	var formHtml = $('<form id="'+input.input_id+'" method="post" enctype="multipart/form-data"></form>');
-	
+	formHtml.append(showfilename);
 	formHtml.append($(input_string));
 	formHtml.append(fileupButtonHtml);
 	formHtml.append(status);
 	
 	
+
+	
+	
 	return formHtml;
 }
 function showInputTypeIsDate(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	return $(input_string);
 	
 }
 function showInputTypeIsDatetime(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	return $(input_string);
 	
 
 }
 function showInputTypeIsEmail(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	return $(input_string);
 }
 function showInputTypeIsNumber(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	return $(input_string);
 }
 function showInputTypeIsSelect(formTable,input){
+	
+	//获取input的value值
+	var input_value = input.value;
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
-	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="'+data_options+'" style="width:100px;" ></select>');
+	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'" style="width:100px;"  value="'+input_value+'"  ></select>');
 	
 	if(input.param.length > 0){
 		var options = input.param.split("&");
@@ -210,35 +248,51 @@ function showInputTypeIsSelect(formTable,input){
 			selectHtml.append(option);
 		}
 	}
+	console.info(selectHtml);
 	
 	return selectHtml;
 }
 function showInputTypeIsCheckbox(formTable,input){
+	
+	//获取input的value值
+	var input_value = "&"+input.value+"&";
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 	
-	var divHtml = $('<div id="'+input.input_id+'" ></div>');
+	var divHtml = $('<div></div>');
 	if(input.param.length > 0){
 		var checkboxs = input.param.split("&");
 		for(var i =0;i<checkboxs.length;i++){
-			divHtml.append($('<label><input name="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'" />'+checkboxs[i]+' </label>'));
+			if(input_value.indexOf("&"+checkboxs[i]+"&") != -1)
+				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'"  checked="checked" onclick="valueChange(\''+input.input_id+'\');" />'+checkboxs[i]+' </label>'));
+			else
+				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'" onclick="valueChange(\''+input.input_id+'\');"  />'+checkboxs[i]+' </label>'));
 		}
 	}
 	return divHtml;
 }
 function showInputTypeIsRadio(formTable,input){
+	
+	//获取input的value值
+	var input_value = "&"+input.value+"&";
+	
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 	
-	var divHtml = $('<div id="'+input.input_id+'" ></div>');
+	var divHtml = $('<div></div>');
 	if(input.param.length > 0){
 		var radioboxs = input.param.split("&");
 		for(var i =0;i<radioboxs.length;i++){
-			divHtml.append($('<label><input name="'+input.input_id+'" type="radio" value="'+radioboxs[i]+'" />'+radioboxs[i]+' </label>'));
+			if(input_value.indexOf("&"+radioboxs[i]+"&") != -1)
+				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="radio" value="'+radioboxs[i]+'"  checked="checked" onclick="valueChange(\''+input.input_id+'\');" />'+radioboxs[i]+' </label>'));
+			else
+				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="radio" value="'+radioboxs[i]+'" onclick="valueChange(\''+input.input_id+'\');"  />'+radioboxs[i]+' </label>'));
 		}
 	}
 	return divHtml;
 }
+
 
 function getData_optionsString(input){
 	var data_options = '';
@@ -266,10 +320,10 @@ function getData_optionsString(input){
 
 
 function submitForm(){
-	$('#center_userEditTable').form('submit',{
+	$('#center_userAlterTable').form('submit',{
 		onSubmit: function(){
 			//首先开启检验功能 
-	    	var flag = $('#center_userEditTable').form('validate');
+	    	var flag = $('#center_userAlterTable').form('validate');
 	    	if(flag == false) return false;
 	    	else{
 	    		var model = $.getGlobalModel();
@@ -384,8 +438,12 @@ function fileUpByInputId(input_id){
 }
 
 
+//这个方法是用于如果文本框值改变了就触发可点击时间
 function valueChange(input_id){
-	$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+	//如果是file类型，还要将上传标志设置为 红叉类型，表示还未上传
+	if($("#"+input_id+" > img") != null || $("#"+input_id+" > img") != undefined)
+		$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+	console.info(input_id);
 }
 
 
@@ -412,9 +470,8 @@ function valueChange(input_id){
 
 
 
-
 function clearForm(){
-	$('#center_userEditTable').form('clear');
+	$('#center_userAlterTable').form('clear');
 }
 
 </script>

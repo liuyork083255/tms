@@ -10,7 +10,7 @@ import cn.edu.sspu.models.User;
 
 public interface TableService {
 	
-	public Table selectTableById(String table_id) throws Exception;
+	public Table selectTableById(String table_id);
 	
 	public Table selectTableByName(String name) throws Exception;
 	
