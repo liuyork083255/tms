@@ -13,6 +13,14 @@
     select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  ORDER BY sort
   </select>
   
+  
+  <select id="selectInputById" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
+    select * from input where input_id = #{input_id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
   <delete id="deleteInput" parameterType="java.lang.String">
   	delete from input where input_id = #{input_id}
   </delete>
@@ -33,6 +41,12 @@
  	</trim>
  	WHERE input_id = #{input_id}
   </update>
+  
+  
+    <update id="updateInputValueById" parameterType="cn.edu.sspu.models.Input">
+  	UPDATE input set value = #{value} WHERE input_id = #{input_id}
+  </update>
+  
   
   
   

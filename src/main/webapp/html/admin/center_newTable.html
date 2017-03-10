@@ -77,17 +77,39 @@
 <input type="submit" value="上传图片" id="upload" onclick="fileup();" /> 
 </form>
 <br>
-<input  class="easyui-filebox"  name="file" value="file" data-options="onChange:function(){fileup();}">
 
-<input type="checkbox" onclick="fileup();"  />
+<input type="text" id="aabbccdd" />
+<input type="button" onclick="fileup();" value="isme" />
 
-<a href="#" onclick="fileup()" class="easyui-linkbutton" data-options="iconCls:'icon-add'">Add</a>
-<img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/ok.png">
 <script>
 
 
 function fileup(){
-console.info("hello");
+	var user = {};
+	user["username"] = "yangliu";
+	user["password"] = "123456789";
+		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/userTable/fileUpTest.do",
+			   dataType:"json",
+			   //contentType:"application/json;charset=utf-8",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+			   data:"username=yangliu&password=123%26456",
+			   success: function(data){
+				   if(data.success){
+					   $.messager.show({
+							title : '提示',
+							msg : data.msg,
+							timeout:2000
+						});
+				   }else{
+					   $.messager.alert({
+							title : '提示',
+							msg : data.msg
+						});
+				   }
+			   }
+			});
 }
 
 
@@ -464,7 +486,7 @@ function upLoadTable(){
 				   dataType:"json",
 				 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
 				   data:"name="+r,
-				   success: function(data){console.info(data);
+				   success: function(data){
 					   if(data.success){
 						   
 							var table = $.datagridToJson($('#datagrid_newTable').datagrid('getRows'),r);

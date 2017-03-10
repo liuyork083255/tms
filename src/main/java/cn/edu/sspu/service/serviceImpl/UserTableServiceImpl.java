@@ -12,6 +12,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.edu.sspu.dao.mapper.FileMapper;
 import cn.edu.sspu.dao.mapper.InputMapper;
 import cn.edu.sspu.dao.mapper.UserMapper;
@@ -134,4 +136,62 @@ public class UserTableServiceImpl implements UserTableService{
 		return true;
 	}
 
+
+	public boolean updataInputValueById(String input_id, String input_value,String type, File file) throws ServiceException {
+		// 得到事务
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		TransactionStatus status = trManager.getTransaction(def);
+		try {
+			
+			Input input = inputMapper.selectInputById(input_id);
+			input.setValue(input_value);
+			System.out.println(JSON.toJSONString(input, true));
+			if(type.equals("file")){
+				int n = fileMapper.updateFile(file);//插入file表
+				if(n == 0)
+					throw new ServiceException("file表失败");
+				
+				int m = inputMapper.updateInputValueById(input);
+				if(m == 0)
+					throw new ServiceException("file表失败");
+			}else{
+				int m = inputMapper.updateInputValueById(input);
+				if(m == 0)
+					throw new ServiceException("file表失败");
+			}
+			
+			trManager.commit(status);//完成提交
+		} catch (ServiceException e) {
+			trManager.rollback(status);
+			throw new ServiceException(e.getMessage());
+		} catch (Exception e) {
+			trManager.rollback(status);
+			throw new ServiceException(e.getMessage());
+		}
+		return true;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

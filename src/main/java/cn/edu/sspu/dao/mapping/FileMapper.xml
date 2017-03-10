@@ -18,6 +18,17 @@
 
 
 
+  <update id="updateFile" parameterType="cn.edu.sspu.models.File">
+  	UPDATE file
+	<trim prefix="set" suffixOverrides=",">
+  		<if test="user_id != null">user_id = #{user_id,jdbcType=VARCHAR},</if>
+  		<if test="filename != null">filename = #{filename,jdbcType=VARCHAR},</if>
+  		<if test="uploadtime != null">uploadtime = #{uploadtime,jdbcType=VARCHAR},</if>
+  		<if test="filetype != null">filetype = #{filetype,jdbcType=VARCHAR},</if>
+ 	</trim>
+ 	WHERE input_id = #{input_id}
+  </update>
+
 
 
 

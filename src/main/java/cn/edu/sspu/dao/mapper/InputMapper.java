@@ -12,11 +12,15 @@ public interface InputMapper {
 
 	public List<Input> selectInputByUserIdAndTableId(@Param("table_id")String table_id,@Param("user_id") String user_id);
 
+	public Input selectInputById(String input_id);
+	
 	public int deleteInput(String input_id);
 	
 	public int updateInput(Input input);
 	
 	public int insertInput(Input input);
+	
+	public int updateInputValueById(Input input);
 	
 	
 

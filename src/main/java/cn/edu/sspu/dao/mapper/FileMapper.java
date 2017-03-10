@@ -5,5 +5,7 @@ import cn.edu.sspu.models.Input;
 
 public interface FileMapper {
 	public int insertFile(File file);
+	
+	public int updateFile(File file);
 
 }

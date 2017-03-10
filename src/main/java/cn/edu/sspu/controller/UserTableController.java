@@ -286,13 +286,72 @@ public class UserTableController {
 	}
 	
 	
+	/**
+	 * 这个方法是用于用户修改表单字段，并且是以input为单位进行修改，而不是整个inputList进行修改
+	 * @param input_id
+	 * @param input_value
+	 * @param type
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/updateInputValueById")
+	public Json updateInputValueById(String input_id,String input_value,String type,HttpServletRequest request){
+		Json json = new Json();
+		if(input_id == null || type == null){
+			json.setMsg("获取input_id、type 参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		boolean flag = false;
+		if(type.equals("file")){
+			cn.edu.sspu.models.File sessionFile = (cn.edu.sspu.models.File) request.getSession().getAttribute(input_id);
+			if(sessionFile == null){
+				json.setMsg("获取session中的file参数失败");
+				json.setSuccess(false);
+				return json;
+			}
+			input_value = sessionFile.getFilename();
+			try {
+				flag = userTableService.updataInputValueById(input_id, input_value, type, sessionFile);
+			} catch (Exception e) {
+				e.printStackTrace();
+				json.setMsg("update 发生未知错误，请联系管理员");
+				json.setSuccess(false);
+				return json;
+			}
+			
+			
+		}else{
+			try {
+				flag = userTableService.updataInputValueById(input_id, input_value, type, null);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				json.setMsg("update 发生未知错误，请联系管理员");
+				json.setSuccess(false);
+				return json;
+			}
+		}
+		if(!flag){
+			json.setMsg("update 失败，请联系管理员");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setMsg("修改成功 ");
+		json.setSuccess(true);
+		return json;
+	}
+	
 	
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")
-	public Json fileUpTest() throws IOException{
-		Json json = new Json();
-		return json;
+	public Json fileUpTest(String username,String password){
+		System.out.println("username:" +username );
+		System.out.println("password:" +password );
+		return null;
 	}
 	
 }
