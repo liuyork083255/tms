@@ -68,49 +68,9 @@
 
 
 
-<table id="xxx"></table>
-<form id="importFileForm" method="post" enctype="multipart/form-data" action="/tms/userTable/savaFileToSession.do">
-
-<input class="easyui-filebox"  name="file" id="file" style="width:260px;" value="wakaka">
-<input class="easyui-textbox" readonly="readonly"  name="file" id="file" style="width:260px;">
-
-<input type="submit" value="上传图片" id="upload" onclick="fileup();" /> 
-</form>
-<br>
-
-<input type="text" id="aabbccdd" />
-<input type="button" onclick="fileup();" value="isme" />
 
 <script>
 
-
-function fileup(){
-	var user = {};
-	user["username"] = "yangliu";
-	user["password"] = "123456789";
-		$.ajax({
-			   type: "POST",
-			   url: $.projectUrl+"/userTable/fileUpTest.do",
-			   dataType:"json",
-			   //contentType:"application/json;charset=utf-8",
-			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-			   data:"username=yangliu&password=123%26456",
-			   success: function(data){
-				   if(data.success){
-					   $.messager.show({
-							title : '提示',
-							msg : data.msg,
-							timeout:2000
-						});
-				   }else{
-					   $.messager.alert({
-							title : '提示',
-							msg : data.msg
-						});
-				   }
-			   }
-			});
-}
 
 
 </script>

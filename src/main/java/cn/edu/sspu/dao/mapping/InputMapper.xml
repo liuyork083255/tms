@@ -71,5 +71,42 @@
   </sql>
   
   
+<!--   <delete id="deleteInputByTableIdAndUserId" parameterType="java.util.List">
+  	delete from `input` where 
+  		<foreach collection="inputList" item="input" index="index" separator="or">要明白这个分隔符是分隔这个foreach里面的内容 例如 (...)or(...)or(...)
+  			(
+  				table_id = #{input.table_id} and user_id = #{input.user_id}
+  			)
+  		</foreach>
+  </delete> -->
+  
+  <delete id="deleteInputByTableIdAndUserId">
+  	delete from `input` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deleteInputByTableId" parameterType="java.lang.String">
+  	delete from `input` where table_id = #{table_id,jdbcType=VARCHAR}
+  </delete>
+  
   
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

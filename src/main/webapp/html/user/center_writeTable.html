@@ -118,25 +118,25 @@ function clickCell(rowIndex, field, value){
 	if(field == "delete"){
 	$.ajax({
 		   type: "POST",
-		   url: $.projectUrl+"/admin/db/getModelReturnJson.do?param=change",
+		   url: $.projectUrl+"/userTable/deleteUserWriteTable.do",
 		   dataType:"json",
 		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
 		   data:"table_id="+row.table_id,
 		   success: function(data){
 			   if(data.success){	//
-				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
-				   $.setGlobalModel(data.obj);
+				   
+				   //删除成功后就要重新刷新，这个方法好处是会保持在当前页
+				   $('#datagrid_wirtedTableList').datagrid('reload');
 			   
-					$("#userTableLayout").layout('panel', 'center').panel({
-						href : 'center_editTable.html'
-					});
-			   }else{
+			   
 					$.messager.show({
 						title:'提示',
 						msg:data.msg,
-						timeout:4000,
+						timeout:2000,
 						showType:'slide'
 					});
+			   }else{
+				   $.messager.alert('提示',data.msg,'error');
 			   }
 		   }
 		});

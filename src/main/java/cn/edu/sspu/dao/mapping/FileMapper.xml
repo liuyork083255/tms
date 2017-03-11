@@ -28,9 +28,11 @@
  	</trim>
  	WHERE input_id = #{input_id}
   </update>
-
-
-
+  
+  
+  <delete id="deleteFileByInputId" parameterType="java.lang.String">
+  	delete from `file` where input_id = #{input_id,jdbcType=VARCHAR}
+  </delete>
 
 
 

@@ -71,15 +71,15 @@ $.extend($.fn.validatebox.defaults.rules, {
     }, 
     unnormal : {// 验证是否包含空格和非法字符 
         validator : function(value) { 
-            return /.+/i.test(value); 
+            return /^[A-Za-z0-9]+$/i.test(value); 
         }, 
         message : '输入值不能为空和包含其他非法字符'
     }, 
     username : {// 验证用户名 
         validator : function(value) { 
-            return /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/i.test(value); 
+            return /^[a-zA-Z][a-zA-Z0-9_]{1,15}$/i.test(value); 
         }, 
-        message : '用户名不合法（字母开头，允许6-16字节，允许字母数字下划线）'
+        message : '用户名不合法（字母开头，允许2-16字节，允许字母数字下划线）'
     }, 
     faxno : {// 验证传真 
         validator : function(value) { 

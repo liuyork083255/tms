@@ -345,6 +345,39 @@ public class UserTableController {
 	}
 	
 	
+	@ResponseBody
+	@RequestMapping("/deleteUserWriteTable")
+	public Json deleteUserWriteTable(HttpServletRequest request,String table_id){
+		Json json  = new Json();
+		User user = (User) request.getSession().getAttribute("user");
+		if(table_id == null || user == null){
+			json.setMsg("获取table_id 获取获取 session中的user 失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		boolean flag = false;
+		try {
+			flag = userTableService.deleteUserWriteTable(table_id, user.getUser_id());
+		} catch (Exception e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		if(!flag){
+			json.setMsg("删除出现未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("删除成功");
+		json.setSuccess(true);
+		return json;
+		
+	}
+	
+	
+	
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")

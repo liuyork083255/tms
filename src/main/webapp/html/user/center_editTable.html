@@ -167,7 +167,7 @@ function showInputTypeIsDate(formTable,input){
 	var data_options = getData_optionsString(input);	
 	
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="editable:false,'+data_options+'" />';
 	return $(input_string);
 	
 }
@@ -176,7 +176,7 @@ function showInputTypeIsDatetime(formTable,input){
 	var data_options = getData_optionsString(input);	
 	
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="editable:false,'+data_options+'" />';
 	return $(input_string);
 	
 
@@ -326,7 +326,7 @@ function setValue(inputList){
 			input.value = $("#"+input.input_id+"").combobox("getValue");
 		}
 		else if(input.type == "checkbox"){
-			var checkboxInput = $("#"+input.input_id+"").find("input");
+			var checkboxInput = $("#"+input.input_id+"").find("input"); 
 			var checkboxValue = "";
   			for(var ii=0;ii<checkboxInput.length;ii++){
   				if($(checkboxInput[ii]).is(":checked"))

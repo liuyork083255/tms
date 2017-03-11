@@ -146,7 +146,6 @@ function showInputTypeIsTextarea(formTable,input){
 	var data_options = getData_optionsString(input);
 	//额外添加一个属性 textarea 
 	data_options = data_options + ',multiline:true';
-	console.info(data_options);
 	
 	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	
@@ -198,9 +197,8 @@ function showInputTypeIsDate(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
-	console.info(data_options);
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datebox" data-options="editable:false,onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	var divHtml = $('<div><div/>');
 	var savaHtml = $('<a href="#" name="'+input.input_id+'" class="easyui-linkbutton" data-options="iconCls:\'icon-save\',disabled:true" onclick="saveInputId(\''+input.input_id+'\',\''+input.type+'\');" >保存</a>');
 	divHtml.append($(input_string));
@@ -219,7 +217,7 @@ function showInputTypeIsDatetime(formTable,input){
 	var data_options = getData_optionsString(input);	
 	
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-datetimebox" data-options="editable:false,onChange:function(){valueChange(\''+input.input_id+'\');},'+data_options+'"  value="'+input_value+'"  />';
 	var divHtml = $('<div><div/>');
 	var savaHtml = $('<a href="#" name="'+input.input_id+'" class="easyui-linkbutton" data-options="iconCls:\'icon-save\',disabled:true" onclick="saveInputId(\''+input.input_id+'\',\''+input.type+'\');" >保存</a>');
 	divHtml.append($(input_string));
@@ -284,7 +282,6 @@ function showInputTypeIsSelect(formTable,input){
 			selectHtml.append(option);
 		}
 	}
-	console.info(selectHtml);
 	
 	var divHtml = $('<div><div/>');
 	var savaHtml = $('<a href="#" name="'+input.input_id+'" class="easyui-linkbutton" data-options="iconCls:\'icon-save\',disabled:true" onclick="saveInputId(\''+input.input_id+'\',\''+input.type+'\');" >保存</a>');
@@ -304,14 +301,16 @@ function showInputTypeIsCheckbox(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 	
+	
+	
 	var divHtml = $('<div id="'+input.input_id+'" ></div>');
 	if(input.param.length > 0){
 		var checkboxs = input.param.split("&");
 		for(var i =0;i<checkboxs.length;i++){
 			if(input_value.indexOf("&"+checkboxs[i]+"&") != -1)
-				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'"  checked="checked" onclick="valueChange(\''+input.input_id+'\');" />'+checkboxs[i]+' </label>'));
+				divHtml.append($('<label><input name="'+input.input_id+'"  type="checkbox" value="'+checkboxs[i]+'"  checked="checked" onclick="valueChange(\''+input.input_id+'\');" />'+checkboxs[i]+' </label>'));
 			else
-				divHtml.append($('<label><input name="'+input.input_id+'" id="'+input.input_id+'" type="checkbox" value="'+checkboxs[i]+'" onclick="valueChange(\''+input.input_id+'\');"  />'+checkboxs[i]+' </label>'));
+				divHtml.append($('<label><input name="'+input.input_id+'"  type="checkbox" value="'+checkboxs[i]+'" onclick="valueChange(\''+input.input_id+'\');"  />'+checkboxs[i]+' </label>'));
 		}
 	}
 	var savaHtml = $('<a href="#" name="'+input.input_id+'" class="easyui-linkbutton" data-options="iconCls:\'icon-save\',disabled:true" onclick="saveInputId(\''+input.input_id+'\',\''+input.type+'\');" >保存</a>');
@@ -373,7 +372,7 @@ function getData_optionsString(input){
 }
 
 
-function submitForm(){
+/* function submitForm(){
 	$('#center_userAlterTable').form('submit',{
 		onSubmit: function(){
 			//首先开启检验功能 
@@ -434,7 +433,7 @@ function setValue(inputList){
 			input.value = $("#"+input.input_id+"").combobox("getValue");
 		}
 		else if(input.type == "checkbox"){
-			var checkboxInput = $("#"+input.input_id+"").find("input");
+			var checkboxInput = $("#"+input.input_id+"").find("input");console.info(checkboxInput.length+"   fdsfdsfds");
 			var checkboxValue = "";
   			for(var ii=0;ii<checkboxInput.length;ii++){
   				if($(checkboxInput[ii]).is(":checked"))
@@ -460,7 +459,7 @@ function setValue(inputList){
 		}
 	}
 	return inputList;
-}
+} */
 
 
 function fileUpByInputId(input_id){
@@ -502,7 +501,6 @@ function valueChange(input_id){
 
 
 function saveInputId(input_id,type){
-	console.info(type);
 	if($("#"+input_id+" > img").attr("src") == "../../js/jquery-easyui-1.5/themes/icons/cancel.png")//直接判断上传的标志status 图标
 			   $.messager.alert({
 					title : '提示',
@@ -511,7 +509,7 @@ function saveInputId(input_id,type){
 	else{
 		var inputvalue = "";
 		if(type == "text"){
-			inputvalue = $("#"+input_id+"").val();
+			inputvalue = $("#"+input_id+"").val();  console.info(inputvalue);
 		}
 		else if(type == "textarea"){
 			inputvalue = $("#"+input_id+"").val();
@@ -534,7 +532,7 @@ function saveInputId(input_id,type){
 		else if(type == "select"){
 			inputvalue = $("#"+input_id+"").combobox("getValue");
 		}
-		else if(type == "checkbox"){
+		else if(type == "checkbox"){   
 			var checkboxInput = $("#"+input_id+"").find("input");
 			var checkboxValue = "";
   			for(var ii=0;ii<checkboxInput.length;ii++){
@@ -559,11 +557,11 @@ function saveInputId(input_id,type){
 		else{//该判断用于收集无效的input 
 			
 		}
-		//判断这个值前后空格去掉 
+ 		//判断这个值前后空格去掉 
+ 		
 		inputvalue = inputvalue.replace(/(^\s*)|(\s*$)/g, "");
-		inputvalue = inputvalue.replace("&","%26");
-		var param = "input_id="+input_id+"&input_value="+inputvalue+"&type="+type;
-		console.info(param);
+		inputvalue = inputvalue.replace(/&/g,"%26");/* 注意：replace一般替换只能替换一个字符，如果是用正则，那么就可以替换当中全部指定字符 */
+		var param = "input_id="+input_id+"&input_value="+inputvalue+"&type="+type;console.info(param);
 		$.ajax({
 			   type: "POST",
 			   url: $.projectUrl+"/userTable/updateInputValueById.do",
@@ -584,7 +582,7 @@ function saveInputId(input_id,type){
 						});
 				   }
 			   }
-			});	
+			});	 
 	}
 }
 

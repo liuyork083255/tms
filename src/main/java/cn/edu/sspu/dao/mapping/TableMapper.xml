@@ -68,8 +68,9 @@
   	</set>
   </sql>
   
-  
-
+  <delete id="deleteTableById" parameterType="java.lang.String">
+  	delete from `table` where table_id = #{table_id,jdbcType=VARCHAR}
+  </delete>
   
   
   

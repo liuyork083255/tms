@@ -27,5 +27,7 @@ public interface TableService {
 	public int insertInputList(List<Input> inputList);
 	
 	public void testTr(Table table);
+	
+	public boolean deleteTableById(String table_id) throws ServiceException;
 
 }

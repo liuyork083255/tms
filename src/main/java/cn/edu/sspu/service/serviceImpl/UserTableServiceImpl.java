@@ -93,14 +93,17 @@ public class UserTableServiceImpl implements UserTableService{
 						throw new ServiceException("获取Session中input对应的file失败");
 					}
 					
-					input.setValue(sessionFile.getFilename());//这里设置id其实就是 input的id
-					int fileInsertFlag = fileMapper.insertFile(sessionFile);//插入file表
-					if(fileInsertFlag == 0)//插入失败抛出异常
-						throw new ServiceException("插入file表失败");
+					//这里必须先插入input，然后再插入file，因为file中的input_id是input的外键
 					
+					input.setValue(sessionFile.getFilename());//这里设置id其实就是 input的id
 					int inputInsertFlag = inputMapper.insertInput(input);//插入input表
 					if(inputInsertFlag == 0)//插入失败抛出异常
 						throw new ServiceException("插入input表失败");
+					
+					
+					int fileInsertFlag = fileMapper.insertFile(sessionFile);//插入file表
+					if(fileInsertFlag == 0)//插入失败抛出异常
+						throw new ServiceException("插入file表失败");
 					
 				}else{//如果不是file类型，那就直接插入input表就可以了
 					int inputInsertFlag = inputMapper.insertInput(input);//插入input表
@@ -170,6 +173,53 @@ public class UserTableServiceImpl implements UserTableService{
 			throw new ServiceException(e.getMessage());
 		}
 		return true;
+	}
+
+
+	public boolean deleteUserWriteTable(String table_id, String user_id) throws ServiceException {
+		// 得到事务
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		TransactionStatus status = trManager.getTransaction(def);
+		try {
+			/*
+			 * 由于还要删除input中存在file类型对应的file表，这里采用的是数据库的联动来实现联动删除
+			 */
+			//1 删除 user_table 关联表记录
+			int x = user_TableMapper.deleteUser_TableByUserIdAndTableId(table_id, user_id);
+			if(x == 0)
+				throw new ServiceException("删除user_table表中记录失败");
+			
+			//2 删除input所有指定记录
+			int y = inputMapper.deleteInputByTableIdAndUserId(table_id, user_id);
+			if(y == 0)
+				throw new ServiceException("删除input表中记录失败");
+			
+			trManager.commit(status);//完成提交
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			trManager.rollback(status);
+			throw new ServiceException("出现未知错误");
+		} catch (Exception e) {
+			e.printStackTrace();
+			trManager.rollback(status);
+			throw new ServiceException("出现未知错误");
+		}
+		
+		return true;
+	}
+
+
+	public int selectAllUser_TableByTableId(String table_id) throws ServiceException {
+		
+		int n = 0;
+		try{
+			n = user_TableMapper.selectAllUser_TableByTableId(table_id);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new ServiceException("查询指定table_id所有的user_table表出现未知异常");
+		}
+		return n;
 	}
 
 }

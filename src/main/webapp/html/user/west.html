@@ -16,7 +16,6 @@
     <div title="我的信息管理" data-options="iconCls:'icon-reload'" style="padding:10px;">
 		<div >
 			<a href="#" onclick="a_click(3);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:170px;">我的信息</a><br/>
-			<a href="#" onclick="a_click(4);" class="easyui-linkbutton" data-options="iconCls:'icon-edit'" style="width:170px;">修改信息</a>
 		</div>
     </div>
     <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
@@ -48,12 +47,6 @@ function a_click(index){
 		//$("#userTableLayout").layout('collapse', 'west');
 		$("#userTableLayout").layout('panel', 'center').panel({
 			href : 'center_showMyinfo.html'
-		});
-	}
-	else if(index == 4){
-		//$("#userTableLayout").layout('collapse', 'west');
-		$("#userTableLayout").layout('panel', 'center').panel({
-			href : 'center_editMyinfo.html'
 		});
 	}
 	else if(index == 5){}

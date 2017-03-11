@@ -7,5 +7,7 @@ public interface FileMapper {
 	public int insertFile(File file);
 	
 	public int updateFile(File file);
+	
+	public int deleteFileByInputId(String input_id);
 
 }

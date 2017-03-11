@@ -29,7 +29,7 @@
 							required:true
 						}
 					}},
-				{field:'createtime',title:'创建时间',width:300,
+				{field:'createtime',title:'创建时间',width:200,
 					editor:{
 						type:"datetimebox",
 						options:{
@@ -52,14 +52,14 @@
 				{field:'save',title:'保存',width:50,
 						formatter:function(){
 							return '<input type="button" style="height:20px;width:45px" value="保存" />';
-						}}
+					}},
+				{field:'delete',title:'删除',width:50,
+					formatter:function(){
+								return '<input type="button" style="height:20px;width:45px" value="删除" />';
+					}}
 		    ]],
 		    /* 定义工具栏按钮 */
 		    toolbar:[{
-				text:'删除行',
-				iconCls: 'icon-remove',
-				handler: function(){removeRow();}	//调用删除选中的datagrid行函数
-			},'-',{
 				text:'编辑行',
 				iconCls: 'icon-edit',
 				handler: function(){beginEdit();}	//调用选中行的编辑模式 
@@ -179,7 +179,7 @@
 					if(flag){
 						for(var i =0;i<rows.length;i++){	
 				            var index = $('#datagrid_showAllTables').datagrid('getRowIndex',rows[i]);//该方法可以根据给定的行记录返回它在datagrid中的索引值
-				            
+				            console.info(index);
 				            /* 为了让在编辑变量还没有保存的时候就进行删除，并且让删除后编辑变量的还是对应到原来的行 */
 				            if(index < editRow){
 				            	editRow--;
@@ -271,6 +271,41 @@
 								$.messager.show({
 									title:'提示',
 									msg:'修改成功 ',
+									timeout:2000,
+									showType:'slide'
+								});
+						   }else{
+								$.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:2000,
+									showType:'slide'
+								});
+						   }
+					   }
+					});
+			}
+			if(field == "delete"){
+				var row = $('#datagrid_showAllTables').datagrid('getRows')[rowIndex];
+				if(row == null || row == undefined)
+					$.messager.show({
+						title:'提示',
+						msg:"获取当前行 table_id失败 ",
+						timeout:2000,
+						showType:'slide'
+					});
+ 				$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/admin/db/deleteTableById.do",
+					   dataType:"json",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+					   data:"table_id=" + row.table_id,
+					   success: function(data){//返回的数据是json对象
+						   if(data.success){
+							   $('#datagrid_showAllTables').datagrid('reload');
+								$.messager.show({
+									title:'提示',
+									msg:data.msg,
 									timeout:2000,
 									showType:'slide'
 								});

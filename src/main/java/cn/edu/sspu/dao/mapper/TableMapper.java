@@ -24,6 +24,6 @@ public interface TableMapper {
 	
 	public List<Table> selectTableUnwriteByUserId(String user_id);
 	
-	
+	public int deleteTableById(String table_id);
 	
 }

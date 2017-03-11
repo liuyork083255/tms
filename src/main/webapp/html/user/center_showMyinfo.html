@@ -4,7 +4,7 @@
 	
 	<div style="margin:20px 0 10px 0;"></div>
 	<div class="easyui-tabs" style="width:100%;height:500px" id="showmyinfo_tabs">
-		<div title="我的信息" style="padding:10px" onclick="javascript:console.info('hello')">
+		<div title="我的信息" style="padding:10px" >
 			<div class="easyui-panel" title="信息展示" style="width:400px">
 				<div style="padding:10px 60px 20px 60px">
 				    <form id="ff" method="post">
@@ -40,11 +40,11 @@
 			    	<table cellpadding="5">
 			    		<tr>
 			    			<td>Name:</td>
-			    			<td><input id="showinfo_edit_form_name" class="easyui-textbox" type="text" data-options="required:true"></input></td>
+			    			<td><input id="showinfo_edit_form_name" class="easyui-textbox" type="text" data-options="required:true,validType:'username'"></input></td>
 			    		</tr>
 			    		<tr>
 			    			<td>Password:</td>
-			    			<td><input id="showinfo_edit_form_password" class="easyui-textbox" type="text" data-options="required:true"></input></td>
+			    			<td><input id="showinfo_edit_form_password" class="easyui-textbox" type="text" data-options="required:true,validType:'unnormal'"></input></td>
 			    		</tr>
 			    		<tr>
 			    			<td>Email:</td>
@@ -79,7 +79,7 @@ function getUserInfo(){
 	$.ajax({
 		type:"POST",
 		url:$.projectUrl+"/user/getUserThroughSession.do",
-		success: function(json){console.info(json);
+		success: function(json){
 			if(json.success){
 				$("#myinfo-name").textbox("setValue",json.obj.name);
 				$("#myinfo-password").textbox("setValue",json.obj.password);

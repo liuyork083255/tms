@@ -22,6 +22,7 @@ import cn.edu.sspu.models.Table;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
+import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
 
 
@@ -34,6 +35,9 @@ public class AdminDBController {
 	
 	@Autowired
 	private InputService inputService;
+	
+	@Autowired
+	private UserTableService userTableService;
 	
 	//测试Model
 	private Model model;
@@ -327,4 +331,77 @@ public class AdminDBController {
 	}
 	
 	
+	@ResponseBody
+	@RequestMapping("deleteTableById")
+	public Json deleteTableById(String table_id){
+		Json json = new Json();
+		if(table_id == null){
+			json.setMsg("获取table_id参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		/*
+		 * 删除一个table，必须首先判断该table是否已经被user用户填写过，如果填写了，那么就不能删除
+		 * 判断的依据就是查看指定的table_id是否存在于user_table表
+		 */
+		
+		int x = 0;
+		try {
+			x = userTableService.selectAllUser_TableByTableId(table_id);
+		} catch (ServiceException e1) {
+			json.setMsg(e1.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		if(x != 0){
+			json.setMsg("该表已经被用户填写，不能删除！！！");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		
+		boolean flag = false;
+		try {
+			flag = tableService.deleteTableById(table_id);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		if(!flag){
+			json.setMsg("出现未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("删除成功");
+		json.setSuccess(true);
+		return json;
+	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

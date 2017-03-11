@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import cn.edu.sspu.dao.mapper.InputMapper;
 import cn.edu.sspu.dao.mapper.TableMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
@@ -28,6 +30,9 @@ public class TableServiceImpl implements TableService{
 	
 	@Autowired
 	private TableMapper tableMapper = null;
+	
+	@Autowired
+	private InputMapper inputMapper;
 
 	public Table selectTableById(String table_id){
 		Table table = tableMapper.selectTableById(table_id);
@@ -133,6 +138,7 @@ public class TableServiceImpl implements TableService{
 				trManager.commit(status);
 				
 			} catch (Exception e) {
+				System.out.println(e.getClass());
 				e.printStackTrace();
 				trManager.rollback(status);
 			}
@@ -140,6 +146,33 @@ public class TableServiceImpl implements TableService{
 			System.out.println("trManager 注入失败");
 		
 		
+	}
+
+	public boolean deleteTableById(String table_id) throws ServiceException {
+		//获取事务
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		TransactionStatus status = trManager.getTransaction(def);
+		
+		try {
+			//要删除table，根据主外键，首先必须要删除其对应的input
+			int x = inputMapper.deleteInputByTableId(table_id);
+			if(x == 0)
+				throw new ServiceException("删除table对应的input集合失败");
+			
+			int y = tableMapper.deleteTableById(table_id);
+			if(y == 0)
+				throw new ServiceException("删除table失败");
+			
+			trManager.commit(status);
+		} catch (Exception e) {
+			trManager.rollback(status);
+			e.printStackTrace();
+			throw new ServiceException("删除未知异常 ");
+		}
+		
+		return true;
+
 	}
 
 

@@ -9,6 +9,10 @@
   <select id="selectUser_TableByTableId" resultType="cn.edu.sspu.models.User_Table" parameterType="java.lang.String" >
     select * from user_table where table_id = #{table_id}
   </select>
+  
+  <select id="selectAllUser_TableByTableId" parameterType="java.lang.String" resultType="int">
+  	select count(*) from user_table where table_id = #{table_id}
+  </select>
 
   <insert id="insertUser_Table" parameterType="cn.edu.sspu.models.User_Table">
   	insert user_table <include refid="insertUser_TableSet" />
@@ -23,6 +27,10 @@
 		<if test="user_table_time != null">user_table_time = #{user_table_time,jdbcType=VARCHAR},</if>
 	</set>
   </sql>
+  
+  <delete id="deleteUser_TableByUserIdAndTableId">
+  	delete from `user_table` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
+  </delete>
   
   
 </mapper>
