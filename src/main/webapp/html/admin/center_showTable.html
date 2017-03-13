@@ -326,7 +326,8 @@
 				var row = $('#datagrid_showAllTables').datagrid('getRows')[rowIndex];
 				$.setGlobalTableId(row.table_id);
 				$("#newTableLayout").layout('panel', 'center').panel({
-					href : 'center_editTable.html'
+					href : 'center_editTable.html',
+					cache:false
 				});
 			}
 		}
