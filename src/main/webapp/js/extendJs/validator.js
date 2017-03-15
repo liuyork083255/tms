@@ -73,7 +73,7 @@ $.extend($.fn.validatebox.defaults.rules, {
         validator : function(value) { 
             return /^[A-Za-z0-9]+$/i.test(value); 
         }, 
-        message : '输入值不能为空和包含其他非法字符'
+        message : '输入值不能包含其他非法字符'
     }, 
     username : {// 验证用户名 
         validator : function(value) { 
@@ -178,4 +178,14 @@ $.extend($.fn.validatebox.defaults.rules, {
         },
         message: '开始日期不能大于结束日期'
         },
+        
+        equaldDate: {  
+            validator: function (value, param) {  
+                var start = $(param[0]).datetimebox('getValue');  //获取开始时间    
+                return value > start;                             //有效范围为当前时间大于开始时间    
+            },  
+            message: '结束日期应大于开始日期!'                     //匹配失败消息  
+        },
+        
+        
 });

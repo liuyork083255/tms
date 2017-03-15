@@ -1,0 +1,155 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+<div id="show_user__table_search" class="easyui-accordion" data-options="fit:false">
+		<div title="但条件查询" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 10px;">
+			<div>
+				<input class="easyui-searchbox" id="show_user__table_search_single"
+					data-options="prompt:'Please Input Value',menu:'#singlsearch',searcher:doSearchSingle,validType:'unnormal'"
+					style="width: 300px"></input>
+				<div id="singlsearch">
+					<div data-options="name:'all',iconCls:'icon-search'">所有数据</div>
+					<div data-options="name:'tablename',iconCls:'icon-search'">通过表名查询</div>
+					<div data-options="name:'username',iconCls:'icon-search'">通过用户名查询</div>
+				</div>
+			</div>
+		</div>
+		
+		<div title="组合条件查询" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 10px;">
+			<div>
+				<form id="comb_date_search_form1">
+					填表日期：<input id="comb_date_search_form1_input" class="easyui-datebox" data-options="required:true" />
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="comb_date_search_form1_submit()">查询</a>
+				</form>
+				<hr>
+				<form id="comb_date_search_form2">
+					开始日期：<input id="comb_date_search_form2_start" class="easyui-datetimebox" data-options="required:true"/>  -  结束日期<input id="comb_date_search_form2_end" class="easyui-datetimebox" data-options="required:true,validType:'equaldDate[\'#comb_date_search_form2_start\']'"/>
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="comb_date_search_form2_submit()">查询</a>
+				</form>
+				
+			</div>
+		</div>
+</div>
+
+<table id="show_user__table">
+</table>
+
+
+
+
+
+
+<!-- ------------------------------------------  JS  Code------------------------------------------------ -->
+<script type="text/javascript">
+
+var filterCondition = "";
+
+$('#show_user__table').datagrid({
+    url:$.projectUrl+"/admin/db/getAllUser_Table.do",
+    title:'表单查看',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    onLoadError:function(){loadError();},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'table_id',title:'table的id',width:20,checkbox:true},  
+		{field:'table_name',title:'模板名称',width:100},
+		{field:'user_name',title:'用户名称',width:100},
+		{field:'user_table_time',title:'填表时间',width:200,
+			editor:{
+				type:"datetimebox",
+				options:{
+					required:true,
+					editable:false	//定义用户不可编辑 
+				}
+			}},
+		{field:'clickShow',title:'查看模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击查看模板'/>";
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){flushSize();}	//调用插入行方法 
+	},'-',{
+		text:'导出Excel',
+		iconCls: 'icon-redo',
+		handler: function(){exportToExcel();}	//调用插入行方法 
+	},'-',{
+		text:'导出PDF',
+		iconCls: 'icon-redo',
+		handler: function(){exportToPDF();}	//调用插入行方法 
+	}]
+});
+
+/* 有时候会出现datagrid尺寸不能随着界面大小改变而改变，故需要进行刷新 */
+function flushSize(){
+	$('#show_user__table').datagrid({
+		fit:true
+	});
+}
+
+
+function clickCell(rowIndex, field, value){
+
+}
+
+function doSearchSingle(value,name){
+	var flag = $("#show_user__table_search_single").searchbox('isValid');
+	if(!flag)return;
+	
+	
+	filterCondition = "";
+	if(name == "all"){}
+	if(name == "tablename" && value != ""){ filterCondition =  "tablename="+value;}
+	if(name == "username" && value != ""){ filterCondition = "username="+value;}
+	
+	
+	console.info(filterCondition);
+	
+	
+	
+}
+
+function comb_date_search_form1_submit(){
+	$('#comb_date_search_form1').form('submit',{
+		onSubmit: function(){
+			//首先开启检验功能 
+	    	var flag = $('#comb_date_search_form1').form('validate');
+	    	if(flag == false) return false;
+	    	else{
+	    		filterCondition = "";
+	    		filterCondition = "currenttime=" +  $("#comb_date_search_form1_input").datetimebox('getValue') ;
+	    		
+	    		console.info(filterCondition);
+	    	}
+		}
+	});
+}
+function comb_date_search_form2_submit(){
+	$('#comb_date_search_form2').form('submit',{
+		onSubmit: function(){
+			//首先开启检验功能 
+	    	var flag = $('#comb_date_search_form2').form('validate');
+	    	if(flag == false) return false;
+	    	else{
+	    		filterCondition = "";
+	    		filterCondition = "starttime=" +  $("#comb_date_search_form2_start").datetimebox('getValue') + "&endtime=" +   $("#comb_date_search_form2_end").datetimebox('getValue');
+	    		console.info(filterCondition);
+	    	}
+		}
+	});
+}
+
+
+</script>
+</body>
+

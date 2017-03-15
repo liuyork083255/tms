@@ -222,6 +222,23 @@ public class UserTableServiceImpl implements UserTableService{
 		return n;
 	}
 
+
+	public List<User_Table> getAllUser_Table(int num1,int num2) throws ServiceException {
+		List<User_Table> user_tableList = user_TableMapper.getAllUser_Table( num1, num2);
+		
+		if(user_tableList == null)
+			throw new ServiceException("查询结果为空");
+		return user_tableList;
+	}
+
+
+	public int getUser_TableTotal() throws ServiceException {
+		int n = user_TableMapper.getUser_TableTotal();
+		if(n == 0)
+			throw new ServiceException("总记录数为零");
+		return n;
+	}
+
 }
 
 

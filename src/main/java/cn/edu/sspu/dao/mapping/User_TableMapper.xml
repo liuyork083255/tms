@@ -32,5 +32,12 @@
   	delete from `user_table` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
   </delete>
   
+  <select id="getAllUser_Table" resultType="cn.edu.sspu.models.User_Table">
+  	select * from user_table limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
+  </select>
+  
+  <select id="getUser_TableTotal" resultType="int">
+  	select count(*) from user_table
+  </select>
   
 </mapper>

@@ -8,6 +8,7 @@ import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.File;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
+import cn.edu.sspu.models.User_Table;
 
 public interface UserTableService {
 	public List<Table> selectTableUnwriteByUserId(String user_id,int num1,int num2) throws ServiceException;
@@ -27,5 +28,9 @@ public interface UserTableService {
 	public boolean deleteUserWriteTable(String table_id,String user_id) throws ServiceException;
 	
 	public int selectAllUser_TableByTableId(String table_id) throws ServiceException;
+	
+	public List<User_Table> getAllUser_Table(int num1,int num2) throws ServiceException;
+	
+	public int getUser_TableTotal() throws ServiceException;
 	
 }

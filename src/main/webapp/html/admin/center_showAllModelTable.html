@@ -1,0 +1,138 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+<table id="show_all_model_table"></table>
+
+
+<script type="text/javascript">
+
+<body>
+<!-- JS代码 -->
+<script type="text/javascript">
+	$(function(){
+		
+		var editRow = undefined;
+		
+		$('#show_all_model_table').datagrid({
+		    url:$.projectUrl+"/admin/db/getAllTableByPage.do",
+		    title:'表单查看',
+		    iconCls:'icon-large-clipart',
+		    checkOnSelect:false,
+		    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+		    fitColumns:false,
+		    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+		    pagination:true,//显示分页功能
+		    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+		    onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+		    onLoadError:function(){loadError();},//数据加载失败触发 
+		    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+		    /* 定义列属性 */
+		    columns:[[
+				{field:'table_id',title:'table的id',width:20,checkbox:true},  
+				{field:'name',title:'模板名称',width:200,
+					editor:{
+						type:"validatebox",
+						options:{
+							required:true
+						}
+					}},
+				{field:'createtime',title:'创建时间',width:200,
+					editor:{
+						type:"datetimebox",
+						options:{
+							required:true,
+							editable:false	//定义用户不可编辑 
+						}
+					}},
+				{field:'info',title:'模板备注说明',width:300,
+					editor:{
+						type:"text"
+					}},
+				{field:'clickShow',title:'查看模板',width:110,
+					formatter:function(){
+						return "<input type='button' style='height:20px;width:100px' value='点击查看模板'/>";
+					}}
+		    ]],
+		    /* 定义工具栏按钮 */
+		    toolbar:[{
+				text:'刷新尺寸',
+				iconCls: 'icon-reload',
+				handler: function(){flushSize();}	//调用插入行方法 
+			}
+		});
+		
+		/* 有时候会出现datagrid尺寸不能随着界面大小改变而改变，故需要进行刷新 */
+		function flushSize(){
+			$('#show_all_model_table').datagrid({
+				fit:true
+			});
+		}
+		
+		/* 当数据加载成功触发该方法，如果后台返回记录为0则算作加载成功 */
+		function loadSuccess(){
+			var rows = $("#show_all_model_table").datagrid("getRows");
+			if(rows.length < 1){
+				$.messager.show({
+					title:'提示',
+					msg:'当前记录为空.',
+					timeout:2000,
+					showType:'slide'
+				});
+			}
+		}
+		/* 当数据加载失败触发该方法 */
+		function loadError(){
+			$.messager.show({
+				title:'提示',
+				msg:'访问路径出错，请联系管理员！！！ ',
+				timeout:3000,
+				showType:'slide'
+			});
+		}
+		
+		
+		
+		function clickCell(rowIndex, field, value){
+			if(field == "clickShow"){
+				var row = $('#show_all_model_table').datagrid('getRows')[rowIndex];
+				$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/admin/db/getModelReturnJson.do",
+					   dataType:"json",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+					   data:"table_id="+row.table_id,
+					   success: function(data){
+						   if(data.success){	//
+							   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+							   $.setGlobalModel(data.obj);
+						   
+						   	   /* 展开左边的面板，并且将页面注入当中 */
+						   	   $("#newTableLayout").layout('expand', 'east');
+						   	   
+							   $("#newTableLayout").layout('panel', 'east').panel({
+									href : 'east_showTable.html',
+									width:650
+								});
+						   }else{
+								$.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:4000,
+									showType:'slide'
+								});
+						   }
+					   }
+					});
+			}
+			
+		
+
+		}
+
+		
+	})
+
+</script>
+
+
+</body>
+
