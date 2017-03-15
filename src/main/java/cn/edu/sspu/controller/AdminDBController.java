@@ -20,6 +20,8 @@ import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User_Table;
+import cn.edu.sspu.models.searchfilter.UserTableSearch;
+import cn.edu.sspu.models.searchfilter.Userid_TableidModel;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
@@ -391,11 +393,11 @@ public class AdminDBController {
 	 */
 	@ResponseBody
 	@RequestMapping("/getAllUser_Table")
-	public Map<String,Object> getAllUser_Table(int page,int rows) throws ServiceException{
+	public Map<String,Object> getAllUser_Table(UserTableSearch userTableSearch,int page,int rows) throws ServiceException{
 		// 1 获得table总记录数
 		int user_tableTotal = userTableService.getUser_TableTotal();
 		// 2 获得table集合
-		List<User_Table> user_tableList = userTableService.getAllUser_Table((page-1)*rows, rows);
+		List<User_Table> user_tableList = userTableService.getAllUser_Table(userTableSearch,(page-1)*rows, rows);
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		
@@ -404,6 +406,23 @@ public class AdminDBController {
 		map.put("rows", user_tableList);
 		return map;
 	}
+	
+	@ResponseBody
+	@RequestMapping("/exprotToExcel")
+	public Json exprotToExcel(@RequestBody Userid_TableidModel userid_tableid){
+		Json json = new Json();
+		if(userid_tableid == null){
+			json.setMsg("封装userid-tableid失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		
+		
+		
+		return null;
+	}
+	
 	
 }
 

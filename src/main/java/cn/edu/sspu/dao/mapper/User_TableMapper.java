@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import cn.edu.sspu.models.User_Table;
+import cn.edu.sspu.models.searchfilter.UserTableSearch;
 
 public interface User_TableMapper {
 	public User_Table selectUser_TableByUserId(String user_id);
@@ -17,7 +18,7 @@ public interface User_TableMapper {
 	
 	public int selectAllUser_TableByTableId(String table_id);
 	
-	public List<User_Table> getAllUser_Table(@Param("num1")int num1,@Param("num2") int num2);
+	public List<User_Table> getAllUser_Table(@Param("userTableSearch")UserTableSearch userTableSearch, @Param("num1")int num1,@Param("num2") int num2);
 	
 	public int getUser_TableTotal();
 

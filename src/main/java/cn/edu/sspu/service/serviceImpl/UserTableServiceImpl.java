@@ -26,6 +26,7 @@ import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.models.User_Table;
+import cn.edu.sspu.models.searchfilter.UserTableSearch;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
 @Service
@@ -223,8 +224,8 @@ public class UserTableServiceImpl implements UserTableService{
 	}
 
 
-	public List<User_Table> getAllUser_Table(int num1,int num2) throws ServiceException {
-		List<User_Table> user_tableList = user_TableMapper.getAllUser_Table( num1, num2);
+	public List<User_Table> getAllUser_Table(UserTableSearch userTableSearch,int num1,int num2) throws ServiceException {
+		List<User_Table> user_tableList = user_TableMapper.getAllUser_Table(userTableSearch,num1, num2);
 		
 		if(user_tableList == null)
 			throw new ServiceException("查询结果为空");

@@ -1,15 +1,15 @@
 <!-- 这个页面用于admin查看模板的具体的显示信息 -->
 <body>
-<div id="show_user__table_search" class="easyui-accordion" data-options="fit:false">
+<div id="show_user__table_search" class="easyui-accordion" data-options="fit:false" >
 		<div title="但条件查询" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 10px;">
 			<div>
 				<input class="easyui-searchbox" id="show_user__table_search_single"
-					data-options="prompt:'Please Input Value',menu:'#singlsearch',searcher:doSearchSingle,validType:'unnormal'"
+					data-options="validType:'namevalidte',prompt:'Please Input Value',menu:'#singlsearch',searcher:doSearchSingle"
 					style="width: 300px"></input>
 				<div id="singlsearch">
-					<div data-options="name:'all',iconCls:'icon-search'">所有数据</div>
-					<div data-options="name:'tablename',iconCls:'icon-search'">通过表名查询</div>
-					<div data-options="name:'username',iconCls:'icon-search'">通过用户名查询</div>
+					<div data-options="name:'all',iconCls:'icon-filter'">所有记录</div>
+					<div data-options="name:'tablename',iconCls:'icon-filter'">通过表名查询</div>
+					<div data-options="name:'username',iconCls:'icon-filter'">通过用户名查询</div>
 				</div>
 			</div>
 		</div>
@@ -17,22 +17,22 @@
 		<div title="组合条件查询" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 10px;">
 			<div>
 				<form id="comb_date_search_form1">
-					填表日期：<input id="comb_date_search_form1_input" class="easyui-datebox" data-options="required:true" />
+					填表日期：<input id="comb_date_search_form1_input" class="easyui-datebox" data-options="editable:false,required:true" />
 					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="comb_date_search_form1_submit()">查询</a>
 				</form>
 				<hr>
 				<form id="comb_date_search_form2">
-					开始日期：<input id="comb_date_search_form2_start" class="easyui-datetimebox" data-options="required:true"/>  -  结束日期<input id="comb_date_search_form2_end" class="easyui-datetimebox" data-options="required:true,validType:'equaldDate[\'#comb_date_search_form2_start\']'"/>
+					开始日期：<input id="comb_date_search_form2_start" class="easyui-datetimebox" data-options="editable:false,required:true"/>  -  结束日期<input id="comb_date_search_form2_end" class="easyui-datetimebox" data-options="editable:false,required:true,validType:'equaldDate[\'#comb_date_search_form2_start\']'"/>
 					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="comb_date_search_form2_submit()">查询</a>
 				</form>
 				
 			</div>
 		</div>
 </div>
-
-<table id="show_user__table">
-</table>
-
+<div style="height:80%;weith:100%">
+	<table id="show_user__table">
+	</table>
+</div>
 
 
 
@@ -44,7 +44,7 @@
 var filterCondition = "";
 
 $('#show_user__table').datagrid({
-    url:$.projectUrl+"/admin/db/getAllUser_Table.do",
+    url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition,
     title:'表单查看',
     iconCls:'icon-large-clipart',
     checkOnSelect:false,
@@ -115,7 +115,9 @@ function doSearchSingle(value,name){
 	
 	console.info(filterCondition);
 	
-	
+	$('#show_user__table').datagrid({
+		url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
+	});
 	
 }
 
@@ -130,6 +132,10 @@ function comb_date_search_form1_submit(){
 	    		filterCondition = "currenttime=" +  $("#comb_date_search_form1_input").datetimebox('getValue') ;
 	    		
 	    		console.info(filterCondition);
+	    		
+	    		$('#show_user__table').datagrid({
+	    			url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
+	    		});
 	    	}
 		}
 	});
@@ -144,9 +150,47 @@ function comb_date_search_form2_submit(){
 	    		filterCondition = "";
 	    		filterCondition = "starttime=" +  $("#comb_date_search_form2_start").datetimebox('getValue') + "&endtime=" +   $("#comb_date_search_form2_end").datetimebox('getValue');
 	    		console.info(filterCondition);
+	    		
+	    		$('#show_user__table').datagrid({
+	    			url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
+	    		});
 	    	}
 		}
 	});
+}
+
+function exportToExcel(){
+	var rows = $('#show_user__table').datagrid('getChecked');
+	if(rows.length > 0){
+		$.messager.confirm('请确认','您确定要导出当前选中的所有行吗？',function(flag){
+			if(flag){
+				for(var i =0;i<rows.length;i++){	
+		            var index = $('#show_user__table').datagrid('getRowIndex',rows[i]);//该方法可以根据给定的行记录返回它在datagrid中的索引值
+		            console.info(index);
+		            
+			 	}
+			}
+		});
+	}else{
+		$.messager.alert('提示','请选择要导出的行','error');
+	}
+}
+
+function exportToPDF(){
+	var rows = $('#show_user__table').datagrid('getChecked');
+	if(rows.length > 0){
+		$.messager.confirm('请确认','您确定要导出当前选中的所有行吗？',function(flag){
+			if(flag){
+				for(var i =0;i<rows.length;i++){	
+		            var index = $('#show_user__table').datagrid('getRowIndex',rows[i]);//该方法可以根据给定的行记录返回它在datagrid中的索引值
+		            console.info(rows[i].table_name+"----"+rows[i].user_name);
+		            
+			 	}
+			}
+		});
+	}else{
+		$.messager.alert('提示','请选择要导出的行','error');
+	}
 }
 
 

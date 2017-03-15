@@ -103,6 +103,13 @@
 			<version>1.8.9</version>
 		</dependency>
 
+		<!-- Excel导出依赖 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.13</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 	</build>
