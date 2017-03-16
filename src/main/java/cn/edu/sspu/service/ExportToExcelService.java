@@ -6,6 +6,6 @@ import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.User_Table;
 
 public interface ExportToExcelService {
-	public boolean exportToExcel(List<User_Table> user_tableList) throws ServiceException;
+	public boolean exportToExcel(List<User_Table> user_tableList,String tableName) throws ServiceException;
 
 }

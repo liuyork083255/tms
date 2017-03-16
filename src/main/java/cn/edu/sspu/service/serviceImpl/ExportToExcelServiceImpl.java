@@ -23,7 +23,7 @@ public class ExportToExcelServiceImpl implements ExportToExcelService {
 	@Autowired
 	private InputMapper inputMapper;
 
-	public boolean exportToExcel(List<User_Table> user_tableList) throws ServiceException {
+	public boolean exportToExcel(List<User_Table> user_tableList,String tableName) throws ServiceException {
 		// 1 首先是根据集合查询到所有的user填写的表单
 		Map<String,List<Input>> map = new HashMap<String,List<Input>>();
 		
@@ -33,17 +33,17 @@ public class ExportToExcelServiceImpl implements ExportToExcelService {
 				map.put(user_table.getUser_name(), inputList);
 		}
 		
-		System.out.println(JSON.toJSONString(map, true));
 		
 		List<Input> tableModel = inputMapper.selectInputByTableId(user_tableList.get(0).getTable_id());
 		if(tableModel == null)
 			throw new ServiceException("获取table模板失败");
 		
-		ExcelUtils.exceportToExcelType_1(user_tableList, map, tableModel);
+		boolean flag = ExcelUtils.exceportToExcelType_1(user_tableList, map, tableModel,tableName);
 		
+		if(!flag)
+			throw new ServiceException("Service 导出失败，异常未知");
 		
-		
-		return false;
+		return true;
 	}
 
 }

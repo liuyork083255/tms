@@ -409,31 +409,35 @@ public class AdminDBController {
 	
 	@ResponseBody
 	@RequestMapping("/exportToExcel")
-	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList){
+	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList,String tableName){
 		Json json = new Json();
-		if(user_tableList == null){
-			json.setMsg("封装userid-tableid失败");
+		if(user_tableList == null || tableName == null){
+			json.setMsg("封装userid-tableid or tableName失败");
 			json.setSuccess(false);
 			return json;
 		}
 		
+		//这里添加一个功能，就是校验当前的文件名是否存在，如果存在提示是否覆盖
 		
-		
-		System.out.println(JSON.toJSONString(user_tableList, true));
 		
 		//这里业务层直接返回一个map
-		
+		boolean flag = false;
 		try {
-			exportToExcelService.exportToExcel(user_tableList);
+			flag = exportToExcelService.exportToExcel(user_tableList,tableName);
 		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
 		}
-		
-		
-		return null;
+		if(!flag){
+			json.setMsg("Controller 导出失败，异常未知");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("导出成功");
+		json.setSuccess(false);
+		return json;
 	}
-	
 	
 }
 

@@ -47,6 +47,23 @@ public class AdminUtils {
 		return null;
 	}
 	
+	public static String getExcelExportPathPath(String pathName){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (String)pps.get(pathName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+	
 	
 	//该方法参数是Model类型，作用是设置model中的table_id和input_id,并返回model
 	public static Model setModelIdAndInputId(Model model){

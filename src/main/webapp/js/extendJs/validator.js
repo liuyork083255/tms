@@ -103,7 +103,7 @@ $.extend($.fn.validatebox.defaults.rules, {
     namevalidte:{// 验证姓名，可以是中文或英文 
             validator : function(value) { 
                 //return /^[\u0391-\uFFE5]{2,6}$/i.test(value)|/^[a-zA-Z][a-zA-Z0-9_]{3,15}$/i.test(value); 
-            	return /^[a-zA-Z\u4e00-\u9fa5][1-9_a-zA-Z\u4e00-\u9fa5]{1,16}$/.test(value); 
+            	return /^[_a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{1,16}$/.test(value); 
             }, 
             message : '非法字符路不能开头，长度满足[2-16]'
     }, 

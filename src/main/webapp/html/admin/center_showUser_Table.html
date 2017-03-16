@@ -162,10 +162,84 @@ function comb_date_search_form2_submit(){
 function exportToExcel(){
 	var rows = $('#show_user__table').datagrid('getChecked');
 	if(rows.length > 0){
-		$.messager.confirm('请确认','您确定要导出当前选中的所有行吗？',function(flag){
+		//先校验是否为同一张表
+		var tablename = rows[0].table_name;
+		for(var i =0;i<rows.length;i++){
+			if(rows[i].table_name != tablename){
+				   $.messager.alert({
+						title : '提示',
+						msg : "导出的表目前只支持相同表",
+					});
+				   return;
+			}
+	 	}
+		
+		$.messager.prompt('提示', '请输入导出文件名', function(r){
+			if(r){
+				//判断文件名是否有效
+				var reg = /^[_a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{1,15}$/;
+				var flag = reg.test(r);
+				if(flag == "false"){
+				   $.messager.alert({
+						title : '提示',
+						msg : "非法文件名",
+					});
+				}
+				var user_tableListJson = [];
+				for(var i =0;i<rows.length;i++){
+					user_tableListJson.push(rows[i]);
+			 	}
+				
+				$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
+					   dataType:"json",
+					   contentType:"application/json;charset=utf-8",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+					   data:JSON.stringify(user_tableListJson),
+					   success: function(data){
+						   $.messager.show({
+								title : '提示',
+								msg : data.msg,
+								timeout:5000
+							});
+					   }
+					});
+				
+				
+			}
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/* $.messager.confirm('请确认','您确定要导出当前选中的所有行吗？',function(flag){
 			if(flag){
 				var user_tableListJson = [];
-				for(var i =0;i<rows.length;i++){	
+				var tablename = rows[0].table_name;
+				for(var i =0;i<rows.length;i++){
+					if(rows[i].table_name != tablename){
+						   $.messager.alert({
+								title : '提示',
+								msg : "导出的表目前只支持相同表",
+							});
+						   return;
+					}
 					user_tableListJson.push(rows[i]);
 			 	}
 				console.info(user_tableListJson);
@@ -192,7 +266,7 @@ function exportToExcel(){
 				
 				
 			}
-		});
+		}); */
 	}else{
 		$.messager.alert('提示','请选择要导出的行','error');
 	}

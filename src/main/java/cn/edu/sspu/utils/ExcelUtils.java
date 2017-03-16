@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,9 +40,11 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User_Table;
@@ -219,51 +222,62 @@ public class ExcelUtils {
 	    
 	    
 	    
-	    public static boolean exceportToExcelType_1(List<User_Table> user_tableList,Map<String,List<Input>> inputListMap,List<Input> tableModel){
+	    public static boolean exceportToExcelType_1(List<User_Table> user_tableList,Map<String,
+	    		List<Input>> inputListMap,List<Input> tableModel,String tableName) throws ServiceException{
 	    	// 1 首先校验参数了
 	    	
 	    	// 2 封装导出类
 	        // 第一步，创建一个webbook，对应一个Excel文件  
 	        HSSFWorkbook wb = new HSSFWorkbook();  
 	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
-	        HSSFSheet sheet = wb.createSheet("学生表一");  
+	        HSSFSheet sheet = wb.createSheet("sheet-1");  
 	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
 	        HSSFRow row = sheet.createRow((int) 0);  
 	        // 第四步，创建单元格，并设置值表头 设置表头居中  
 	        HSSFCellStyle style = wb.createCellStyle();  
 	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
 	    	
+	        
+	        
 	        //设置每一列的名称
 	        HSSFCell cell = null; 
-	        short shotNum = 0;
+	        int shotNum = 0;
+        	cell = row.createCell(shotNum++); 
+	        cell.setCellValue("姓名");
+	        cell.setCellStyle(style); 
 	        for (Input input : tableModel) {
-	        	cell = row.createCell(shotNum); 
-		        cell.setCellValue(input.getName());  
+	        	cell = row.createCell(shotNum++); 
+		        cell.setCellValue(input.getName());
 		        cell.setCellStyle(style); 
-		        shotNum++;
 			}
 	        
 	        //遍历map，封装到表中
+	        int shortGET = 0;
 	        Set<String> keys =  inputListMap.keySet();
 			for (String username : keys) {
-				short shortGET = 0;
+				int num = 0;
+				row = sheet.createRow(++shortGET);
 				List<Input> inputList = inputListMap.get(username);
+				row.createCell(num++).setCellValue(user_tableList.get(0).getUser_name()); 
 				for (Input input : inputList) {
-					row.createCell(shortGET++).setCellValue(input.getValue());  
+					row.createCell(num++).setCellValue(input.getValue());  
 				}
 			}
 			
 	        //将文件存到指定位置  
+			String excelExportPath = AdminUtils.getExcelExportPathPath("excelExportPath");
 	        try  
 	        {  
-	            FileOutputStream fout = new FileOutputStream("F:/students.xls");  
+	            FileOutputStream fout = new FileOutputStream(excelExportPath + tableName + ".xls");  
 	            wb.write(fout);  
 	            fout.close();  
 	        }  
 	        catch (Exception e)  
 	        {  
-	            e.printStackTrace();  
-	            return false;
+	        	e.printStackTrace();
+	        	if(e instanceof FileNotFoundException)
+	        		throw new ServiceException("该文件名被未知程序使用，不可导出");
+	            throw new ServiceException("导出失败，异常未知");
 	        } 
 			
 	    	return true;
