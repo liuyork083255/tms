@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +41,10 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import cn.edu.sspu.models.Input;
+import cn.edu.sspu.models.Table;
+import cn.edu.sspu.models.User_Table;
 
 
 public class ExcelUtils {
@@ -210,6 +215,87 @@ public class ExcelUtils {
 	        System.out.println("共"+count+"条数据,执行"+(new Date().getTime()-d.getTime())+"ms");
 	        outXls.close();*/
 	        //
-
 	    }
+	    
+	    
+	    
+	    public static boolean exceportToExcelType_1(List<User_Table> user_tableList,Map<String,List<Input>> inputListMap,List<Input> tableModel){
+	    	// 1 首先校验参数了
+	    	
+	    	// 2 封装导出类
+	        // 第一步，创建一个webbook，对应一个Excel文件  
+	        HSSFWorkbook wb = new HSSFWorkbook();  
+	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+	        HSSFSheet sheet = wb.createSheet("学生表一");  
+	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+	        HSSFRow row = sheet.createRow((int) 0);  
+	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        HSSFCellStyle style = wb.createCellStyle();  
+	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	    	
+	        //设置每一列的名称
+	        HSSFCell cell = null; 
+	        short shotNum = 0;
+	        for (Input input : tableModel) {
+	        	cell = row.createCell(shotNum); 
+		        cell.setCellValue(input.getName());  
+		        cell.setCellStyle(style); 
+		        shotNum++;
+			}
+	        
+	        //遍历map，封装到表中
+	        Set<String> keys =  inputListMap.keySet();
+			for (String username : keys) {
+				short shortGET = 0;
+				List<Input> inputList = inputListMap.get(username);
+				for (Input input : inputList) {
+					row.createCell(shortGET++).setCellValue(input.getValue());  
+				}
+			}
+			
+	        //将文件存到指定位置  
+	        try  
+	        {  
+	            FileOutputStream fout = new FileOutputStream("F:/students.xls");  
+	            wb.write(fout);  
+	            fout.close();  
+	        }  
+	        catch (Exception e)  
+	        {  
+	            e.printStackTrace();  
+	            return false;
+	        } 
+			
+	    	return true;
+	    }
+	    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

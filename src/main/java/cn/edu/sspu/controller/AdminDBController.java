@@ -1,7 +1,5 @@
 package cn.edu.sspu.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.mysql.cj.mysqlx.protobuf.MysqlxDatatypes.Array;
 
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
@@ -21,8 +18,8 @@ import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.models.searchfilter.UserTableSearch;
-import cn.edu.sspu.models.searchfilter.Userid_TableidModel;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.ExportToExcelService;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserTableService;
@@ -41,6 +38,9 @@ public class AdminDBController {
 	
 	@Autowired
 	private UserTableService userTableService;
+	
+	@Autowired
+	private ExportToExcelService exportToExcelService;
 	
 	//测试Model
 	private Model model;
@@ -408,16 +408,27 @@ public class AdminDBController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("/exprotToExcel")
-	public Json exprotToExcel(@RequestBody Userid_TableidModel userid_tableid){
+	@RequestMapping("/exportToExcel")
+	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList){
 		Json json = new Json();
-		if(userid_tableid == null){
+		if(user_tableList == null){
 			json.setMsg("封装userid-tableid失败");
 			json.setSuccess(false);
 			return json;
 		}
 		
 		
+		
+		System.out.println(JSON.toJSONString(user_tableList, true));
+		
+		//这里业务层直接返回一个map
+		
+		try {
+			exportToExcelService.exportToExcel(user_tableList);
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		return null;
