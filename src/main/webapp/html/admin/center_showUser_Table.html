@@ -99,7 +99,37 @@ function flushSize(){
 
 
 function clickCell(rowIndex, field, value){
-
+	if(field == "clickShow"){
+		var row = $('#show_user__table').datagrid('getRows')[rowIndex];
+		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/admin/db/getInputByTableAndUserId.do",
+			   dataType:"json",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+			   data:"table_id="+row.table_id+"&user_id="+row.user_id,
+			   success: function(data){
+				   console.info(data);
+				   if(data.success){	//
+					   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+					   $.setGlobalModel(data.obj);
+				   	   /* 展开左边的面板，并且将页面注入当中 */
+				   	   $("#newTableLayout").layout('expand', 'east');
+				   	   
+					   $("#newTableLayout").layout('panel', 'east').panel({
+							href : 'east_showUserWriteTable.html',
+							width:650
+						});
+				   }else{
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:4000,
+							showType:'slide'
+						});
+				   }
+			   }
+			});
+	}
 }
 
 function doSearchSingle(value,name){
@@ -113,7 +143,6 @@ function doSearchSingle(value,name){
 	if(name == "username" && value != ""){ filterCondition = "username="+value;}
 	
 	
-	console.info(filterCondition);
 	
 	$('#show_user__table').datagrid({
 		url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
@@ -131,7 +160,6 @@ function comb_date_search_form1_submit(){
 	    		filterCondition = "";
 	    		filterCondition = "currenttime=" +  $("#comb_date_search_form1_input").datetimebox('getValue') ;
 	    		
-	    		console.info(filterCondition);
 	    		
 	    		$('#show_user__table').datagrid({
 	    			url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
@@ -149,7 +177,6 @@ function comb_date_search_form2_submit(){
 	    	else{
 	    		filterCondition = "";
 	    		filterCondition = "starttime=" +  $("#comb_date_search_form2_start").datetimebox('getValue') + "&endtime=" +   $("#comb_date_search_form2_end").datetimebox('getValue');
-	    		console.info(filterCondition);
 	    		
 	    		$('#show_user__table').datagrid({
 	    			url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition
@@ -179,94 +206,84 @@ function exportToExcel(){
 				//判断文件名是否有效
 				var reg = /^[_a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{1,15}$/;
 				var flag = reg.test(r);
-				if(flag == "false"){
+				if(!flag){
 				   $.messager.alert({
 						title : '提示',
 						msg : "非法文件名",
 					});
+				   return;
 				}
-				var user_tableListJson = [];
-				for(var i =0;i<rows.length;i++){
-					user_tableListJson.push(rows[i]);
-			 	}
 				
+				//校验当前table名称在硬盘是否有效
 				$.ajax({
 					   type: "POST",
-					   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
+					   url: $.projectUrl+"/admin/db/validateExcelName.do",
 					   dataType:"json",
-					   contentType:"application/json;charset=utf-8",
 					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-					   data:JSON.stringify(user_tableListJson),
+					   data:"excelName="+r,
 					   success: function(data){
-						   $.messager.show({
-								title : '提示',
-								msg : data.msg,
-								timeout:5000
-							});
+						   if(data.success){
+							   if(data.msg == "yes"){
+								   $.messager.confirm('提示', '该文件名已存在，是否覆盖', function(rr){
+									   if(rr){
+											//封装json数据
+											var user_tableListJson = [];
+											for(var i =0;i<rows.length;i++){
+												user_tableListJson.push(rows[i]);
+										 	}
+											//将json数据请求后台导出
+											$.ajax({
+												   type: "POST",
+												   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
+												   dataType:"json",
+												   contentType:"application/json;charset=utf-8",
+												 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+												   data:JSON.stringify(user_tableListJson),
+												   success: function(data){
+													   $.messager.show({
+															title : '提示',
+															msg : data.msg,
+															timeout:5000
+														});
+												   }
+												});
+									   }
+									   return;
+								   });
+							   }else{
+									//封装json数据
+									var user_tableListJson = [];
+									for(var i =0;i<rows.length;i++){
+										user_tableListJson.push(rows[i]);
+								 	}
+									//将json数据请求后台导出
+									$.ajax({
+										   type: "POST",
+										   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
+										   dataType:"json",
+										   contentType:"application/json;charset=utf-8",
+										 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+										   data:JSON.stringify(user_tableListJson),
+										   success: function(data){
+											   $.messager.show({
+													title : '提示',
+													msg : data.msg,
+													timeout:5000
+												});
+										   }
+										});
+							   }
+						   }else{
+							   $.messager.show({
+									title : '提示',
+									msg : data.msg,
+								});
+						   }
 					   }
-					});
-				
-				
+				});
 			}
 		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/* $.messager.confirm('请确认','您确定要导出当前选中的所有行吗？',function(flag){
-			if(flag){
-				var user_tableListJson = [];
-				var tablename = rows[0].table_name;
-				for(var i =0;i<rows.length;i++){
-					if(rows[i].table_name != tablename){
-						   $.messager.alert({
-								title : '提示',
-								msg : "导出的表目前只支持相同表",
-							});
-						   return;
-					}
-					user_tableListJson.push(rows[i]);
-			 	}
-				console.info(user_tableListJson);
-				
-				
-				$.ajax({
-					   type: "POST",
-					   url: $.projectUrl+"/admin/db/exportToExcel.do",
-					   dataType:"json",
-					   contentType:"application/json;charset=utf-8",
-					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-					   data:JSON.stringify(user_tableListJson),
-					   success: function(data){
-						   $.messager.show({
-								title : '提示',
-								msg : data.msg,
-								timeout:5000
-							});
-					   }
-					});
-				
-				
-				
-				
-				
-			}
-		}); */
+
 	}else{
 		$.messager.alert('提示','请选择要导出的行','error');
 	}
@@ -279,7 +296,6 @@ function exportToPDF(){
 			if(flag){
 				for(var i =0;i<rows.length;i++){	
 		            var index = $('#show_user__table').datagrid('getRowIndex',rows[i]);//该方法可以根据给定的行记录返回它在datagrid中的索引值
-		            console.info(rows[i].table_name+"----"+rows[i].user_name);
 		            
 			 	}
 			}

@@ -70,7 +70,7 @@ function clickCell(rowIndex, field, value){
 			   success: function(data){
 				   if(data.success){	//
 					   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
-					   $.setGlobalModel(data.obj);console.info(data.obj);
+					   $.setGlobalModel(data.obj);
 				   	   /* 展开左边的面板，并且将页面注入当中 */
 				   	   $("#userTableLayout").layout('expand', 'east');
 				   	   

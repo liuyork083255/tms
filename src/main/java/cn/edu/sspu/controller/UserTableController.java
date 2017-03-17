@@ -279,7 +279,6 @@ public class UserTableController {
 		}
 		model.setInputList(inputList);
 		
-		System.out.println(JSON.toJSONString(model, true));
 		json.setObj(model);
 		json.setSuccess(true);
 		return json;

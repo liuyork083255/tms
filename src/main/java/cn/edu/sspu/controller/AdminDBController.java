@@ -1,5 +1,6 @@
 package cn.edu.sspu.controller;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -436,6 +437,65 @@ public class AdminDBController {
 		}
 		json.setMsg("导出成功");
 		json.setSuccess(false);
+		return json;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/validateExcelName")
+	public Json validateExcelName(String excelName){
+		Json json = new  Json();
+		if(excelName == null){
+			json.setMsg("获取excelName失败");
+			json.setSuccess(false);
+			return json;
+		}
+		//获取文件完整路径
+		String paht1 = AdminUtils.getExcelExportPathPath("excelExportPath");
+		File file = new File( paht1 + excelName + ".xls");
+		if(file.exists()){
+			json.setMsg("yes");
+			json.setSuccess(true);
+			return json;
+		}else{
+			json.setMsg("no");
+			json.setSuccess(true);
+			return json;
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping("/getInputByTableAndUserId")
+	public Json getInputByTableAndUserId(String table_id,String user_id){
+		Json json = new Json();
+		if(table_id == null || user_id == null){
+			json.setMsg("获取table_id or user_id 参数失败");
+			json.setSuccess(true);
+			return json;
+		}
+		
+		Model model = new Model();
+		//封装model数据
+		model.setTable_id(table_id);
+		model.setUser_id(user_id);
+		Table table = tableService.selectTableById(table_id);
+		if(table == null){
+			json.setMsg("根据table_id查询table失败");
+			json.setSuccess(false);
+			return json;
+		}
+		model.setName(table.getName());
+		List<Input> inputList = null;
+		try {
+			inputList= inputService.selectInputByUserIdAndTableId(table_id, user_id);
+		} catch (ServiceException e) {
+			json.setMsg("根据table_id和user_id查询input集合失败");
+			json.setSuccess(false);
+			return json;
+		}
+		model.setInputList(inputList);
+		
+		json.setObj(model);
+		json.setSuccess(true);
 		return json;
 	}
 	
