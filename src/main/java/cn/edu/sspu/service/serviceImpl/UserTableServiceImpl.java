@@ -225,19 +225,12 @@ public class UserTableServiceImpl implements UserTableService{
 
 
 	public List<User_Table> getAllUser_Table(UserTableSearch userTableSearch,int num1,int num2) throws ServiceException {
-		List<User_Table> user_tableList = user_TableMapper.getAllUser_Table(userTableSearch,num1, num2);
-		
-		if(user_tableList == null)
-			throw new ServiceException("查询结果为空");
-		return user_tableList;
+		return user_TableMapper.getAllUser_Table(userTableSearch,num1, num2);
 	}
 
 
-	public int getUser_TableTotal() throws ServiceException {
-		int n = user_TableMapper.getUser_TableTotal();
-		if(n == 0)
-			throw new ServiceException("总记录数为零");
-		return n;
+	public int getUser_TableTotal(UserTableSearch userTableSearch) throws ServiceException {
+		return user_TableMapper.getUser_TableTotal(userTableSearch);
 	}
 
 }

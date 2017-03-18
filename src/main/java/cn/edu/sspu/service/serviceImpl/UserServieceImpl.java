@@ -1,6 +1,5 @@
 package cn.edu.sspu.service.serviceImpl;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +7,7 @@ import org.springframework.stereotype.Service;
 
 import cn.edu.sspu.dao.mapper.TableMapper;
 import cn.edu.sspu.dao.mapper.UserMapper;
-import cn.edu.sspu.exception.ExceptionType;
 import cn.edu.sspu.exception.ServiceException;
-import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.service.UserService;
 
@@ -33,7 +30,7 @@ public class UserServieceImpl implements UserService{
 	}
 	
 	public User selectUserById(String user_id) throws ServiceException {
-		User user = userMapper.selectUserByName(user_id);
+		User user = userMapper.selectUserById(user_id);
 		
 		if(user == null){
 			throw new ServiceException("按id查找user为空");
@@ -115,6 +112,18 @@ public class UserServieceImpl implements UserService{
 			throw new ServiceException("insert 插入失败");
 		}
 		return n;
+	}
+
+	public int getUserTotal(String name) {
+		return userMapper.getUserTotal(name);
+	}
+
+	public List<User> selectUserByFilter(String name, int page, int rows) throws ServiceException {
+		return userMapper.selectUserByFilter(name, page, rows);
+	}
+
+	public User selectUserByIdNotName(String user_id, String name) {
+		return userMapper.selectUserByIdNotName(user_id, name);
 	}
 	
 	

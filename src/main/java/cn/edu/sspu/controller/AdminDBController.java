@@ -396,7 +396,7 @@ public class AdminDBController {
 	@RequestMapping("/getAllUser_Table")
 	public Map<String,Object> getAllUser_Table(UserTableSearch userTableSearch,int page,int rows) throws ServiceException{
 		// 1 获得table总记录数
-		int user_tableTotal = userTableService.getUser_TableTotal();
+		int user_tableTotal = userTableService.getUser_TableTotal(userTableSearch);
 		// 2 获得table集合
 		List<User_Table> user_tableList = userTableService.getAllUser_Table(userTableSearch,(page-1)*rows, rows);
 		

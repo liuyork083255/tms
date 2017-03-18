@@ -8,7 +8,7 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	<display-name>mybatis</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring.xml,classpath:spring-mybatis.xml</param-value>
+		<param-value>classpath:spring.xml,classpath:spring-mybatis.xml,classpath:spring-mail.xml</param-value>
 	</context-param>
 	
 	<!-- 这个过滤器设置前端提交参数中有中文后台能够正常显示 -->

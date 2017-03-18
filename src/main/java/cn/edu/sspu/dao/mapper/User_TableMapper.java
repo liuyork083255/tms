@@ -20,6 +20,6 @@ public interface User_TableMapper {
 	
 	public List<User_Table> getAllUser_Table(@Param("userTableSearch")UserTableSearch userTableSearch, @Param("num1")int num1,@Param("num2") int num2);
 	
-	public int getUser_TableTotal();
+	public int getUser_TableTotal(@Param("userTableSearch")UserTableSearch userTableSearch);
 
 }

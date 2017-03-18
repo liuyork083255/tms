@@ -7,9 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
-
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
+
+
 
 public class AdminUtils {
 
@@ -104,10 +105,7 @@ public class AdminUtils {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	}
 	
-	//private static List<Input> sortInputList(List<Input> inputList){}
-	
-	
-	
+
 	
 	
 }

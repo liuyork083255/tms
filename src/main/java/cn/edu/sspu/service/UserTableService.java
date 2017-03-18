@@ -32,6 +32,6 @@ public interface UserTableService {
 	
 	public List<User_Table> getAllUser_Table(UserTableSearch userTableSearch,int num1,int num2) throws ServiceException;
 	
-	public int getUser_TableTotal() throws ServiceException;
+	public int getUser_TableTotal(UserTableSearch userTableSearch) throws ServiceException;
 	
 }

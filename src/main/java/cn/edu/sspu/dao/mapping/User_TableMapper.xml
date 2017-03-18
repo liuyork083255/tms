@@ -51,6 +51,16 @@
   
   <select id="getUser_TableTotal" resultType="int">
   	select count(*) from user_table
+  	<where>
+  		<if test="userTableSearch.tablename != null">and table_name like CONCAT(CONCAT('%', #{userTableSearch.tablename}),'%')</if>
+  		<if test="userTableSearch.username != null">and user_name like CONCAT(CONCAT('%', #{userTableSearch.username}),'%')</if>
+  		<if test="userTableSearch.starttime != null and userTableSearch.endtime != null"> 
+  			<![CDATA[
+  			and user_table_time > #{userTableSearch.starttime} and  user_table_time < #{userTableSearch.endtime}
+  			]]>
+  		</if>
+  		<if test="userTableSearch.currenttime != null">and user_table_time like CONCAT(CONCAT('%', #{userTableSearch.currenttime}),'%')</if>
+  	</where>
   </select>
   
 </mapper>

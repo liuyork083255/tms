@@ -50,7 +50,23 @@
   	</set>
   </sql>
   
+  <select id="getUserTotal" resultType="int">
+  	select count(1) from `user`
+  	<where>
+  		<if test="name != null">and name like CONCAT(CONCAT('%', #{name}),'%')</if>
+  	</where>
+  </select>
   
+  <select id="selectUserByFilter" resultType="cn.edu.sspu.models.User">
+  	  	select * from `user` 
+  	<where>
+  		<if test="name != null">and name like CONCAT(CONCAT('%', #{name}),'%')</if>
+  	</where>
+  	limit #{page,jdbcType=BIT},#{rows,jdbcType=BIT}
+  </select>
   
+  <select id="selectUserByIdNotName" resultType="cn.edu.sspu.models.User">
+  	select * from `user` where name=#{name} and user_id != #{user_id}
+  </select>
   
 </mapper>

@@ -19,8 +19,8 @@
 		<!-- --------------------------------------------------------------------------------------------------------------- -->
     <div title="用户信息管理" data-options="iconCls:'icon-help'" style="padding:10px;">
 			<div>
-				<a href="#" onclick="a_click(5);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 170px;">用户填表查看</a><br />
-				<a href="#" onclick="a_click(6);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 170px;">查看模板</a>
+				<a href="#" onclick="a_click(5);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 170px;">用户信息管理</a><br />
+				<a href="#" onclick="a_click(6);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 170px;">保留字段</a>
 			</div>
     </div>
 		<!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,8 +58,15 @@ function a_click(index){
 			cache:false
 		});
 	}
-	else if(index == 4){}
-	else if(index == 5){}
+	else if(index == 4){
+
+	}
+	else if(index == 5){
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showUserInfo.html',
+			cache:false
+		});
+	}
 	else if(index == 6){}
 	else if(index == 7){}
 	else if(index == 8){}

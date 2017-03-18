@@ -25,4 +25,9 @@ public interface UserMapper {
 
 	public int insertUser(User user);
 	
+	public int getUserTotal(@Param("name")String name);
+	
+	public List<User> selectUserByFilter(@Param("name")String name,@Param("page")int page,@Param("rows")int rows);
+	
+	public User selectUserByIdNotName(@Param("user_id")String user_id,@Param("name")String name);
 }
