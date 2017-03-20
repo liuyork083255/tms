@@ -1,0 +1,86 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+<div id="show_user__table_search" class="easyui-accordion" data-options="fit:false" >
+	<label style="font-size:16px;">请选择表名 ： </label>
+ 	<input id="getTableNameAndId" class="easyui-combobox" name="dept" data-options="valueField:'table_id',textField:'name',url:'/tms/admin/db/getTableByName.do'"/>
+</div>
+
+<div style="height:80%;weith:100%">
+	<table id="show_user__table">
+	</table>
+</div>
+
+
+
+
+
+<!-- ------------------------------------------  JS  Code------------------------------------------------ -->
+<script type="text/javascript">
+
+var filterCondition = "";
+
+$('#show_user__table').datagrid({
+    url:$.projectUrl+"/admin/db/getAllUser_Table.do?" + filterCondition,
+    title:'表单查看',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    onLoadError:function(){loadError();},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'table_id',title:'table的id',width:20,checkbox:true},  
+		{field:'table_name',title:'模板名称',width:100},
+		{field:'user_name',title:'用户名称',width:100},
+		{field:'user_table_time',title:'填表时间',width:200,
+			editor:{
+				type:"datetimebox",
+				options:{
+					required:true,
+					editable:false	//定义用户不可编辑 
+				}
+			}},
+		{field:'clickShow',title:'查看模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击查看模板'/>";
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){flushSize();}	//调用插入行方法 
+	},'-',{
+		text:'导出Word',
+		iconCls: 'icon-redo',
+		handler: function(){exportToExcel();}	//调用插入行方法 
+	}]
+});
+
+//初始化得到所有的表名单 
+/* 		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/admin/db/getTableByName.do",
+			   dataType:"json",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+			   data:"name="+tablename,
+			   success: function(data){
+				   
+			   }
+			}); */
+
+function clickCell(rowIndex, field, value){
+
+}
+
+
+
+
+</script>
+</body>
+

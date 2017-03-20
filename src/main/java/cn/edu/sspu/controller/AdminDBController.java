@@ -1,6 +1,7 @@
 package cn.edu.sspu.controller;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
+import cn.edu.sspu.models.TableIdAndName;
 import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.models.searchfilter.UserTableSearch;
 import cn.edu.sspu.pojo.Json;
@@ -498,6 +500,18 @@ public class AdminDBController {
 		json.setSuccess(true);
 		return json;
 	}
+	
+	@ResponseBody
+	@RequestMapping("/getTableByName")
+	public List<TableIdAndName> getTableByName(String name){
+		System.out.println("hello ");
+		List<TableIdAndName> tt = new ArrayList<TableIdAndName>();
+		TableIdAndName t = new TableIdAndName();
+		t.setTable_id("table1");t.setName("name1");
+		tt.add(t);
+		return tt;
+	}
+	
 	
 }
 

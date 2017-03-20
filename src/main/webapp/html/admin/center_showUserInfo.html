@@ -358,6 +358,7 @@ function sendEmailToController(myEmail,objectEmial,text){
 		   data:JSON.stringify(emailModel),
 		   success: function(data){
 			   if(data.success){
+				   $("#send_email_user").dialog({closed: true})
 					$.messager.show({
 						title:'提示',
 						msg:data.msg,
