@@ -2,6 +2,7 @@ package cn.edu.sspu.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,10 @@ import com.alibaba.fastjson.JSON;
 import sun.awt.RequestFocusController;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
+import cn.edu.sspu.models.InputName_Value;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
+import cn.edu.sspu.models.TableIdAndName;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.InputService;
@@ -219,6 +222,9 @@ public class UserTableController {
 		
 		boolean flag;
 		try {
+			//这一步很关键，新增的功能，就是一张表能够再次填写
+			int max = inputService.selectInputTimesMax(model.getTable_id(), sessionUser.getUser_id());
+			AdminUtils.setInputTimes(model.getInputList(),max+1);
 			flag = userTableService.saveUserEditModel(model, request.getSession());
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -250,10 +256,10 @@ public class UserTableController {
 	 */
 	@ResponseBody
 	@RequestMapping("/getModel_WritedInput")
-	public Json getModel_WritedInput(HttpServletRequest request,String table_id){
+	public Json getModel_WritedInput(HttpServletRequest request,String table_id,String times){
 		Json json = new Json();
 		User sessionUser = (User)request.getSession().getAttribute("user");
-		if(sessionUser == null || table_id == null){
+		if(sessionUser == null || table_id == null || times == null){
 			json.setMsg("获取session中User 或者 封装table_id参数失败");
 			json.setSuccess(false);
 			return json;
@@ -271,8 +277,8 @@ public class UserTableController {
 		model.setName(table.getName());
 		List<Input> inputList = null;
 		try {
-			inputList= inputService.selectInputByUserIdAndTableId(table_id, sessionUser.getUser_id());
-		} catch (ServiceException e) {
+			inputList= inputService.selectInputByUserIdAndTableIdAndTimes(table_id, sessionUser.getUser_id(), Integer.parseInt(times));
+		} catch (Exception e) {
 			json.setMsg("根据table_id和user_id查询input集合失败");
 			json.setSuccess(false);
 			return json;
@@ -346,7 +352,7 @@ public class UserTableController {
 	
 	@ResponseBody
 	@RequestMapping("/deleteUserWriteTable")
-	public Json deleteUserWriteTable(HttpServletRequest request,String table_id){
+	public Json deleteUserWriteTable(HttpServletRequest request,String table_id,String times){
 		Json json  = new Json();
 		User user = (User) request.getSession().getAttribute("user");
 		if(table_id == null || user == null){
@@ -357,7 +363,7 @@ public class UserTableController {
 		
 		boolean flag = false;
 		try {
-			flag = userTableService.deleteUserWriteTable(table_id, user.getUser_id());
+			flag = userTableService.deleteUserWriteTable(table_id, user.getUser_id(),times);
 		} catch (Exception e) {
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
@@ -375,14 +381,66 @@ public class UserTableController {
 		
 	}
 	
+	@ResponseBody
+	@RequestMapping("/getTableById")
+	public Json getTableById(String table_id){
+		Json json  = new Json();
+		
+		if(table_id == null){
+			json.setMsg("获取tableid失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		List<Input> table = null;
+		try {
+			table = inputService.selectInputByTableId(table_id);
+		} catch (ServiceException e) {
+			json.setMsg("获取table模板失败");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setObj(table);
+		json.setSuccess(true);
+		return json;
+	}
 	
+	/**
+	 * 这个方法获取的是一个用户填一张表的所有记录，可能是一次，可能是多次
+	 * @param table_id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping("/getTableIdAndNameByTableIdAndUserId")
+	public List<Object> getTableIdAndNameByTableIdAndUserId(String table_id,HttpServletRequest request,HttpServletResponse response) throws Exception{
+		User user = (User) request.getSession().getAttribute("user");
+		if(user == null){
+			request.setAttribute("msg", "Session中获取当前用户失败，可能是登陆已过期");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		if(table_id == null){
+			request.setAttribute("msg", "table_id参数获取失败");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		
+		List<Object> objectList = new ArrayList<Object>();
+		objectList = inputService.selectAllInputByTimes(table_id,user.getUser_id());
+		
+		
+		return objectList;
+	}
 	
+
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")
-	public Json fileUpTest(String username,String password){
-		System.out.println("username:" +username );
-		System.out.println("password:" +password );
+	public Json fileUpTest(@RequestParam(value = "inis[]") String[] inis){
+		System.out.println(inis);
 		return null;
 	}
 	

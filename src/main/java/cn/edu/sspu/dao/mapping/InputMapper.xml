@@ -67,6 +67,7 @@
   		<if test="user_id != null">user_id = #{user_id,jdbcType=VARCHAR},</if>
   		<if test="table_id != null">table_id = #{table_id,jdbcType=VARCHAR},</if>
   		<if test="sort != null">sort = #{sort,jdbcType=BIT},</if>
+  		<if test="times != null">times = #{times,jdbcType=BIT},</if>
   	</set>
   </sql>
   
@@ -81,13 +82,29 @@
   </delete> -->
   
   <delete id="deleteInputByTableIdAndUserId">
-  	delete from `input` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
+  	delete from `input` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR} and times = #{times,jdbcType=BIT}
   </delete>
   
   <delete id="deleteInputByTableId" parameterType="java.lang.String">
   	delete from `input` where table_id = #{table_id,jdbcType=VARCHAR}
   </delete>
   
+  <select id="selectInputTimesMax" resultType="int">
+  	select IFNULL(MAX(times),0) from `input` where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="selectTimesAllValue" resultType="int">
+  	SELECT DISTINCT(times) FROM input WHERE times>=1
+  </select>
+  
+  <select id="selectInputByUserIdAndTableIdAndTimes" resultType="cn.edu.sspu.models.Input">
+  	select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  and times = #{times,jdbcType=BIT}  ORDER BY sort
+  </select>
+  
+ <!--  <select id="selectInputByUserId_TableId_Times" resultType="cn.edu.sspu.models.Input">
+    select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR} and time = #{times,jdbcType=BIT}
+  </select> -->
   
 </mapper>
 

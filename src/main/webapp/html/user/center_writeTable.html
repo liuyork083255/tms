@@ -63,15 +63,46 @@ function clickCell(rowIndex, field, value){
 	if(field == "clickShow"){
 		$.ajax({
 			   type: "POST",
+			   url: $.projectUrl+"/userTable/getTableById.do",
+			   dataType:"json",
+			   data:"table_id="+row.table_id,
+			   success: function(data){
+				   if(data.success){	
+					   $.setGlobalTableModel(data.obj);
+				   	   
+					   $("#userTableLayout").layout('panel', 'center').panel({
+							href : 'center_showWrite_detail.html',
+							width:650
+						});
+				   }else{
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:4000,
+							showType:'slide'
+						});
+				   }
+			   }
+			});
+		
+		
+		
+		
+		
+		
+		
+		
+/* 		$.ajax({
+			   type: "POST",
 			   url: $.projectUrl+"/userTable/getModel_WritedInput.do",
 			   dataType:"json",
 			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
 			   data:"table_id="+row.table_id,
 			   success: function(data){
 				   if(data.success){	//
-					   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+					   //这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 
 					   $.setGlobalModel(data.obj);
-				   	   /* 展开左边的面板，并且将页面注入当中 */
+					   //展开左边的面板，并且将页面注入当中 
 				   	   $("#userTableLayout").layout('expand', 'east');
 				   	   
 					   $("#userTableLayout").layout('panel', 'east').panel({
@@ -87,7 +118,7 @@ function clickCell(rowIndex, field, value){
 						});
 				   }
 			   }
-			});
+			}); */
 	}
 	if(field == "alter"){
 	$.ajax({

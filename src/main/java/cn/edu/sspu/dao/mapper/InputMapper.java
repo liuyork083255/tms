@@ -23,8 +23,15 @@ public interface InputMapper {
 	public int updateInputValueById(Input input);
 	
 	//这里网上说返回值是Integer类型，先做一个实验，看看int是否可以
-	public int deleteInputByTableIdAndUserId(@Param("table_id")String table_id,@Param("user_id")String user_id);
+	public int deleteInputByTableIdAndUserId(@Param("table_id")String table_id,@Param("user_id")String user_id,@Param("times")int times);
 	
 	public int deleteInputByTableId(String table_id);
+	
+	public int selectInputTimesMax(@Param("table_id")String table_id,@Param("user_id")String user_id);
+	
+	public List<Integer> selectTimesAllValue();
+	
+	public List<Input> selectInputByUserIdAndTableIdAndTimes(@Param("table_id")String table_id,@Param("user_id") String user_id,@Param("times")int times);
+	
 
 }

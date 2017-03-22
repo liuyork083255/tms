@@ -10,6 +10,7 @@ public class Input {
 	private String required;
 	
 	private int sort;
+	private int times = 0;//默认0 表示这个字段是模板，用户不能填写
 	private String validatetype;
 	
 	private String user_id;
@@ -62,6 +63,12 @@ public class Input {
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
+	public int getTimes() {
+		return times;
+	}
+	public void setTimes(int times) {
+		this.times = times;
+	}
 	public String getValidatetype() {
 		return validatetype;
 	}
@@ -85,9 +92,10 @@ public class Input {
 		return "Input [input_id=" + input_id + ", name=" + name + ", type="
 				+ type + ", value=" + value + ", param=" + param + ", info="
 				+ info + ", required=" + required + ", sort=" + sort
-				+ ", validatetype=" + validatetype + ", user_id=" + user_id
-				+ ", table_id=" + table_id + "]";
+				+ ", times=" + times + ", validatetype=" + validatetype
+				+ ", user_id=" + user_id + ", table_id=" + table_id + "]";
 	}
+	
 	
 	
 	

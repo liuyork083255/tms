@@ -507,8 +507,10 @@ public class AdminDBController {
 		System.out.println("hello ");
 		List<TableIdAndName> tt = new ArrayList<TableIdAndName>();
 		TableIdAndName t = new TableIdAndName();
-		t.setTable_id("table1");t.setName("name1");
-		tt.add(t);
+		for(int i=0;i<20;i++){
+			t.setTable_id("table"+i);t.setName("name"+i);
+			tt.add(t);
+		}
 		return tt;
 	}
 	

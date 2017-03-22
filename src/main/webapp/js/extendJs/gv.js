@@ -11,6 +11,7 @@ jQuery.extend({
 	getGlobalModel:function(){return $.globalModel;},
 	setGlobalModel:function(model){$.globalModel = model;},
 	
+	/*这个全局变量用于暂时存储table的id*/
 	globalTableId:undefined,
 	getGlobalTableId:function(){return $.globalTableId;},
 	setGlobalTableId:function(table_id){$.globalTableId = table_id;},
@@ -18,6 +19,13 @@ jQuery.extend({
 	
 	globalUser:undefined,
 	getGlobalUser:function(){return $.globalUser;},
-	setGlobalUser:function(user){$.globalUser = user;}
+	setGlobalUser:function(user){$.globalUser = user;},
+	
+	globalTableModel:undefined,
+	getGlobalTableModel:function(){return $.globalTableModel;},
+	setGlobalTableModel:function(model){$.globalTableModel = model;}
+	
+	
+
 	
 })

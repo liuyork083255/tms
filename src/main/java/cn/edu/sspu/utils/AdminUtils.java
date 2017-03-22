@@ -3,12 +3,19 @@ package cn.edu.sspu.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+
+import com.alibaba.fastjson.JSON;
+
 import cn.edu.sspu.models.Input;
+import cn.edu.sspu.models.InputName_Value;
 import cn.edu.sspu.models.Model;
+import cn.edu.sspu.models.TableIdAndName;
 
 
 
@@ -105,7 +112,35 @@ public class AdminUtils {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 	}
 	
+	
+	public static Object transferInputToTableId_Nama(List<Input> inputList) throws ClassNotFoundException{
+		HashMap<String,Class<?>> propertyMap = new HashMap<String,Class<?>>();
+		for(Input input : inputList){
+			propertyMap.put(input.getName(), Class.forName("java.lang.String"));
+		}
+		propertyMap.put("times", Class.forName("java.lang.Integer"));
+		DynamicBean bean = new DynamicBean(propertyMap);
+		for(Input input : inputList){
+			bean.setValue(input.getName(), input.getValue());
+		}
+		bean.setValue("times", inputList.get(0).getTimes());
+		Object object = bean.getObject(); 
+		System.out.println(JSON.toJSONString(object, true));
+		
+/*		List<Object> list = new ArrayList<Object>();
+		for(Input input : inputList){
+			InputName_Value tian = new InputName_Value();
+			tian.setName(input.getName());tian.setValue(input.getValue());
+			list.add(tian);
+		}*/
+		return object;
+	}
 
+	public static void setInputTimes(List<Input> inputList, int max) {
+		for(Input input : inputList)
+			input.setTimes(max);
+		
+	}
 	
 	
 }

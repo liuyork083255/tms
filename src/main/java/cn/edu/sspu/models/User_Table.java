@@ -6,6 +6,7 @@ public class User_Table {
 	private String user_id;
 	private String table_id;
 	private String user_table_time;
+	private int times;
 	public String getTable_name() {
 		return table_name;
 	}
@@ -36,11 +37,18 @@ public class User_Table {
 	public void setUser_table_time(String user_table_time) {
 		this.user_table_time = user_table_time;
 	}
+	public int getTimes() {
+		return times;
+	}
+	public void setTimes(int times) {
+		this.times = times;
+	}
 	@Override
 	public String toString() {
 		return "User_Table [table_name=" + table_name + ", user_name="
 				+ user_name + ", user_id=" + user_id + ", table_id=" + table_id
-				+ ", user_table_time=" + user_table_time + "]";
+				+ ", user_table_time=" + user_table_time + ", times=" + times
+				+ "]";
 	}
 	
 	

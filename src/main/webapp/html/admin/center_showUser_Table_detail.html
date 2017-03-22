@@ -1,9 +1,24 @@
 <!-- 这个页面用于admin查看模板的具体的显示信息 -->
 <body>
-<div id="show_user__table_search" class="easyui-accordion" data-options="fit:false" >
+<div id="abcd" class="easyui-panel" data-options="fit:false" >
 	<label style="font-size:16px;">请选择表名 ： </label>
- 	<input id="getTableNameAndId" class="easyui-combobox" name="dept" data-options="valueField:'table_id',textField:'name',url:'/tms/admin/db/getTableByName.do'"/>
+ 	<input id="getTableNameAndId" class="easyui-combobox" name="dept" 
+ 		data-options="valueField:'table_id',textField:'name',url:'/tms/admin/db/getTableByName.do'"/>
 </div>
+<div  class="easyui-panel" data-options="fit:false" style="height:100px" >
+
+<table class="easyui-datagrid" id="show_user__table_search"
+    data-options="fitColumns:true,singleSelect:true">
+    <thead>
+		<tr>
+			<th data-options="field:'table_id',width:100">Code</th>
+			<th data-options="field:'name',width:100">Name</th>
+		</tr>
+    </thead>
+</table>
+</div>
+
+<input type="button" onclick="test();" />
 
 <div style="height:80%;weith:100%">
 	<table id="show_user__table">
@@ -16,6 +31,13 @@
 
 <!-- ------------------------------------------  JS  Code------------------------------------------------ -->
 <script type="text/javascript">
+
+function test(){
+	$("#abcd").append($('<input type="button" value="ok" />'));
+	$('#show_user__table_search').datagrid({
+		url:'/tms/admin/db/getTableByName.do'
+	});
+}
 
 var filterCondition = "";
 

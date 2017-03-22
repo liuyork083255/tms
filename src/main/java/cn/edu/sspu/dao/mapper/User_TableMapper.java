@@ -14,7 +14,7 @@ public interface User_TableMapper {
 	
 	public int insertUser_Table(User_Table user_table);
 	
-	public int deleteUser_TableByUserIdAndTableId(@Param("table_id")String table_id,@Param("user_id")String user_id);
+	public int deleteUser_TableByUserIdAndTableId(@Param("table_id")String table_id,@Param("user_id")String user_id,@Param("times")int times);
 	
 	public int selectAllUser_TableByTableId(String table_id);
 	

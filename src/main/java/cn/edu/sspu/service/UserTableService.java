@@ -26,7 +26,7 @@ public interface UserTableService {
 	public boolean updataInputValueById(String input_id,String input_value,String type,File file) throws ServiceException;
 	
 	
-	public boolean deleteUserWriteTable(String table_id,String user_id) throws ServiceException;
+	public boolean deleteUserWriteTable(String table_id,String user_id,String times) throws ServiceException;
 	
 	public int selectAllUser_TableByTableId(String table_id) throws ServiceException;
 	

@@ -1,5 +1,6 @@
 package cn.edu.sspu.service.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import cn.edu.sspu.dao.mapper.InputMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.service.InputService;
+import cn.edu.sspu.utils.AdminUtils;
 
 @Service
 public class InputServiceImpl implements InputService {
@@ -58,6 +60,38 @@ public class InputServiceImpl implements InputService {
 		if(n == 0)
 			throw new ServiceException("插入input 失败");
 		return n;
+	}
+
+	public int selectInputTimesMax(String table_id, String user_id) {
+		return inputMapper.selectInputTimesMax(table_id, user_id);
+	}
+
+	public List<Integer> selectTimesAllValue() {
+		return inputMapper.selectTimesAllValue();
+	}
+
+	public List<Input> selectInputByUserIdAndTableIdAndTimes(String table_id,String user_id, int times) {
+		List<Input> inputList = inputMapper.selectInputByUserIdAndTableIdAndTimes(table_id, user_id, times);
+		return inputList;
+	}
+
+	public List<Object> selectAllInputByTimes(String table_id, String user_id) {
+		List<Integer> intList = inputMapper.selectTimesAllValue();
+		List<Input> inputList = null;
+		List<Object> objectList = new ArrayList<Object>();
+		for(Integer i : intList){
+			inputList = inputMapper.selectInputByUserIdAndTableIdAndTimes(table_id, user_id, i);
+			try {
+				Object object = AdminUtils.transferInputToTableId_Nama(inputList);
+				objectList.add(object);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return objectList;
+		
 	};
 
 }

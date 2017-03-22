@@ -113,6 +113,8 @@ public class UserTableServiceImpl implements UserTableService{
 				}
 			}
 			//如果上面都没有出现异常，那么说明input表和file表都插入成功，接下来就是插入user_table表
+			//注意：如果是第一次填表，那么就插入user_table表，如果不是，那么就不插入
+
 			//首先是封装数据
 			User_Table user_table = new User_Table();
 			user_table.setTable_id(model.getTable_id());
@@ -124,10 +126,12 @@ public class UserTableServiceImpl implements UserTableService{
 			user_table.setUser_name(user.getName());
 			user_table.setTable_name(model.getName());
 			user_table.setUser_table_time(AdminUtils.getCurrentTime());
+			user_table.setTimes(model.getInputList().get(0).getTimes());
 			
 			int user_tableInertFlag = user_TableMapper.insertUser_Table(user_table);//插入user_table表
 			if(user_tableInertFlag == 0)//插入失败抛出异常
 				throw new ServiceException("插入user_table表失败");
+
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {
@@ -177,7 +181,7 @@ public class UserTableServiceImpl implements UserTableService{
 	}
 
 
-	public boolean deleteUserWriteTable(String table_id, String user_id) throws ServiceException {
+	public boolean deleteUserWriteTable(String table_id, String user_id,String times) throws ServiceException {
 		// 得到事务
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
@@ -187,12 +191,12 @@ public class UserTableServiceImpl implements UserTableService{
 			 * 由于还要删除input中存在file类型对应的file表，这里采用的是数据库的联动来实现联动删除
 			 */
 			//1 删除 user_table 关联表记录
-			int x = user_TableMapper.deleteUser_TableByUserIdAndTableId(table_id, user_id);
+			int x = user_TableMapper.deleteUser_TableByUserIdAndTableId(table_id, user_id,Integer.parseInt(times));
 			if(x == 0)
 				throw new ServiceException("删除user_table表中记录失败");
 			
 			//2 删除input所有指定记录
-			int y = inputMapper.deleteInputByTableIdAndUserId(table_id, user_id);
+			int y = inputMapper.deleteInputByTableIdAndUserId(table_id, user_id,Integer.parseInt(times));
 			if(y == 0)
 				throw new ServiceException("删除input表中记录失败");
 			

@@ -509,7 +509,7 @@ function saveInputId(input_id,type){
 	else{
 		var inputvalue = "";
 		if(type == "text"){
-			inputvalue = $("#"+input_id+"").val();  console.info(inputvalue);
+			inputvalue = $("#"+input_id+"").val();  
 		}
 		else if(type == "textarea"){
 			inputvalue = $("#"+input_id+"").val();
@@ -570,6 +570,10 @@ function saveInputId(input_id,type){
 			   data:param,
 			   success: function(data){
 				   if(data.success){
+					   $("#userTableLayout").layout('panel', 'center').panel({
+							href : 'center_showWrite_detail.html',
+							width:650
+						});
 					   $.messager.show({
 							title : '提示',
 							msg : data.msg,
