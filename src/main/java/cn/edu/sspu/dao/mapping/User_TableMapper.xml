@@ -10,6 +10,15 @@
     select * from user_table where table_id = #{table_id}
   </select>
   
+  <select id="getAllWriteTableByTableIdUserId" resultType="cn.edu.sspu.models.User_Table">
+  	select * from user_table 
+  	<where>
+  		<if test="table_id != null">and table_id = #{table_id,jdbcType=VARCHAR}</if>
+  		<if test="user_id != null">and user_id = #{user_id,jdbcType=VARCHAR}</if>
+  	</where>
+  </select>
+  
+  
   <select id="selectAllUser_TableByTableId" parameterType="java.lang.String" resultType="int">
   	select count(*) from user_table where table_id = #{table_id}
   </select>

@@ -10,6 +10,9 @@
     select * from `table` where table_id = #{table_id}
   </select>
   
+  <select id="getAllTableIdAndName" resultType="cn.edu.sspu.models.Table">
+  	select * from `table`
+  </select>
   
   <select id="selectTableTotal" resultType="int">
     select count(*) from `table`

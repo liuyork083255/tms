@@ -33,5 +33,7 @@ public interface UserService {
 	public List<User> selectUserByFilter(String name,int page,int rows) throws ServiceException;
 	
 	public User selectUserByIdNotName(String user_id,String name);
+	
+	public List<Object> getAllUserIdAndName();
 
 }

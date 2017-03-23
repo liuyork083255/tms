@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.edu.sspu.dao.mapper.InputMapper;
+import cn.edu.sspu.dao.mapper.User_TableMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
+import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -17,6 +19,9 @@ public class InputServiceImpl implements InputService {
 	
 	@Autowired
 	private InputMapper inputMapper;
+	
+    @Autowired
+    private User_TableMapper user_TableMapper;
 
 	public List<Input> selectInputByTableId(String table_id) throws ServiceException {
 		
@@ -66,8 +71,8 @@ public class InputServiceImpl implements InputService {
 		return inputMapper.selectInputTimesMax(table_id, user_id);
 	}
 
-	public List<Integer> selectTimesAllValue() {
-		return inputMapper.selectTimesAllValue();
+	public List<Integer> selectTimesAllValue(String table_id, String user_id) {
+		return inputMapper.selectTimesAllValue(table_id,user_id);
 	}
 
 	public List<Input> selectInputByUserIdAndTableIdAndTimes(String table_id,String user_id, int times) {
@@ -76,7 +81,7 @@ public class InputServiceImpl implements InputService {
 	}
 
 	public List<Object> selectAllInputByTimes(String table_id, String user_id) {
-		List<Integer> intList = inputMapper.selectTimesAllValue();
+		List<Integer> intList = inputMapper.selectTimesAllValue(table_id,user_id);
 		List<Input> inputList = null;
 		List<Object> objectList = new ArrayList<Object>();
 		for(Integer i : intList){
@@ -92,6 +97,45 @@ public class InputServiceImpl implements InputService {
 		}
 		return objectList;
 		
+	}
+
+	public List<Object> getAllWriteTableByTableId(String table_id,String user_id) {
+		//显示获取指定的user_table记录
+		List<User_Table> usertableList = user_TableMapper.getAllWriteTableByTableIdUserId(table_id, user_id);
+		//然后是获取对应的input记录
+		List<Object> objectList = new ArrayList<Object>();
+		for(User_Table ut : usertableList){
+			List<Input> inputList = inputMapper.selectInputByUserIdAndTableIdAndTimes(ut.getTable_id(),ut.getUser_id(), ut.getTimes());
+			try {
+				Object object = AdminUtils.transferInputToDetail(inputList, ut.getUser_name());
+				objectList.add(object);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return objectList;
 	};
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

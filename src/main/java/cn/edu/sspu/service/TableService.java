@@ -29,5 +29,7 @@ public interface TableService {
 	public void testTr(Table table);
 	
 	public boolean deleteTableById(String table_id) throws ServiceException;
+	
+	public List<Object> getAllTableIdAndName();
 
 }

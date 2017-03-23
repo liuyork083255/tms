@@ -1,8 +1,14 @@
 package cn.edu.sspu.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.edu.sspu.dao.mapper.User_TableMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.EmailModel;
+import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.User;
+import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.InputService;
+import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserService;
 import cn.edu.sspu.utils.AdminUtils;
 import cn.edu.sspu.utils.MailUtils;
@@ -26,6 +37,12 @@ public class AdminManergeUserController {
 	
     @Autowired  
     private MailUtils mailUtil;
+    
+    @Autowired
+    private TableService tableService;
+    
+    @Autowired
+    private InputService inputService;
 	
 	@ResponseBody
 	@RequestMapping("/getAllUser")
@@ -170,6 +187,73 @@ public class AdminManergeUserController {
 		else return true;
 	}
 	
+	@ResponseBody
+	@RequestMapping("/getAllTableIdAndName")
+	public List<Object> getAllTableIdAndName(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		List<Object> objectList = null;
+		objectList = tableService.getAllTableIdAndName();
+		if(objectList == null || objectList.size() == 0){
+			request.setAttribute("msg", "获取session中的User失败，请重新登录");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		return objectList;
+	}
+	
+	@ResponseBody
+	@RequestMapping("/getTableByTableId")
+	public Json getTableByTableId(String table_id){
+		Json json = new Json();
+		if(table_id == null){
+			json.setMsg("获取table_id参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		List<Input> inputList = null;
+		try {
+			inputList = inputService.selectInputByTableId(table_id);
+		} catch (ServiceException e) {
+			json.setMsg("获取inputList位置异常");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setObj(inputList);
+		json.setSuccess(true);
+		return json;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/getAllUserIdAndName")
+	public List<Object> getAllUserIdAndName(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		List<Object> objectList = null;
+		objectList = userService.getAllUserIdAndName();
+		if(objectList == null || objectList.size() == 0){
+			request.setAttribute("msg", "获取session中的User失败，请重新登录");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		return objectList;
+	}
+	
+	
+	
+	
+	/**
+	 * 这个方法是获取指定 的table和user的所有填写的表记录，user可能为空
+	 * @param table_id
+	 * @param user_id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/getAllWriteTableByTableId")
+	public List<Object> getAllWriteTableByTableId(String table_id,String user_id){
+		if(user_id == null || user_id.length() == 0)
+			user_id = null;
+		
+		
+		return inputService.getAllWriteTableByTableId(table_id, user_id);
+	}
 }
 
 

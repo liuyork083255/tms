@@ -95,7 +95,7 @@
   
   
   <select id="selectTimesAllValue" resultType="int">
-  	SELECT DISTINCT(times) FROM input WHERE times>=1
+  	SELECT DISTINCT(times) FROM input WHERE times>=1 and table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}
   </select>
   
   <select id="selectInputByUserIdAndTableIdAndTimes" resultType="cn.edu.sspu.models.Input">

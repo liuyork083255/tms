@@ -10,6 +10,7 @@ import cn.edu.sspu.dao.mapper.UserMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.service.UserService;
+import cn.edu.sspu.utils.AdminUtils;
 
 @Service
 public class UserServieceImpl implements UserService{
@@ -124,6 +125,18 @@ public class UserServieceImpl implements UserService{
 
 	public User selectUserByIdNotName(String user_id, String name) {
 		return userMapper.selectUserByIdNotName(user_id, name);
+	}
+
+	public List<Object> getAllUserIdAndName() {
+		List<User> userList = userMapper.getAllUser();
+		List<Object> objectList = null;
+		try {
+			objectList = AdminUtils.transferUserToId_Name(userList);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return objectList;
 	}
 	
 	

@@ -175,5 +175,19 @@ public class TableServiceImpl implements TableService{
 
 	}
 
+	public List<Object> getAllTableIdAndName() {
+		// 首先是获得所有的tableList
+		List<Table> tableList = tableMapper.getAllTableIdAndName();
+		//将tableList转换成Object类型
+		List<Object> objectList = null;
+		try {
+			objectList = AdminUtils.transferTableToId_Name(tableList);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return objectList;
+	}
+
 
 }

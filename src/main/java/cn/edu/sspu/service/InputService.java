@@ -20,9 +20,11 @@ public interface InputService {
 	
 	public int selectInputTimesMax(String table_id,String user_id);
 	
-	public List<Integer> selectTimesAllValue();
+	public List<Integer> selectTimesAllValue(String table_id,String user_id);
 	
 	public List<Input> selectInputByUserIdAndTableIdAndTimes(String table_id,String user_id,int times);
 	
 	public List<Object> selectAllInputByTimes(String table_id,String user_id);
+
+	public List<Object> getAllWriteTableByTableId(String table_id,String user_id);
 }

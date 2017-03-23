@@ -40,14 +40,6 @@ $('#datagrid_wirtedTableList').datagrid({
 		{field:'clickShow',title:'查看模板',width:110,
 			formatter:function(){
 				return "<input type='button' style='height:20px;width:100px' value='点击查看表单'/>";
-			}},
-		{field:'alter',title:'修改模板',width:110,
-			formatter:function(){
-				return "<input type='button' style='height:20px;width:100px' value='点击修改表单'/>";
-			}},
-		{field:'delete',title:'删除模板',width:110,
-			formatter:function(){
-				return "<input type='button' style='height:20px;width:100px' value='点击删除表单'/>";
 			}}
     ]],
     /* 定义工具栏按钮 */
@@ -84,94 +76,8 @@ function clickCell(rowIndex, field, value){
 				   }
 			   }
 			});
-		
-		
-		
-		
-		
-		
-		
-		
-/* 		$.ajax({
-			   type: "POST",
-			   url: $.projectUrl+"/userTable/getModel_WritedInput.do",
-			   dataType:"json",
-			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
-			   data:"table_id="+row.table_id,
-			   success: function(data){
-				   if(data.success){	//
-					   //这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 
-					   $.setGlobalModel(data.obj);
-					   //展开左边的面板，并且将页面注入当中 
-				   	   $("#userTableLayout").layout('expand', 'east');
-				   	   
-					   $("#userTableLayout").layout('panel', 'east').panel({
-							href : 'east_showWriteTable.html',
-							width:650
-						});
-				   }else{
-						$.messager.show({
-							title:'提示',
-							msg:data.msg,
-							timeout:4000,
-							showType:'slide'
-						});
-				   }
-			   }
-			}); */
 	}
-	if(field == "alter"){
-	$.ajax({
-		   type: "POST",
-		   url: $.projectUrl+"/userTable/getModel_WritedInput.do",
-		   dataType:"json",
-		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
-		   data:"table_id="+row.table_id,
-		   success: function(data){
-			   if(data.success){	//
-				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
-				   $.setGlobalModel(data.obj);
-			   
-					$("#userTableLayout").layout('panel', 'center').panel({
-						href : 'center_alterTable.html'
-					});
-			   }else{
-					$.messager.show({
-						title:'提示',
-						msg:data.msg,
-						timeout:4000,
-						showType:'slide'
-					});
-			   }
-		   }
-		});
-	}
-	if(field == "delete"){
-	$.ajax({
-		   type: "POST",
-		   url: $.projectUrl+"/userTable/deleteUserWriteTable.do",
-		   dataType:"json",
-		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
-		   data:"table_id="+row.table_id,
-		   success: function(data){
-			   if(data.success){	//
-				   
-				   //删除成功后就要重新刷新，这个方法好处是会保持在当前页
-				   $('#datagrid_wirtedTableList').datagrid('reload');
-			   
-			   
-					$.messager.show({
-						title:'提示',
-						msg:data.msg,
-						timeout:2000,
-						showType:'slide'
-					});
-			   }else{
-				   $.messager.alert('提示',data.msg,'error');
-			   }
-		   }
-		});
-	}
+
 }
 
 

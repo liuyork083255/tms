@@ -29,7 +29,7 @@ public interface InputMapper {
 	
 	public int selectInputTimesMax(@Param("table_id")String table_id,@Param("user_id")String user_id);
 	
-	public List<Integer> selectTimesAllValue();
+	public List<Integer> selectTimesAllValue(@Param("table_id")String table_id,@Param("user_id")String user_id);
 	
 	public List<Input> selectInputByUserIdAndTableIdAndTimes(@Param("table_id")String table_id,@Param("user_id") String user_id,@Param("times")int times);
 	

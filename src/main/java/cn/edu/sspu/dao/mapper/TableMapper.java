@@ -26,4 +26,6 @@ public interface TableMapper {
 	
 	public int deleteTableById(String table_id);
 	
+	public List<Table> getAllTableIdAndName();
+	
 }
