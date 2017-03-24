@@ -114,6 +114,21 @@ public class InputServiceImpl implements InputService {
 			}
 		}
 		return objectList;
+	}
+
+	public List<Object> selectHistoryByUserId_InputName(String user_id, String name) {
+		//首先是获取指定的Value集合
+		List<String> sList = inputMapper.selectHistoryByUserId_InputName(user_id, name);
+		List<Object> objectList = null;
+		if(sList == null || sList.size() == 0)
+			return null;
+		try {
+			objectList = AdminUtils.selectHistoryByUserId_InputName(sList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return objectList;
 	};
 
 }

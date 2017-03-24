@@ -33,5 +33,6 @@ public interface InputMapper {
 	
 	public List<Input> selectInputByUserIdAndTableIdAndTimes(@Param("table_id")String table_id,@Param("user_id") String user_id,@Param("times")int times);
 	
-
+	public List<String> selectHistoryByUserId_InputName(@Param("user_id") String user_id,@Param("name") String name);
+	
 }

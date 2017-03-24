@@ -435,12 +435,21 @@ public class UserTableController {
 		return objectList;
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping("/selectHistoryByUserId_InputName")
+	public List<Object> selectHistoryByUserId_InputName(HttpServletRequest request,String inputname){
+		User user = (User)request.getSession().getAttribute("user");
+		if(user == null)
+			return null;
+		return inputService.selectHistoryByUserId_InputName(user.getUser_id(), inputname);
+	}
 
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")
-	public Json fileUpTest(@RequestParam(value = "inis[]") String[] inis){
-		System.out.println(inis);
+	public Json fileUpTest( String name){
+		System.out.println(name);
 		return null;
 	}
 	

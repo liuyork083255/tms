@@ -24,9 +24,11 @@
 	</div>
 </div>
 
+<div id="yangliu0832">
+</div>
 
 <!-- 这个模块是用于select被选中后跳出的界面 -->
-<div id="dialog_select" title="Select选项设置" style="width:330px;height:400px;" hidden="true" >
+<!-- <div id="dialog_select" title="Select选项设置" style="width:330px;height:400px;" hidden="true" >
 	<h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3><hr/>
 	<table id="dialog_select_table">
 
@@ -34,10 +36,10 @@
 	<br/><br/><hr/>
 	<a href="javascript:dialogSelectAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add'" id="dialog_select_add">Add</a>
 	<a href="javascript:dialogSelectDelete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" id="dialog_select_delete">Remove</a>
-</div>
+</div> -->
 
 <!-- 这个模块是用于checkbox被选中后跳出的界面 -->
-<div id="dialog_checkbox" title="Checkbox选项设置" style="width:350px;height:300px;" hidden="true" >
+<!-- <div id="dialog_checkbox" title="Checkbox选项设置" style="width:350px;height:300px;" hidden="true" >
 	<h3 style="color:red">注意：子选项必须保证两个或者两个以上！！！</h3><h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3><hr/>
 	<table id="dialog_checkbox_table">
 
@@ -45,10 +47,10 @@
 	<br/><br/><hr/>
 	<a href="javascript:dialogCheckboxAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add'" id="dialog_checkbox_add">Add</a>
 	<a href="javascript:dialogCheckboxDelete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" id="dialog_checkbox_delete">Remove</a>
-</div>
+</div> -->
 
 <!-- 这个模块是用于radio被选中后跳出的界面 -->
-<div id="dialog_radio" title="Radio选项设置" style="width:350px;height:300px;" hidden="true" >
+<!-- <div id="dialog_radio" title="Radio选项设置" style="width:350px;height:300px;" hidden="true" >
 	<h3 style="color:red">注意：子选项必须保证两个或者两个以上！！！</h3><h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3><hr/>
 	<table id="dialog_radio_table">
 
@@ -56,12 +58,14 @@
 	<br/><br/><hr/>
 	<a href="javascript:dialogRadioAdd()" class="easyui-linkbutton" data-options="iconCls:'icon-add'" id="dialog_radio_add">Add</a>
 	<a href="javascript:dialogRadioDelete()" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" id="dialog_radio_delete">Remove</a>
-</div>
+</div> -->
 
 
 
-<input id="SignedStartDate" class="easyui-datetimebox" />  
-<input id="SignedEndDate" class="easyui-datetimebox" data-options="validType:'equaldDate[\'#SignedStartDate\']'"/>   
+<input id="SignedStartDate" class="easyui-combobox" data-options="validType:'email',multiline:true,
+	onShowPanel:function(){test();},
+	valueField: 'label',
+	textField: 'value'" />   
 
 
 
@@ -69,6 +73,11 @@
 <!-- 以下是js代码 -->
 
 <script type="text/javascript">
+
+
+function test(){
+
+}
 
 
 /* 定义一个编辑行的变量，该变量指向的是正在编辑的一行 */
@@ -578,7 +587,25 @@ function bindParamDialog(typeValue){
 
 		$(ed.target).bind('focus', function () {
 			if(typeValue == "select"){
-				$("#dialog_select_table").empty();//首先将原有的清除
+				
+ 				if($("#dialog_edit_select") != null || $("#dialog_edit_select") != undefined)
+					$("#dialog_edit_select").remove();
+				var div = $('<div id="dialog_edit_select" title="Select选项设置" style="width:330px;height:400px;" hidden="true" ></div>');
+				var h3 = $('<h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3>');
+				var hr = $('<hr/>');
+				var table = $('<table id="dialog_edit_select_table"></table>');
+				var br = $('<br/>');
+				var a1 = $('<input onclick="dialogSelectAdd()" type="button" value="Add"  id="dialog_edit_select_add"/>');
+				var a2 = $('<input onclick="dialogSelectDelete()"  type="button" value="Delete" id="dialog_edit_select_delete"/>');
+				div.append(h3);div.append(hr);
+				div.append(hr);
+				div.append(table);
+				div.append(br);div.append(hr);div.append(hr);
+				div.append(a1);div.append(a2);
+				$("#yangliu0832").append(div);
+				
+				
+				
 				
 				var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});//不知道为什么，ed变量在这个里面不能使用，所以这里要重定义
 				//判断是否原先有值，如果有就要事先将这些组件生成
@@ -586,15 +613,17 @@ function bindParamDialog(typeValue){
 				if(pri_value.length > 0){
 					var pri_values = pri_value.split("&");
 					for(var i=0;i<pri_values.length;i++){
-						$("#dialog_select_table").append(
-								'<tr>'
+						$("#dialog_edit_select_table").append(
+								'<tr >'
 									+'<th><label>选项名称：</label></th>'
 									+'<th><input type="text" style="width:150px;" value="'+pri_values[i]+'" /></th>'
 								+'</tr>');
 					}
 				}
 				
-				$('#dialog_select').dialog({
+				
+				
+				$('#dialog_edit_select').dialog({
 		    		title : 'select类型选择',
 		    		closed : false,
 		    		modal : true,   //是否背景不可选
@@ -603,7 +632,7 @@ function bindParamDialog(typeValue){
 						text:'确定',
 						iconCls:'icon-ok',
 						handler:function(){
-							var texts = $("#dialog_select_table input[type=text]");
+							var texts = $("#dialog_edit_select_table input[type=text]");
 							
 							//这里要做一个校验，如果有子选项没有给出值，那么就提示用户不能为空
 							if(!validateSCRValueIsNull(texts)){
@@ -617,21 +646,47 @@ function bindParamDialog(typeValue){
 							if(selectValue.length > 0)
 								selectValue = selectValue.substring(0,selectValue.length-1);
 							$(ed.target).val(selectValue);
-							$('#dialog_select').dialog({closed:true});//关闭dialog
+							
+							$('#dialog_edit_select').dialog({closed:true});//关闭dialog
 						}
 					},{
 						text:'重置',
 						iconCls:'icon-cancel',
 						handler:function(){
 							$(ed.target).val("");
-							$("#dialog_select_table").empty();
-							$('#dialog_select').dialog({closed:true});//关闭dialog 
+							$("#dialog_edit_select_table").empty();
+							//$('#dialog_edit_select').dialog({closed:true});//关闭dialog 
 						}
 					}]
 		    	})
 			}
 			if(typeValue == "checkbox"){
-				$("#dialog_checkbox_table").empty();//首先将原有的清除
+				
+				
+				
+				if($("#dialog_edit_checkbox") != null || $("#dialog_edit_checkbox") != undefined)
+					$("#dialog_edit_checkbox").remove();
+				var div = $('<div id="dialog_edit_checkbox" title="Checkbox选项设置" style="width:350px;height:300px;" hidden="true" ></div>');
+				var h31 = $('<h3 style="color:red">注意：子选项必须保证两个或者两个以上！！！</h3>');
+				var h32 = $('<h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3>');
+				var hr = $('<hr/>');
+				var table = $('<table id="dialog_edit_checkbox_table"></table>');
+				var br = $('<br/>');
+				var a1 = $('<input onclick="dialogCheckboxAdd()" type="button" value="Add"  id="dialog_edit_checkbox_add"/>');
+				var a2 = $('<input onclick="dialogCheckboxDelete()"  type="button" value="Delete" id="dialog_edit_checkbox_delete"/>');
+				div.append(h31);div.append(h32);
+				div.append(hr);
+				div.append(table);
+				div.append(br);div.append(br);div.append(hr);
+				div.append(a1);div.append(a2);
+				$("#yangliu0832").append(div);
+				$("#dialog_edit_checkbox_table").empty();//首先将原有的清除
+				while($(".checkclass").length > 0){
+					$(".checkclass")[0].remove();
+				}
+				
+				
+				
 				
 				var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
 				
@@ -640,7 +695,7 @@ function bindParamDialog(typeValue){
 				if(pri_value.length > 0){
 					var pri_values = pri_value.split("&");
 					for(var i=0;i<pri_values.length;i++){
-						$("#dialog_checkbox_table").append(
+						$("#dialog_edit_checkbox_table").append(
 								'<tr>'
 									+'<th><input type="checkbox" /></th>'
 									+'<th><input type="text" style="width:150px;" value="'+pri_values[i]+'" /></th>'
@@ -648,7 +703,7 @@ function bindParamDialog(typeValue){
 					}
 				}
 				
-				$('#dialog_checkbox').dialog({
+				$('#dialog_edit_checkbox').dialog({
 		    		title : 'checkbox类型选择',
 		    		closed : false,
 		    		modal : true,   //是否背景不可选
@@ -657,7 +712,7 @@ function bindParamDialog(typeValue){
 						text:'确定',
 						iconCls:'icon-ok',
 						handler:function(){
-							var texts = $("#dialog_checkbox_table input[type=text]");
+							var texts = $("#dialog_edit_checkbox_table input[type=text]");
 							
 							//这里要做一个校验，如果有子选项没有给出值，那么就提示用户不能为空
 							if(!validateSCRValueIsNull(texts)){
@@ -671,30 +726,58 @@ function bindParamDialog(typeValue){
 							if(checkboxValue.length > 0)
 								checkboxValue = checkboxValue.substring(0,checkboxValue.length-1);
 							$(ed.target).val(checkboxValue);
-							$('#dialog_checkbox').dialog({closed:true});//关闭dialog
+							$('#dialog_edit_checkbox').dialog({closed:true});//关闭dialog
 						}
 					},{
 						text:'重置',
 						iconCls:'icon-cancel',
 						handler:function(){
 							$(ed.target).val("");
-							$("#dialog_checkbox_table").empty();
-							$('#dialog_checkbox').dialog({closed:true});//关闭dialog
+							$("#dialog_edit_checkbox_table").empty();
+							//$('#dialog_edit_checkbox').dialog({closed:true});//关闭dialog
 						}
 					}]
 		    	})
 			}
 			if(typeValue == "radio"){
-				$("#dialog_radio_table").empty();//首先将原有的清除
+				
+				
+				if($("#dialog_edit_radio") != null || $("#dialog_edit_radio") != undefined)
+					$("#dialog_edit_radio").remove();
+				var div = $('<div id="dialog_edit_radio" title="Radio选项设置" style="width:350px;height:300px;" hidden="true" ></div>');
+				var h31 = $('<h3 style="color:red">注意：子选项必须保证两个或者两个以上！！！</h3>');
+				var h32 = $('<h3 style="color:red">注意：子选项值不能出现 & 符号！！！</h3>');
+				var hr = $('<hr/>');
+				var table = $('<table id="dialog_edit_radio_table"></table>');
+				var br = $('<br/>');
+				var a1 = $('<input onclick="dialogRadioAdd()" type="button" value="Add"  id="dialog_edit_checkbox_add"/>');
+				var a2 = $('<input onclick="dialogRadioDelete()"  type="button" value="Delete" id="dialog_edit_checkbox_delete"/>');
+				div.append(h31);div.append(h32);
+				div.append(hr);
+				div.append(table);
+				div.append(br);div.append(br);div.append(hr);
+				div.append(a1);div.append(a2);
+				$("#yangliu0832").append(div);
+				$("#dialog_edit_radio_table").empty();//首先将原有的清除
+				while($(".checkclass").length > 0){
+					$(".checkclass")[0].remove();
+				}
+				
+				
+				
 				
 				var ed = $('#datagrid_newTable').datagrid('getEditor',{index:editRow,field:'param'});
+				
+				
+				
+				
 				
 				//判断是否原先有值，如果有就要事先将这些组件生成
 				var pri_value =  $(ed.target).val();
 				if(pri_value.length > 0){
 					var pri_values = pri_value.split("&");
 					for(var i=0;i<pri_values.length;i++){
-						$("#dialog_radio_table").append(
+						$("#dialog_edit_radio_table").append(
 								'<tr>'
 									+'<th><input type="radio" /></th>'
 									+'<th><input type="text" style="width:150px;" value="'+pri_values[i]+'" /></th>'
@@ -702,7 +785,7 @@ function bindParamDialog(typeValue){
 					}
 				}
 				
-				$('#dialog_radio').dialog({
+				$('#dialog_edit_radio').dialog({
 		    		title : 'radio类型选择',
 		    		closed : false,
 		    		modal : true,   //是否背景不可选
@@ -711,7 +794,7 @@ function bindParamDialog(typeValue){
 						text:'确定',
 						iconCls:'icon-ok',
 						handler:function(){
-							var texts = $("#dialog_radio_table input[type=text]");
+							var texts = $("#dialog_edit_radio_table input[type=text]");
 							
 							//这里要做一个校验，如果有子选项没有给出值，那么就提示用户不能为空
 							if(!validateSCRValueIsNull(texts)){
@@ -725,15 +808,15 @@ function bindParamDialog(typeValue){
 							if(radioValue.length > 0)
 								radioValue = radioValue.substring(0,radioValue.length-1);
 							$(ed.target).val(radioValue);
-							$('#dialog_radio').dialog({closed:true});//关闭dialog
+							$('#dialog_edit_radio').dialog({closed:true});//关闭dialog
 						}
 					},{
 						text:'重置',
 						iconCls:'icon-cancel',
 						handler:function(){
 							$(ed.target).val("");
-							$("#dialog_radio_table").empty();
-							$('#dialog_radio').dialog({closed:true});//关闭dialog
+							$("#dialog_edit_radio_table").empty();
+							//$('#dialog_edit_radio').dialog({closed:true});//关闭dialog
 						}
 					}]
 		    	})
@@ -762,8 +845,8 @@ function judgeTypeIsThree(){
 
 /* 这是方法是用于type是select的时候点击添加按钮增加子选项 */
 function dialogSelectAdd(){
-	$("#dialog_select_table").append(
-			'<tr>'
+	$("#dialog_edit_select_table").append(
+			'<tr class="checkclass">'
 				+'<th><label>选项名称：</label></th>'
 				+'<th><input type="text" style="width:150px;" /></th>'
 			+'</tr>');
@@ -771,9 +854,9 @@ function dialogSelectAdd(){
 
 /* 这是方法是用于type是select的时候点击删除按钮删除子选项 */
 function dialogSelectDelete(){
-	var length = $("#dialog_select_table").find("tr").length;
+	var length = $("#dialog_edit_select_table").find("tr").length;
 	if(length > 0){
-		$("#dialog_select_table").find("tr:last-child").remove();
+		$("#dialog_edit_select_table").find("tr:last-child").remove();
 	}else{
 		$.messager.show({
 			title:'提示',
@@ -785,7 +868,7 @@ function dialogSelectDelete(){
 }
 /* 这是方法是用于type是checkbox的时候点击添加按钮增加子选项 */
 function dialogCheckboxAdd(){
-	$("#dialog_checkbox_table").append(
+	$("#dialog_edit_checkbox_table").append(
 			'<tr>'
 				+'<th><input type="checkbox" /></th>'
 				+'<th><input type="text" style="width:150px;" /></th>'
@@ -793,9 +876,9 @@ function dialogCheckboxAdd(){
 }
 /* 这是方法是用于type是checkbox的时候点击删除按钮删除子选项 */
 function dialogCheckboxDelete(){
-	var length = $("#dialog_checkbox_table").find("tr").length;
+	var length = $("#dialog_edit_checkbox_table").find("tr").length;
 	if(length > 0){
-		$("#dialog_checkbox_table").find("tr:last-child").remove();
+		$("#dialog_edit_checkbox_table").find("tr:last-child").remove();
 	}else{
 		$.messager.show({
 			title:'提示',
@@ -807,7 +890,7 @@ function dialogCheckboxDelete(){
 }
 /* 这是方法是用于type是radio的时候点击添加按钮增加子选项 */
 function dialogRadioAdd(){
-	$("#dialog_radio_table").append(
+	$("#dialog_edit_radio_table").append(
 			'<tr>'
 				+'<th><input type="radio" /></th>'
 				+'<th><input type="text" style="width:150px;" /></th>'
@@ -815,9 +898,9 @@ function dialogRadioAdd(){
 }
 /* 这是方法是用于type是radio的时候点击删除按钮删除子选项 */
 function dialogRadioDelete(){
-	var length = $("#dialog_radio_table").find("tr").length;
+	var length = $("#dialog_edit_radio_table").find("tr").length;
 	if(length > 0){
-		$("#dialog_radio_table").find("tr:last-child").remove();
+		$("#dialog_edit_radio_table").find("tr:last-child").remove();
 	}else{
 		$.messager.show({
 			title:'提示',
@@ -852,16 +935,6 @@ function validateParamEditor(){
 		console.info(row.type);
 	}
 }
-
-
-
-/* 以下是一些测试方法，可以删除 */
-
-$("#ab1").click(function() {
-})
-		
-$("#ab2").click(function() {
-})
 
 
 

@@ -201,6 +201,52 @@ public class AdminUtils {
 			input.setTimes(max);
 		
 	}
+
+	public static List<Object> selectHistoryByUserId_InputName(List<String> sList) throws Exception {
+		HashMap<String,Class<?>> propertyMap = new HashMap<String,Class<?>>();
+		List<Object> objectList = new ArrayList<Object>();
+		for(String s : sList){
+			propertyMap.put("value1", Class.forName("java.lang.String"));
+			propertyMap.put("value2", Class.forName("java.lang.String"));
+			DynamicBean bean = new DynamicBean(propertyMap);
+			bean.setValue("value1", s);
+			bean.setValue("value2", s);
+			Object object = bean.getObject();
+			objectList.add(object);
+		}
+		
+		return objectList;
+	}
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

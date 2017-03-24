@@ -19,6 +19,10 @@
   </select>
   
   
+  <select id="selectHistoryByUserId_InputName" resultType="java.lang.String">
+  	select DISTINCT value from input where user_id = #{user_id,jdbcType=VARCHAR} and name = #{name,jdbcType=VARCHAR} ORDER BY `info`
+  </select>
+  
   
   
   <delete id="deleteInput" parameterType="java.lang.String">

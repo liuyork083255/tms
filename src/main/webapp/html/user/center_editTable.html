@@ -125,7 +125,8 @@ function showInputTypeIsText(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);
 			
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
+	var input_string = '<input id="'+input.input_id+'" class="easyui-combobox" data-options="'+data_options+','
+	+'valueField:\'value1\',textField:\'value2\',url:\''+$.projectUrl+'/userTable/selectHistoryByUserId_InputName.do?inputname='+input.name+'\'" />';
 	
 	return $(input_string);
 }
@@ -185,16 +186,18 @@ function showInputTypeIsEmail(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-combobox" data-options="'+data_options+','
+	+'valueField:\'value1\',textField:\'value2\',url:\''+$.projectUrl+'/userTable/selectHistoryByUserId_InputName.do?inputname='+input.name+'\'" />';
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
 	return $(input_string);
 }
 function showInputTypeIsNumber(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
+	var input_string = '<input id="'+input.input_id+'" class="easyui-combobox" data-options="'+data_options+','
+	+'valueField:\'value1\',textField:\'value2\',url:\''+$.projectUrl+'/userTable/selectHistoryByUserId_InputName.do?inputname='+input.name+'\'" />';
 	
-	var input_string = '<input id="'+input.input_id+'" class="easyui-textbox" data-options="'+data_options+'" />';
 	return $(input_string);
 }
 function showInputTypeIsSelect(formTable,input){
@@ -309,7 +312,7 @@ function setValue(inputList){
 		var input = inputList[i];
 		
 		if(input.type == "text"){
-			input.value = $("#"+input.input_id+"").val();
+			input.value = $("#"+input.input_id+"").combobox('getValue');
 		}
 		else if(input.type == "textarea"){
 			input.value = $("#"+input.input_id+"").val();
@@ -333,10 +336,10 @@ function setValue(inputList){
 			input.value = $("#"+input.input_id+"").datebox("getValue");
 		}
 		else if(input.type == "email"){
-			input.value = $("#"+input.input_id+"").val();
+			input.value = $("#"+input.input_id+"").combobox('getValue');
 		}
 		else if(input.type == "number"){
-			input.value = $("#"+input.input_id+"").val();
+			input.value = $("#"+input.input_id+"").combobox('getValue');
 		}
 		else if(input.type == "select"){
 			input.value = $("#"+input.input_id+"").combobox("getValue");
