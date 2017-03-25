@@ -57,6 +57,23 @@ public class AdminUtils {
 		return null;
 	}
 	
+	public static String getAdminEmail(String adminEmail){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (String)pps.get(adminEmail);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static String getExcelExportPathPath(String pathName){
 		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
 		if(is != null){
@@ -64,6 +81,23 @@ public class AdminUtils {
 			try {
 				pps.load(is);
 				return (String)pps.get(pathName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String getProjectIP(String projectIPKey){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (String)pps.get(projectIPKey);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

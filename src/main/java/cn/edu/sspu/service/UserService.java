@@ -16,6 +16,8 @@ public interface UserService {
 	
 	public User selectUserById(String user_id) throws ServiceException;
 	
+	public User selectUserByEmail(String email);
+	
 	public User selectUserByNameAndPassword(String name,String password) throws ServiceException;
 	
 	public List<User> getAllUser() throws ServiceException;

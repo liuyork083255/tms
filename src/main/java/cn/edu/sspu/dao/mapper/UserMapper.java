@@ -12,6 +12,8 @@ public interface UserMapper {
 	public User selectUserByName(String name);
 	
 	public User selectUserById(String user_id);
+	
+	public User selectUserByEmail(String email);
 
 	public User selectUserByNameAndPassword(@Param("name")String name,@Param("password") String password);
 	

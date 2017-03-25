@@ -20,11 +20,13 @@
     </div>
     <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
 		如有疑问，可向管理员联系<br /><br />
-		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'">Click me ...</a>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'" onclick="helpUserToAdmin()">Click me ...</a>
     </div>
 </div>
 
-
+<div id="dilog_user_sendemail_admin" style="width:400px;height:200px;" class="easyui-dialog" data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
+	<input id="send_email_admin_text" class="easyui-textbox" data-options="required:true,multiline:true,validType:'minLength[1]'" style="width:100%;height:100%;" />
+</div>
 
 
 <!-- JS代码 -->
@@ -56,9 +58,50 @@ function a_click(index){
 	else{}
 }
 
+function helpUserToAdmin(){
+	$("#dilog_user_sendemail_admin").dialog({
+		closed: false,
+		buttons:[{
+			text:'发送',
+			iconCls:'icon-redo',
+			handler:function(){
+				if(!$("#send_email_admin_text").textbox('isValid')) return;
+				sendEmailToAdmin($("#send_email_admin_text").textbox('getValue'));
+			}
+		},{
+			text:'取消',
+			iconCls:'icon-clear',
+			handler:function(){$("#dilog_user_sendemail_admin").dialog({closed: true})}
+		}]
+	});
+}
 
-
-
+function sendEmailToAdmin(text){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/user/userSendEmailToAdmin.do",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"text=" + text,
+		   success: function(data){//返回的数据是json对象
+			   if(data.success){
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }else{
+				   ager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+}
 
 
 

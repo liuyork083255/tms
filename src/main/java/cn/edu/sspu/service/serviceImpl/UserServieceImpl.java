@@ -138,6 +138,10 @@ public class UserServieceImpl implements UserService{
 		}
 		return objectList;
 	}
+
+	public User selectUserByEmail(String email) {
+		return userMapper.selectUserByEmail(email);
+	}
 	
 	
 

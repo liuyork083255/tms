@@ -1,6 +1,14 @@
 package cn.edu.sspu.utils;
 
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -26,10 +34,10 @@ public class MailUtils {
      * @param content 内容 
      */  
     public void send(String recipient,String subject,String content){  
-        simpleMailMessage.setTo(recipient);  
+        simpleMailMessage.setTo(recipient);
         simpleMailMessage.setSubject(subject);  
         simpleMailMessage.setText(content);  
-        mailSender.send(simpleMailMessage);  
+        mailSender.send(simpleMailMessage);
     }  
       
     /** 

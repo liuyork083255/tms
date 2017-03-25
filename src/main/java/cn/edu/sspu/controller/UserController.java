@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 
+import cn.edu.sspu.dao.mapper.UserMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.UserService;
 import cn.edu.sspu.utils.AdminUtils;
+import cn.edu.sspu.utils.MailUtils;
 
 @Controller
 @RequestMapping("/user")
@@ -27,7 +29,8 @@ public class UserController {
 	@Autowired
 	private UserService userService = null;
 	
-	
+	@Autowired  
+    private MailUtils mailUtil;
 	
 	/**
 	 * 用户登录
@@ -63,16 +66,63 @@ public class UserController {
 		request.getSession().setAttribute("user", user);
 		return json;
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/sendUserCheckCode")
+	public Json sendUserCheckCode(String email,String username,HttpServletRequest request){
+		Json json = new Json();
+		if(email == null || username == null){
+			json.setMsg("请输入用户名和email");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		//校验邮箱
+		User dataUser = userService.selectUserByEmail(email);
+		if(dataUser != null){
+			json.setMsg("该邮箱已经被注册");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		String acticeCode = AdminUtils.getUUID().substring(0, 6);
+		request.getSession().setAttribute(username, acticeCode);
+		mailUtil.send(email, "系统验证码邮件","您的验证码是  " + acticeCode);
+		json.setMsg("验证码已发送至您的邮箱，请及时完成校验，延期注册信息则作废");
+		json.setSuccess(true);
+		return json;
+	}
 
 	
 	@ResponseBody
 	@RequestMapping("/registerUser")
-	public Json registerUser(@RequestBody User user,HttpServletRequest request){
+	public Json registerUser(@RequestBody User user,HttpServletRequest request,String checkCode){
 		Json json = new Json();
+		User dataUser = null;
+		//校验用户名
+		try {
+			dataUser = userService.selectUserByName(user.getName());
+		} catch (ServiceException e) {
+			System.out.println(e.getMessage());
+		}
+		if(dataUser != null){
+			json.setMsg("用户名重复");
+			json.setSuccess(false);
+			return json;
+		}
+
+		//校验验证码
+		String sessionCheckCode = (String)request.getSession().getAttribute(user.getName());
+		
+		if(sessionCheckCode == null || !sessionCheckCode.equalsIgnoreCase(checkCode)){
+			json.setMsg("验证码不正确");
+			json.setSuccess(false);
+			return json;
+		}
 		
 		json = insertUser(user);
 		
-		System.out.println(JSON.toJSONString(json, true));
 		if(json.isSuccess())
 			request.getSession().setAttribute("user", (User)json.getObj());
 		
@@ -344,9 +394,135 @@ public class UserController {
 		return json;
 	}
 	
+	@ResponseBody
+	@RequestMapping("/sendForgetCheckCode")
+	public Json sendForgetCheckCode(String email,HttpServletRequest request){
+		Json json = new Json();
+		
+		//校验邮箱
+		User dataUser = userService.selectUserByEmail(email);
+		if(dataUser == null){
+			json.setMsg("不存在该邮箱");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		
+		String acticeCode = AdminUtils.getUUID().substring(0, 8);
+		
+		request.getSession().setAttribute(email, acticeCode);
+		
+		mailUtil.send(email, "系统验证码邮件","您的验证码是  " + acticeCode);
+		json.setSuccess(true);
+		return json;
+	}
 	
+	@ResponseBody
+	@RequestMapping("/checkForgetCheckCode")
+	public Json checkForgetCheckCode(String email,String checkCode,HttpServletRequest request){
+		Json json = new Json();
+		
+		String sessionCheckCode = (String)request.getSession().getAttribute(email);
+		
+		if(sessionCheckCode == null || !sessionCheckCode.equalsIgnoreCase(checkCode)){
+			json.setMsg("验证码不正确");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("验证码成功,请修改密码");
+		json.setSuccess(true);
+		return json;
+	}
 
-	
-
+	@ResponseBody
+	@RequestMapping("/updateUserPassword")
+	public Json updateUserPassword(String password,String email){
+		Json json = new Json();
+		
+		if(password == null || email == null){
+			json.setMsg("获取email 和 password 失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		User user = null;
+		user = userService.selectUserByEmail(email);
+		if(user == null){
+			json.setMsg("获取指定的邮箱的用户失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		user.setPassword(password);
+		int n = 0;
+		try {
+			n = userService.updateUser(user);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		
+		if(n == 0){
+			json.setMsg("更改出现未知异常");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setMsg("更改密码成功");
+		json.setSuccess(true);
+		return json;
+	}
+	@ResponseBody
+	@RequestMapping("/userSendEmailToAdmin")
+	public Json  userSendEmailToAdmin(HttpServletRequest request,String text){
+		Json json = new Json();
+		User sessionUser = (User) request.getSession().getAttribute("user");
+		if(sessionUser == null){
+			json.setMsg("获取session中user失败，你的登陆可能已经过期");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		String adminEmail = AdminUtils.getAdminEmail("adminEmail");
+		
+		try{
+			mailUtil.send(adminEmail, "来自"+sessionUser.getName()+"用户的邮件",text);
+		}catch(Exception e){
+			e.printStackTrace();
+			json.setMsg("邮件发送失败");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("发送成功");
+		json.setSuccess(true);
+		return json;
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
