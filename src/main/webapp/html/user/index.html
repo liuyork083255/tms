@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>User界面</title>
 </head>
 <!-- 注意这里引入的jquery的js文件是easyui自带的，而不是别的文件，否者在layout组件的时候会出现异常 -->
 <script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.min.js" charset='utf-8'></script>
@@ -17,21 +17,17 @@
 
 <body class="easyui-layout" id="userTableLayout">
 	<!-- 北部界面 -->
-        <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:100px;">
+    <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:70px;">
     	<a href="javascript:changeTheme('default')" class="easyui-linkbutton" style="height:100%;">Default Theme</a>
     	<a href="javascript:changeTheme('black')" class="easyui-linkbutton" style="height:100%;">Black Theme</a>
-    	<a href="javascript:changeTheme('gray')" class="easyui-linkbutton" style="height:100%;">Gray Theme</a>
-    	<a href="javascript:changeTheme('material')" class="easyui-linkbutton" style="height:100%;">Material Theme</a>
-    	<a href="javascript:changeTheme('metro')" class="easyui-linkbutton" style="height:100%;">Metro Theme</a>
     	<a href="javascript:changeTheme('metro-blue')" class="easyui-linkbutton" style="height:100%;">Metro-blue Theme</a>
     	<a href="javascript:changeTheme('metro-gray')" class="easyui-linkbutton" style="height:100%;">Metro-gray Theme</a>
     	<a href="javascript:changeTheme('metro-orange')" class="easyui-linkbutton" style="height:100%;">Metro-orange Theme</a>
     	<a href="javascript:changeTheme('metro-red')" class="easyui-linkbutton" style="height:100%;">Metro-red Theme</a>
-    	<a href="javascript:changeTheme('bootstrap')" class="easyui-linkbutton" style="height:100%;">Bootstrap Theme</a>
-    	<a href="javascript:changeTheme('ui-cupertino')" class="easyui-linkbutton" style="height:100%;">Cupertino Theme</a>
     	<a href="javascript:changeTheme('ui-dark-hive')" class="easyui-linkbutton" style="height:100%;">DarkHive Theme</a>
-    	<a href="javascript:changeTheme('ui-pepper-grinder')" class="easyui-linkbutton" style="height:100%;">Grinder Theme</a>
     	<a href="javascript:changeTheme('ui-sunny')" class="easyui-linkbutton" style="height:100%;">Sunny Theme</a>
+    	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    	<a href="/tms/other/loginout.do?type=1" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">注销用户</a>
     </div>
     
     <!-- 南部界面，即为登录界面 -->

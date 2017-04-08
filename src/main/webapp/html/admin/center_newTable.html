@@ -62,10 +62,7 @@
 
 
 
-<input id="SignedStartDate" class="easyui-combobox" data-options="validType:'email',multiline:true,
-	onShowPanel:function(){test();},
-	valueField: 'label',
-	textField: 'value'" />   
+<input type="button" value="click" onclick="test()" /> 
 
 
 
@@ -76,7 +73,27 @@
 
 
 function test(){
-
+	var formData = "";
+    $.ajax({
+        type:"post",
+        dataType:"json",
+        url:$.projectUrl+"/demo/fun1.do",
+        success:function(data){
+        	if(data.success){
+				   $.messager.show({
+						title : '提示',
+						msg : "success"+data.msg,
+						timeout:5000
+					});
+        	}else{
+				   $.messager.show({
+						title : '提示',
+						msg : "false"+data.msg,
+						timeout:5000
+					});
+        	}
+        }          
+    });
 }
 
 

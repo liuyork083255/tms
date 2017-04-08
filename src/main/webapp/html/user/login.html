@@ -2,9 +2,9 @@
 <body>
 	<!-- 登陆div -->
 <div id="window_user_login" class="easyui-window" style="width:400px;height:300px"
-	data-options="modal:true">
+	data-options="modal:true,title:'User对话框',closable:false,minimizable:false,collapsible:false">
 	<div id="tags" class="easyui-tabs" data-options="fit:true">
-	    <div title="登陆" style="padding:10px">
+	    <div title="登陆" style="padding:10px" id="user_login_denglu">
 
 			<form id="window_user_login_form_login" method="post">
 		    	<table cellpadding="5">
@@ -334,6 +334,13 @@ function clearForm(n){
 		$('#window_user_login_form_forget').form('clear');
 	}
 }
+
+
+$("#user_login_denglu").keydown(function(event) {
+    if(event.keyCode == 13) {
+    	submitForm(1);
+    }
+});
 <!-- ---------------------------------------------------------------------------------------------- -->
 
 

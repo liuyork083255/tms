@@ -1,68 +1,104 @@
 
 <body>
-<script type="text/javascript">
-	//$.init("../../");//引入easyui的组件js文件
-	$(function() {
-		$('#dialog_login').dialog({
-			title : '管理员登陆',
-			width : 350,
-			height : 200,
-			closed : true,
-			cache : false,
-			modal : true,   //是否背景不可选
-			closable:true,  //是否显示关闭按钮
-			buttons:[{
-				text:'登陆',
-				handler:function(){
-					/* 点击登陆按钮事件 */
-					$("#form_login").form('submit', {
-						url: "/EasyUI/controller1/fun1.do",	//访问后台url
-						onSubmit: function(){
-							var isValid = $(this).form('validate');//获取表单校验结果
-							/* if (!isValid){
-								console.info('校验失败');
-							} */
-							return isValid;	
-						},
-						success: function(data){	//后台返回json数据则执行该方法
-							console.info(data);
-							data = $.parseJSON(data);
-							console.info(data.obj+","+data.success+","+data.msg);
-						}
-					});
-				}
-			},{
-				text:'忘记密码',
-				handler:function(){
-					$.messager.show({
-						title : '温馨提示',
-						msg:'由于您是管理员，忘记密码请直接操作数据库!',
-						timeout:5000
-					});
-				}
-			}]
-		});
-	})
-</script>
+
+
 	<!-- 登陆div -->
-	<div id="dialog_login">
-		<form id="form_login" method="post">
-			<h1>
-				<table>
-					<tr>
-						<th>用户名:</th>
-						<td><input class="easyui-validatebox" type="text" name="userName"
-							data-options="required:true"
-							style="width: 150px; height: 25px; font-style: '宋体'; font-weight: nomal; font-size: 20px" /></td>
-					</tr>
-					<tr>
-						<th>密码:</th>
-						<td><input class="easyui-validatebox" type="password"
-							name="passWord" data-options="required:true"
-							style="width: 180px; height: 25px; font-style: '宋体'; font-weight: nomal; font-size: 20px" /></td>
-					</tr>
-				</table>
-			</h1>
-		</form>
-	</div>
+<div id="window" class="easyui-window" style="width:300px;height:150px" data-options="modal:true,title:'登陆界面',closable:false,minimizable:false,collapsible:false">
+			<form id="window_admin_login_form_login" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>Name:</td>
+		    			<td><input id="window_admin_login_form_login_name" class="easyui-textbox" type="text" name="name" data-options="required:true,validType:'namevalidte'"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password:</td>
+		    			<td><input id="window_admin_login_form_login_password" class="easyui-textbox" type="password" name="email" data-options="required:true,validType:'unnormal'"></input></td>
+		    		</tr>
+		    	</table>
+	    	</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a id="admin_login_submit" href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+		    </div>
+</div>
+
+
+
+
+
+
+
+<script type="text/javascript">
+function submitForm(){
+	$('#window_admin_login_form_login').form('submit',{
+	    onSubmit: function(){
+	    	//首先开启检验功能 
+	    	var flag = $('#window_admin_login_form_login').form('validate');
+	    	if(flag == false){
+	    		return false;
+	    	}
+	    	else{
+	    		var user = {};
+	    		user["name"] = $("#window_admin_login_form_login_name").val();
+	    		user["password"] = $("#window_admin_login_form_login_password").val();
+	    		
+	     		$.ajax({
+				   type: "POST",
+				   url: $.projectUrl+"/admin/db/login.do",
+				 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+				   data:"name="+user.name+"&password="+user.password,
+				   success: function(data){
+					   console.info(data);
+				     if(data.success){
+				    	 //此处将当前用户存入全局变量中 
+				    	 $.setGlobalUser(data.obj);
+				    	 
+				    	 $("#window").window('close');
+				 		 $.messager.show({
+							title:'提示',
+							msg:'欢迎 '+user.name,
+							timeout:5000
+						 });
+				     }else{
+				 		 $.messager.show({
+								title:'提示',
+								msg:data.msg,
+								timeout:5000
+							 });
+				     }
+				   }
+	     		});
+	    	}
+	    }
+	});
+}
+function clearForm(n){
+	$('#window_admin_login_form_login').form('clear');
+}
+
+
+$("#window").keydown(function(event) {
+    if(event.keyCode == 13) {
+    	submitForm();
+    }
+});
+</script>
+
+
+
+
+
+
 </body>
+
+
+
+
+
+
+
+
+
+
+
+

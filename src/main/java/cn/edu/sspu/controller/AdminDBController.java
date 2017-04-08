@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +21,14 @@ import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.TableIdAndName;
+import cn.edu.sspu.models.User;
 import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.models.searchfilter.UserTableSearch;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.ExportToExcelService;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
+import cn.edu.sspu.service.UserService;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
 
@@ -37,6 +41,9 @@ public class AdminDBController {
 	private TableService tableService = null;
 	
 	@Autowired
+	private UserService userService = null;
+	
+	@Autowired
 	private InputService inputService;
 	
 	@Autowired
@@ -44,9 +51,42 @@ public class AdminDBController {
 	
 	@Autowired
 	private ExportToExcelService exportToExcelService;
+
 	
-	//测试Model
-	private Model model;
+	@ResponseBody
+	@RequestMapping("/login")
+	public Json login(String name,String password,HttpServletRequest request){
+		Json json = new Json();
+		if(name == null || password == null){
+			json.setMsg("用户名 or 密码 请求参数为空");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		User user = null;
+		try {
+			user = userService.selectUserByNameAndPassword(name, password);
+		} catch (ServiceException e) {
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}catch (Exception e){
+			json.setMsg(e.getMessage());
+			json.setSuccess(false);
+			return json;
+		}
+		if(!user.getType().equalsIgnoreCase("0")){
+			json.setMsg("你不是管理员身份");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		json.setSuccess(true);
+		json.setObj(user);
+		//将user存入session中
+		request.getSession().setAttribute("user", user);
+		return json;
+	}
 	
 	/*该方法是接收一个tableName参数，判断数据库是否存在，存在则Json返回false，否则返回true*/
 	@ResponseBody
