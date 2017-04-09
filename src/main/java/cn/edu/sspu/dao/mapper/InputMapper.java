@@ -9,6 +9,8 @@ import cn.edu.sspu.models.Input;
 public interface InputMapper {
 	
 	public List<Input> selectInputByTableId(String table_id);
+	
+	public List<Input> selectInputByTableIdUserIdNotNull(String table_id);
 
 	public List<Input> selectInputByUserIdAndTableId(@Param("table_id")String table_id,@Param("user_id") String user_id);
 

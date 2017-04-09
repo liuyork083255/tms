@@ -95,7 +95,9 @@ function getDataGrid(tableid,userid){
 						fitColumns:true,
 						fit:true,
 						fitColumns:false,
-						nowrap:false
+						nowrap:false,
+						checkOnSelect:false,
+						onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);}
 					});
 				   
 				   
@@ -116,7 +118,62 @@ function reloadDatagrid(){
 	$("#outer").append($('<div id="inner" style="height:500px;weith:100%"><table id="show_detail_userwrite_alltable" data-options="fit:\'true\'"><thead><tr id="show_userwrite_alltable_rows"></tr></thead></table></div>'));
 }
 
+function clickCell(rowIndex, field, value){
+	
+	var index = value.lastIndexOf("_");
+	var input_id = value.substr(index + 1);//获取input_id
+	
+	var type = value.substr(value.lastIndexOf(".")+1 , value.lastIndexOf("_")-value.lastIndexOf(".")-1);
+	var row = $('#show_detail_userwrite_alltable').datagrid('getRows')[rowIndex];
+	var user_id = row.userid;
+	
+	if(index == -1 || input_id.length != 32)
+		return;
+	
+	$.messager.confirm('Confirm', '确定要下载 ?', function(r){
+		if (r){
+			$.download(user_id,input_id,type); // 下载文件
+
+		}
+	});
+}
+
+jQuery.download = function(user_id,input_id,type){
+    jQuery('<form action="/tms/adminManergeUserController/onloadFileByInputId.do?input_id='+input_id+'&user_id='+user_id+'&type='+type+'" method="post">' +  // action请求路径及推送方法
+            '</form>')
+    .appendTo('body').submit().remove();
+};
 
 </script>
 </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

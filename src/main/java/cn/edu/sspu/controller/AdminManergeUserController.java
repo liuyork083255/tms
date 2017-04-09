@@ -1,6 +1,9 @@
 package cn.edu.sspu.controller;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +22,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.edu.sspu.dao.mapper.User_TableMapper;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.EmailModel;
+import cn.edu.sspu.models.File;
 import cn.edu.sspu.models.Input;
+import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.FileService;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserService;
@@ -43,6 +49,9 @@ public class AdminManergeUserController {
     
     @Autowired
     private InputService inputService;
+    
+    @Autowired
+    private FileService fileService;
 	
 	@ResponseBody
 	@RequestMapping("/getAllUser")
@@ -254,6 +263,38 @@ public class AdminManergeUserController {
 		
 		return inputService.getAllWriteTableByTableId(table_id, user_id);
 	}
+	
+	@ResponseBody
+	@RequestMapping("/getAllFile")
+	public Map<String,Object> getAllFile(int page,int rows){
+		// 1 获得指定的table_id的file总记录数
+		int fileTotal = fileService.selectFileTotal();
+		// 2 获得table集合
+		List<File> fileList = fileService.getAllFile((page-1)*rows, rows);
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		
+		map.put("total", fileTotal);//---------------------------------这里要查询真实数据库中的总记录
+
+		map.put("rows", fileList);
+		return map;
+	}
+
+	@ResponseBody
+	@RequestMapping("/onloadFileByInputId")
+	public void onloadFileByInputId(String input_id,String user_id,String type,HttpServletResponse response){
+		if(input_id == null || user_id == null || type == null){
+			System.out.println("获取参数失败");
+		}
+		
+		boolean flag = fileService.onloadFileByInputId(input_id, user_id, type, response);
+		System.out.println(flag);
+		if(!flag){
+			System.out.println("下载失败");
+		}
+
+	}
+	
 }
 
 

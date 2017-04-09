@@ -253,6 +253,68 @@ public class ExcelUtils {
 	        
 	        //遍历map，封装到表中
 	        int shortGET = 0;
+	        int userId = 0;
+	        Set<String> keys =  inputListMap.keySet();
+			for (String username : keys) {
+				int num = 0;
+				row = sheet.createRow(++shortGET);
+				List<Input> inputList = inputListMap.get(username);
+				row.createCell(num++).setCellValue(user_tableList.get(userId++).getUser_name()); //这里是写入新增的名字列
+				for (Input input : inputList) {
+					row.createCell(num++).setCellValue(input.getValue());  //这里是名字后面的列
+				}
+			}
+			
+	        //将文件存到指定位置  
+			String excelExportPath = AdminUtils.getExcelExportPathPath("excelExportPath");
+	        try  
+	        {  
+	            FileOutputStream fout = new FileOutputStream(excelExportPath + tableName + ".xls");  
+	            wb.write(fout);  
+	            fout.close();  
+	        }  
+	        catch (Exception e)  
+	        {  
+	        	e.printStackTrace();
+	        	if(e instanceof FileNotFoundException)
+	        		throw new ServiceException("该文件名被未知程序使用，不可导出");
+	            throw new ServiceException("导出失败，异常未知");
+	        } 
+			
+	    	return true;
+	    }
+	    
+	    public static boolean exceportToExcelType_2(List<User_Table> user_tableList,Map<String,
+	    		List<Input>> inputListMap,List<Input> tableModel,String tableName,HttpServletResponse response) throws ServiceException{
+	    	// 1 首先校验参数了
+	    	
+	    	// 2 封装导出类
+	        // 第一步，创建一个webbook，对应一个Excel文件  
+	        HSSFWorkbook wb = new HSSFWorkbook();  
+	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+	        HSSFSheet sheet = wb.createSheet("sheet-1");  
+	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+	        HSSFRow row = sheet.createRow((int) 0);  
+	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        HSSFCellStyle style = wb.createCellStyle();  
+	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	    	
+	        
+	        
+	        //设置每一列的名称
+	        HSSFCell cell = null; 
+	        int shotNum = 0;
+        	cell = row.createCell(shotNum++); 
+	        cell.setCellValue("姓名");
+	        cell.setCellStyle(style); 
+	        for (Input input : tableModel) {
+	        	cell = row.createCell(shotNum++); 
+		        cell.setCellValue(input.getName());
+		        cell.setCellStyle(style); 
+			}
+	        
+	        //遍历map，封装到表中
+	        int shortGET = 0;
 	        Set<String> keys =  inputListMap.keySet();
 			for (String username : keys) {
 				int num = 0;
@@ -265,12 +327,11 @@ public class ExcelUtils {
 			}
 			
 	        //将文件存到指定位置  
-			String excelExportPath = AdminUtils.getExcelExportPathPath("excelExportPath");
 	        try  
 	        {  
-	            FileOutputStream fout = new FileOutputStream(excelExportPath + tableName + ".xls");  
-	            wb.write(fout);  
-	            fout.close();  
+	            OutputStream os = response.getOutputStream();
+	            wb.write(os);
+	            os.close();  
 	        }  
 	        catch (Exception e)  
 	        {  

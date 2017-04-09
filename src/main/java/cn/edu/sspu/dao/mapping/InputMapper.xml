@@ -8,6 +8,11 @@
     select * from input where table_id = #{table_id} and user_id is null  ORDER BY sort<!-- 此处用is匹配 -->
   </select>
   
+  <select id="selectInputByTableIdUserIdNotNull" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
+    SELECT * FROM input WHERE table_id = #{table_id} AND user_id IS NOT NULL;
+  </select>
+  
+  
   <!-- 注意：下面这个查询user_id，必须还要加上table_id限制，不然就会查出所有的user_id -->
   <select id="selectInputByUserIdAndTableId" resultType="cn.edu.sspu.models.Input" parameterType="java.lang.String" >
     select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  ORDER BY sort

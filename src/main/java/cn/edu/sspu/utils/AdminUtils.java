@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import com.alibaba.fastjson.JSON;
 
+import cn.edu.sspu.models.File;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.InputName_Value;
 import cn.edu.sspu.models.Model;
@@ -216,7 +218,10 @@ public class AdminUtils {
 		
 		DynamicBean bean = new DynamicBean(propertyMap);
 		for(Input input : inputList){
-			bean.setValue(input.getName(), input.getValue());
+			if(input.getType().equalsIgnoreCase("file"))
+				bean.setValue(input.getName(), input.getValue()+"_"+input.getInput_id());
+			else
+				bean.setValue(input.getName(), input.getValue());
 		}
 		
 		bean.setValue("tableid", inputList.get(0).getTable_id());
@@ -250,6 +255,29 @@ public class AdminUtils {
 		}
 		
 		return objectList;
+	}
+
+	public static List<Object> transferFileToDetail(List<File> fileList,Map<String, Input> map)  throws Exception{
+		HashMap<String,Class<?>> propertyMap = new HashMap<String,Class<?>>();
+		List<Object> objectList = new ArrayList<Object>();
+		for(File file : fileList){
+			propertyMap.put("input_id", Class.forName("java.lang.String"));
+			propertyMap.put("file_name", Class.forName("java.lang.String"));
+			propertyMap.put("file_type", Class.forName("java.lang.String"));
+			propertyMap.put("file_user_name", Class.forName("java.lang.String"));
+			propertyMap.put("file_upload_time", Class.forName("java.lang.String"));
+			DynamicBean bean = new DynamicBean(propertyMap);
+			bean.setValue("input_id", file.getInput_id());
+			bean.setValue("file_name", file.getFilename().substring(0, file.getFilename().lastIndexOf(".")));
+			bean.setValue("file_type", file.getFiletype());
+			bean.setValue("file_upload_time", file.getUploadtime());
+		}
+		
+		
+		
+		
+		
+		return null;
 	}
 	
 	

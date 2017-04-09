@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -452,7 +453,7 @@ public class AdminDBController {
 	
 	@ResponseBody
 	@RequestMapping("/exportToExcel")
-	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList,String tableName){
+	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList,String tableName,HttpServletResponse response){
 		Json json = new Json();
 		if(user_tableList == null || tableName == null){
 			json.setMsg("封装userid-tableid or tableName失败");
@@ -466,7 +467,7 @@ public class AdminDBController {
 		//这里业务层直接返回一个map
 		boolean flag = false;
 		try {
-			flag = exportToExcelService.exportToExcel(user_tableList,tableName);
+			flag = exportToExcelService.exportToExcel(user_tableList,tableName,response);
 		} catch (ServiceException e) {
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);

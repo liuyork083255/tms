@@ -1,0 +1,52 @@
+<body>
+<div style="height:80%;weith:100%">
+	<table id="show_user_file_table">
+	</table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- --------------------------------------JS 代码----------------------------------------- -->
+<script type="text/javascript">
+$('#show_user_file_table').datagrid({
+    url:$.projectUrl+"/adminManergeUserController/getAllFile.do",
+    title:'File文件查看',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    onLoadError:function(){loadError();},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'input_id',title:'input的id',width:20,checkbox:true},  
+		{field:'filename',title:'文件名称',width:100},
+		{field:'filetype',title:'文件类型',width:100},
+		{field:'uploadtime',title:'上传时间',width:200},
+		{field:'clickShow',title:'下载',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击查看模板'/>";
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){flushSize();}	//调用插入行方法 
+	}]
+});
+</script>
+</body>

@@ -36,8 +36,14 @@
 
 
 
-
-
+  <select id="selectAllFileTotal" resultType="int">
+  	select count(1) from file
+  </select>
+  
+  <select id="getAllFile" resultType="cn.edu.sspu.models.File">
+  	select * from file
+    limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
+  </select>
 
 
 
