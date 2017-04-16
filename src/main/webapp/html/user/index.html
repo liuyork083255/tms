@@ -28,6 +28,8 @@
     	<a href="javascript:changeTheme('ui-dark-hive')" class="easyui-linkbutton" style="height:100%;">DarkHive Theme</a>
     	<a href="javascript:changeTheme('ui-sunny')" class="easyui-linkbutton" style="height:100%;">Sunny Theme</a>
     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    	<a href="#" class="easyui-linkbutton" onclick="showWebsocket()" data-options="iconCls:'icon-sum'">用户通讯</a>
+    	|
     	<a href="/tms/other/loginout.do?type=1" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">注销用户</a>
     </div>
     
@@ -45,6 +47,27 @@
 		
 	</div>
 	
+	
+	
+	<!-- 这里的界面用于websoket -->
+	<div id="user-websocket" class="easyui-dialog" title="通讯窗口" style="width:350px;height:250px;"
+	    data-options="iconCls:'icon-save',resizable:true,modal:false,closed:true">
+	    <div id="tt" class="easyui-tabs" data-options="fit:true">
+		    <div title="联系管理员" data-options="fit:true">
+				<br>
+				发送内容：<input id="user-admin-msg" class="easyui-textbox" data-options="multiline:true"><br><br>
+				<a href="#" class="easyui-linkbutton" onclick="sendMessageToAdmin()" data-options="iconCls:'icon-sum'">发送</a><br><br>
+		    </div>
+		</div>
+	    
+	    
+	</div>
+	
+	
+	
+	
+	
+	
 </body>
 
 <!-- 以后养成习惯，js代码尽量写在body后面，不然会出现一些不必要的调试错误 -->
@@ -59,7 +82,58 @@ function changeTheme(color){
 	$("#easyuiTheme").attr("href",themeUrl);
 }
 
-console.info("helo");
+
+function showWebsocket(){
+	//获取dialog的状态
+	var status = $("#user-websocket").dialog('options').closed;
+	
+	//如果已经开启则直接返回
+	if(!status)
+		return;
+	//开启
+	$("#user-websocket").dialog({
+		closed:false
+	});
+	
+}
+
+
+//user发送信息给管理员
+function sendMessageToAdmin(){
+	var msg = $("#user-admin-msg").val();
+	if(msg.replace(/(^\s*)|(\s*$)/g, "").length < 1){
+		$.messager.alert('提示','发送的消息不为空!','info');
+		return;
+	}
+	//封装socket model
+	var model = {};
+	model["type"] = "usertoadmin";
+	model["message"] = msg;
+	if($.webSocket != null && $.webSocket != undefined)
+		$.webSocket.send(JSON.stringify(model));
+}
+
+
+
+
+
+//user界面收到了信息执行
+function onWebSocketMessage(event){
+	var model = JSON.parse(event.data); 
+	if(model.type == "admintoall"){showAdminMessage(model);}
+}
+
+//类别是显示admin发送的内容
+function showAdminMessage(model){
+	$.messager.alert('提示','来自管理员的通知 ： ' + model.message,'info');
+}
+
+
+//监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+window.onbeforeunload = function(){
+	if($.webSocket != null && $.webSocket != undefined)
+	$.webSocket.close();
+}
 
 
 </script>

@@ -125,6 +125,16 @@ function submitForm(n){
 								msg:'欢迎 '+user.name,
 								timeout:5000
 							 });
+					 		 
+					 		 
+					 		 
+					    	var socketModel = {};
+					    	socketModel["targetUserName"] = data.obj.name;
+					    	socketModel["type"] = "userlogin";
+					    	$.clickWebSocket(JSON.stringify(socketModel));
+					 		 
+					    	
+					    	
 					     }else{
 					 		 $.messager.show({
 									title:'提示',
