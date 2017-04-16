@@ -121,6 +121,16 @@ function sendMessageToAdmin(){
 function onWebSocketMessage(event){
 	var model = JSON.parse(event.data); 
 	if(model.type == "admintoall"){showAdminMessage(model);}
+	if(model.type == "adminnewtabletoall"){showAdminNewTable(model);}
+}
+
+function showAdminNewTable(model){
+	$.messager.show({
+		title:'提示',
+		msg:model.message,
+		timeout:5000,
+		showType:'slide'
+	});
 }
 
 //类别是显示admin发送的内容

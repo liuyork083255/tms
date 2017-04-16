@@ -52,6 +52,8 @@ public class MyHandler extends TextWebSocketHandler {
     			sendMessageToAllUsers(model.getMessage());
     		if(model.getType().equalsIgnoreCase("usertoadmin"))
     			sendMessageToAdmin(model.getMessage(),session);
+    		if(model.getType().equalsIgnoreCase("adminnewtabletoall"))
+    			sendMessageToAllUsersNewTable(model.getMessage());
     	}
     }
     
@@ -83,6 +85,25 @@ public class MyHandler extends TextWebSocketHandler {
     	
     	
     }
+    
+    private void sendMessageToAllUsersNewTable(String message){
+    	WebSocketModel model = new WebSocketModel();
+    	model.setType("adminnewtabletoall");
+    	model.setMessage(message);
+        Set<Integer> clientIds = id_userid.keySet();
+        WebSocketSession session = null;
+        for (Integer clientId : clientIds) {
+            try {
+                session = id_session.get(clientId);
+                if (session.isOpen()) {
+                    session.sendMessage(new TextMessage(JSON.toJSONString(model)));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     
     /**
      * 发送信息给指定用户
@@ -152,8 +173,24 @@ public class MyHandler extends TextWebSocketHandler {
     private void setAdminIdAndName(WebSocketModel model,WebSocketSession session){
     	System.out.println(model.getTargetUserName() + "登陆");
     	id_adminid.put(Integer.parseInt(session.getId()), model.getTargetUserName());
+    	sendAdminInit(Integer.parseInt(session.getId()));
     }
     
+    private void sendAdminInit(Integer clientId){
+    	WebSocketModel model = new WebSocketModel();
+    	model.setType("sendadmininit");
+    	model.setOnlineNumber(online);
+    	
+        if (id_session.get(clientId) == null) return;
+        WebSocketSession session = id_session.get(clientId);
+
+        if (!session.isOpen()) return;
+        try {
+            session.sendMessage(new TextMessage(JSON.toJSONString(model)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void senrAdminUserLogin(String name){
     	WebSocketModel model = new WebSocketModel();
