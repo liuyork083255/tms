@@ -1,5 +1,8 @@
 jQuery.extend({
 	
+	/*项目URL*/
+	URL:"localhost:80",
+	
 	/*项目路径*/
 	projectUrl:"/tms",
 	
@@ -23,9 +26,80 @@ jQuery.extend({
 	
 	globalTableModel:undefined,
 	getGlobalTableModel:function(){return $.globalTableModel;},
-	setGlobalTableModel:function(model){$.globalTableModel = model;}
+	setGlobalTableModel:function(model){$.globalTableModel = model;},
 	
-	
+	/*获取websocket对象*/
+	webSocket:undefined,
+	clickWebSocket:function(model){
+	    var websocket = null;
+
+	    //判断当前浏览器是否支持WebSocket
+	    if('WebSocket' in window){
+	        websocket = new WebSocket("ws://localhost:80/tms/websocket.do");
+	    }
+	    else{
+	        alert('Not support websocket')
+	    }
+	    //连接发生错误的回调方法
+	    websocket.onerror = function(){
+	        console.info("error");
+	    };
+
+	    //连接成功建立的回调方法
+	    websocket.onopen = function(event){
+	    	console.info("open");
+	    	$.webSocket = websocket;
+	    	$.webSocket.send(model);
+	    }
+
+	    //接收到消息的回调方法
+	    websocket.onmessage = function(event){
+	    	console.info(event.data);
+	    	onWebSocketMessage(event);
+	    }
+
+	    //连接关闭的回调方法
+	    websocket.onclose = function(){
+	    	console.info("close ............");
+	    	
+	    }
+
+
+	}
 
 	
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
