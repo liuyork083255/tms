@@ -104,7 +104,9 @@ function submitForm(n){
 		    	else{
 		    		var user = {};
 		    		user["name"] = $("#window_user_login_form_login_name").val();
-		    		user["password"] = $("#window_user_login_form_login_password").val();
+		    		md5Password = $.md5($("#window_user_login_form_login_password").val());
+		    		
+		    		user["password"] = md5Password;
 		    		
 		     		$.ajax({
 					   type: "POST",
@@ -159,7 +161,8 @@ function submitForm(n){
 	    		
 	    		var user = {};
 	    		user["name"] = $("#window_user_login_form_register_name").val();
-	    		user["password"] = $("#window_user_login_form_register_password").val();
+	    		md5Password = $.md5($("#window_user_login_form_register_password").val());
+	    		user["password"] = md5Password;
 	    		user["email"] = $("#window_user_login_form_register_email").val();
 	    		console.info(user);
 	     		$.ajax({
@@ -206,7 +209,7 @@ function submitForm(n){
 	 			        type:"post",
 	 			        url:$.projectUrl+"/user/updateUserPassword.do",
 	 			        dataType:'json',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
-	 			        data:"email="+frogetCheckEmail+"&password="+$("#window_user_login_form_forget_password2").val(),
+	 			        data:"email="+frogetCheckEmail+"&password="+$.md5($("#window_user_login_form_forget_password2").val()),
 	 			        success:function(data){
 	 			        	if(data.success){
 	 					 		 $.messager.show({

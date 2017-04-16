@@ -12,6 +12,7 @@
 <script type="text/javascript" src="../../js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"  charset='utf-8'></script>
 <script type="text/javascript" src="../../js/extendJs/gv.js"  charset='utf-8'></script>
 <script type="text/javascript" src="../../js/extendJs/validator.js"  charset='utf-8'></script>
+<script type="text/javascript" src="../../js/md5/md5.js"  charset='utf-8'></script>
 <!-- 控制主题代码 -->
 <link id="easyuiTheme" rel="stylesheet" href="../../js/jquery-easyui-1.5/themes/black/easyui.css" />
 
@@ -27,6 +28,8 @@
     	<a href="javascript:changeTheme('ui-dark-hive')" class="easyui-linkbutton" style="height:100%;">DarkHive Theme</a>
     	<a href="javascript:changeTheme('ui-sunny')" class="easyui-linkbutton" style="height:100%;">Sunny Theme</a>
     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="/tms/other/loginout.do?type=0" class="easyui-linkbutton" data-options="iconCls:'icon-sum'">用户通讯</a>
+    	|
     	<a href="/tms/other/loginout.do?type=0" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">注销用户</a>
     </div>
     
@@ -43,6 +46,27 @@
     <div data-options="region:'center',split:true" >
 		
 	</div>
+	
+	
+	<!-- 这里的界面用于websoket -->
+	<div id="tt" class="easyui-tabs" style="width:500px;height:250px;">
+	    <div title="Tab1" style="padding:20px;display:none;">
+			tab1
+	    </div>
+    <div title="Tab2" data-options="closable:true" style="overflow:auto;padding:20px;display:none;">
+		tab2
+    </div>
+    <div title="Tab3" data-options="iconCls:'icon-reload',closable:true" style="padding:20px;display:none;">
+		tab3
+    </div>
+</div>
+	
+	
+	
+	
+	
+	
+	
 	
 </body>
 <!-- 以后养成习惯，js代码尽量写在body后面，不然会出现一些不必要的调试错误 -->
