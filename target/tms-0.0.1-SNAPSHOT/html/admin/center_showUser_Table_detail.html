@@ -1,0 +1,122 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+<div id="abcd" class="easyui-panel" data-options="fit:false" >
+	<label style="font-size:16px;">请选择表名 ： </label>
+ 	<input id="getTableNameAndId" class="easyui-combobox" 
+ 		data-options="valueField:'table_id',
+ 		textField:'name',
+ 		onSelect:'comboxselect()',
+ 		url:'/tms/adminManergeUserController/getAllTableIdAndName.do'"/>
+ 		
+	<label style="font-size:16px;">请选择用户名 ： </label>
+ 	<input id="getUserNameAndId" class="easyui-combobox" 
+ 		data-options="valueField:'user_id',
+ 		textField:'name',
+ 		onSelect:'comboxselect()',
+ 		url:'/tms/adminManergeUserController/getAllUserIdAndName.do'"/>
+</div>
+
+<input type="button" value="click" onclick="test()" />
+
+<div id="outer">
+	<div id="inner" style="height: 500px; weith: 100%">
+		<table id="show_detail_userwrite_alltable" data-options="fit:'true'">
+			<thead>
+				<tr id="show_userwrite_alltable_rows">
+
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+
+
+	<!-- ------------------------------------------  JS  Code------------------------------------------------ -->
+<script type="text/javascript">
+
+function test(){
+	console.info($("#getTableNameAndId").combobox('getValue'));
+}
+
+$('#getUserNameAndId').combobox({
+	onSelect: function(record){
+		var ptable_id = $("#getTableNameAndId").combobox('getValue');
+		var puser_id = record.user_id;
+		getDataGrid(ptable_id,puser_id);
+		
+	}
+});
+$('#getTableNameAndId').combobox({
+	onSelect: function(record){
+		var ptable_id = record.table_id;
+		var puser_id = $("#getUserNameAndId").combobox('getValue');
+		getDataGrid(ptable_id,puser_id);
+	}
+});
+
+function getDataGrid(tableid,userid){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/adminManergeUserController/getTableByTableId.do",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"table_id="+tableid,
+		   success: function(data){
+			   if(data.success){
+				   var inputList = data.obj;
+				   reloadDatagrid();//首先是将原有的html结点删除 
+				   $("#show_userwrite_alltable_rows").append($('<th data-options="field:\'id\',width:50,checkbox:true">id</th>'));//这个字段是没有作用，存粹就是为了有一个复选框
+				   //再设计每一行的时候，必须谨记，每一行的唯一标识符是tableid userid 和 times 
+				   //每一行除了有模板外，还有 id(复选框) tableid userid username times 
+				   //而这些当中 id 和三个组合标识符是不显示的
+				   $("#show_userwrite_alltable_rows").append($('<th data-options="field:\'username\',width:50">name</th>'));
+				   
+					for(var i=0;i<inputList.length;i++){
+						var input = inputList[i];
+				 		var td2String = undefined;
+						
+						if(input.type == "text"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
+						else if(input.type == "textarea"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
+						else if(input.type == "file"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else if(input.type == "date"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else if(input.type == "datetime"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
+						else if(input.type == "email"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else if(input.type == "number"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
+						else if(input.type == "select"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else if(input.type == "checkbox"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else if(input.type == "radio"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						else{//该判断用于收集无效的input 
+						}
+						$("#show_userwrite_alltable_rows").append(td2String);
+					}
+
+					$('#show_detail_userwrite_alltable').datagrid({
+						url: $.projectUrl+"/adminManergeUserController/getAllWriteTableByTableId.do?table_id="+tableid+"&user_id="+userid,
+						fitColumns:true,
+						fit:true,
+						fitColumns:false,
+						nowrap:false
+					});
+				   
+				   
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+}
+
+function reloadDatagrid(){
+	$("#inner").remove();
+	$("#outer").append($('<div id="inner" style="height:500px;weith:100%"><table id="show_detail_userwrite_alltable" data-options="fit:\'true\'"><thead><tr id="show_userwrite_alltable_rows"></tr></thead></table></div>'));
+}
+
+
+</script>
+</body>
+

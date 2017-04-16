@@ -1,0 +1,95 @@
+<!-- 西部界面 -->
+<body>
+
+
+<div id="east-zedie1" class="easyui-accordion" data-options="fit:true">
+		<div title="Model模板" data-options="iconCls:'icon-save',selected:true" style="overflow: auto; padding: 10px;">
+			<div>
+				<a href="#" onclick="a_click(1);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 170px;">新增模板</a><br />
+				<a href="#" onclick="a_click(2);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 170px;">查看模板</a>
+			</div>
+		</div>
+		<!-- --------------------------------------------------------------------------------------------------------------- -->
+		<div title="教师填写浏览" data-options="iconCls:'icon-reload'" style="padding:10px;">
+			<div>
+				<a href="#" onclick="a_click(3);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 170px;">用户填表查看</a><br />
+				<a href="#" onclick="a_click(4);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 170px;">表单明细</a>
+			</div>
+    	</div>
+		<!-- --------------------------------------------------------------------------------------------------------------- -->
+    <div title="用户信息管理" data-options="iconCls:'icon-help'" style="padding:10px;">
+			<div>
+				<a href="#" onclick="a_click(5);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width: 170px;">用户信息管理</a><br />
+				<a href="#" onclick="a_click(6);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width: 170px;">保留字段</a>
+			</div>
+    </div>
+		<!-- --------------------------------------------------------------------------------------------------------------- -->
+    <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
+		content3
+    </div>
+</div>
+
+
+
+
+
+
+<!-- JS代码 -->
+<script type="text/javascript">
+/* 当点击超链接的时候执行该方法，index参数判断是哪一个超链接 */
+function a_click(index){
+	if(index == 1){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_newTable.html'
+		});
+	}
+	else if(index == 2){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showTable.html',
+			cache:false
+		});
+	}
+	else if(index == 3){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showUser_Table.html',
+			cache:false
+		});
+	}
+	else if(index == 4){
+		//$("#newTableLayout").layout('collapse', 'west');
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showUser_Table_detail.html',
+			cache:false
+		});
+	}
+	else if(index == 5){
+		$("#newTableLayout").layout('panel', 'center').panel({
+			href : 'center_showUserInfo.html',
+			cache:false
+		});
+	}
+	else if(index == 6){}
+	else if(index == 7){}
+	else if(index == 8){}
+	else{}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>

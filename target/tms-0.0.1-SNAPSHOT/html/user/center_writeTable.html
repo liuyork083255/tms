@@ -1,0 +1,117 @@
+<!-- user已经填写过得的table列表 -->
+<body>
+<table id="datagrid_wirtedTableList">
+</table>
+
+<input type="button" />
+
+<script type="text/javascript">
+$('#datagrid_wirtedTableList').datagrid({
+    url:$.projectUrl+"/userTable/selectTableWriteByUserId.do",
+    title:'已填写的表单',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    //nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    //onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    onLoadError:function(){$.messager.show({title:'提示',msg:"加载失败，你可能还没有登陆，或者Session中的User已过期",timeout:4000,showType:'slide'});},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'table_id',title:'table的id',width:20,checkbox:true},  
+		{field:'name',title:'模板名称',width:150,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true
+				}
+			}},
+		{field:'createtime',title:'发布时间',width:300,
+			editor:{
+				type:"datetimebox",
+				options:{
+					required:true,
+					editable:false	//定义用户不可编辑 
+				}
+			}},
+		{field:'clickShow',title:'查看模板',width:110,
+			formatter:function(){
+				return "<input type='button' style='height:20px;width:100px' value='点击查看表单'/>";
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){}	//调用插入行方法 
+	}]
+});
+
+function clickCell(rowIndex, field, value){
+	var row = $('#datagrid_wirtedTableList').datagrid('getRows')[rowIndex];
+	if(field == "clickShow"){
+		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/userTable/getTableById.do",
+			   dataType:"json",
+			   data:"table_id="+row.table_id,
+			   success: function(data){
+				   if(data.success){	
+					   $.setGlobalTableModel(data.obj);
+				   	   
+					   $("#userTableLayout").layout('panel', 'center').panel({
+							href : 'center_showWrite_detail.html',
+							width:650
+						});
+				   }else{
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:4000,
+							showType:'slide'
+						});
+				   }
+			   }
+			});
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>

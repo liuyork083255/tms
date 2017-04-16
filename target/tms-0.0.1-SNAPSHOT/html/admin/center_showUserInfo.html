@@ -1,0 +1,383 @@
+<!-- 这个页面用于admin查看模板的具体的显示信息 -->
+<body>
+<div id="show_user__Info_search" class="easyui-accordion" data-options="fit:false" >
+		<div title="但条件查询" data-options="iconCls:'icon-save'" style="overflow: auto; padding: 10px;">
+			<div>
+				<input class="easyui-searchbox" id="show_user__Info_search_single"
+					data-options="validType:'namevalidteone',prompt:'Please Input Value',menu:'#singlsearchuser',searcher:doSearchSingleUser"
+					style="width: 300px"></input>
+				<div id="singlsearchuser">
+					<div data-options="name:'all',iconCls:'icon-filter'">用户名模糊查询</div>
+				</div>
+			</div>
+		</div>
+</div>
+<div style="height:80%;weith:100%">
+	<table id="show_user__Info">
+	</table>
+</div>
+
+<!-- 发送邮件面板 -->
+<div id="send_email_user" class="easyui-dialog" title="My Dialog" style="width:400px;height:300px;"
+    data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
+    <input id="send_email_user_text" class="easyui-textbox" data-options="required:true,multiline:true,validType:'minLength[1]'" style="width:100%;height:50%;" />
+    <hr>
+    <div  style="width:100%;height:10%;">
+    	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-man'">My email : </a>
+    	<input id="send_email_user_my" class="easyui-textbox" data-options="validType:'email'" >
+    </div>
+    <hr>
+    <div  style="width:100%;height:10%;">
+    	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-man'">To email : </a>
+    	<input id="send_email_user_to" class="easyui-textbox" data-options="editable:false,multiline:true" style="height:45px;">
+    </div>
+</div>
+
+
+
+<!-- ------------------------------------------  JS  Code------------------------------------------------ -->
+<script type="text/javascript">
+
+var filtername = "";
+var editRow = undefined;
+
+$('#show_user__Info').datagrid({
+    url:$.projectUrl+"/adminManergeUserController/getAllUser.do?name=" + filtername,
+    title:'表单查看',
+    iconCls:'icon-large-clipart',
+    checkOnSelect:false,
+    fit:true,	//加上这个属性可以让datagrid在界面很小的时候下面加一个滑动块
+    fitColumns:false,
+    nowrap:false,	//保证每一行的内容能够全部显示出来，也就是启动了换行模式
+    pagination:true,//显示分页功能
+    onDblClickRow:function(rowIndex,rowData){doubleClickRow(rowIndex,rowData);},//双击事件触发 
+    //onLoadSuccess:function(data){loadSuccess();},//数据加载成功触发 
+    //onLoadError:function(){loadError();},//数据加载失败触发 
+    onClickCell:function(rowIndex, field, value){clickCell(rowIndex, field, value);},
+    /* 定义列属性 */
+    columns:[[
+		{field:'user_id',title:'user的id',width:20,checkbox:true},  
+		{field:'name',title:'用户名',width:100,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true,
+					validType:'namevalidte'
+				}
+			}},
+		{field:'password',title:'密码',width:100,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true,
+					validType:'unnormal'
+				}
+			}},
+		{field:'email',title:'邮箱',width:200,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true,
+					validType: 'email'	
+				}
+			}},
+		{field:'type',title:'类型',width:100,
+			editor:{
+				type:"validatebox",
+				options:{
+					required:true,
+					validType:'my_user_type'
+				}
+			}},
+		{field:'save',title:'保存',width:50,
+				formatter:function(){
+					return '<input type="button" style="height:20px;width:45px" value="保存" />';
+			}},
+		{field:'delete',title:'删除',width:50,
+			formatter:function(){
+						return '<input type="button" style="height:20px;width:45px" value="删除" />';
+			}},
+		{field:'sendemail',title:'发送邮件',width:80,
+			formatter:function(){
+						return '<input type="button" style="height:20px;width:70px" value="发送邮件" />';
+			}}
+    ]],
+    /* 定义工具栏按钮 */
+    toolbar:[{
+    	text:'新建用户',
+		iconCls: 'icon-add',
+		handler: function(){addRow();}	//调用给datagrid新增行函数
+	},'-',{
+		text:'刷新尺寸',
+		iconCls: 'icon-reload',
+		handler: function(){flushSize();}	//调用插入行方法 
+	},'-',{
+		text:'群发邮件',
+		iconCls: 'icon-redo',
+		handler: function(){sendEmails();}	//调用插入行方法 
+	}]
+});
+
+/* 有时候会出现datagrid尺寸不能随着界面大小改变而改变，故需要进行刷新 */
+function flushSize(){
+	$('#show_user__Info').datagrid({
+		fit:true
+	});
+}
+
+
+function clickCell(rowIndex, field, value){
+	if(field == "save"){
+		//首先是判断当前行记录编辑状态
+		var flag = saveRow();
+		if(!flag) return;
+		var row = $('#show_user__Info').datagrid('getRows')[rowIndex];console.info(row);
+ 		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/adminManergeUserController/updateUser.do",
+			   dataType:"json",
+			   contentType:"application/json;charset=utf-8",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+			   data:JSON.stringify(row),
+			   success: function(data){//返回的数据是json对象
+				   if(data.success){
+					   $('#show_user__Info').datagrid('reload');
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:2000,
+							showType:'slide'
+						});
+				   }else{
+					   $('#show_user__Info').datagrid('beginEdit',rowIndex);
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:2000,
+							showType:'slide'
+						});
+				   }
+			   }
+			}); 
+	}
+	if(field == "delete"){
+		var row = $('#show_user__Info').datagrid('getRows')[rowIndex];
+		if(row == null || row == undefined){
+			$.messager.show({
+				title:'提示',
+				msg:"获取当前行 user_id失败 ",
+				timeout:2000,
+				showType:'slide'
+			});
+			return;
+		}
+		$.ajax({
+			   type: "POST",
+			   url: $.projectUrl+"/adminManergeUserController/deleteUserById.do",
+			   dataType:"json",
+			 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+			   data:"user_id=" + row.user_id,
+			   success: function(data){//返回的数据是json对象
+				   if(data.success){
+					   $('#show_user__Info').datagrid('reload');
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:2000,
+							showType:'slide'
+						});
+				   }else{
+					   if(data.msg == "通过user_id删除user失败"){
+						   $('#show_user__Info').datagrid('deleteRow',rowIndex);
+					   }else
+						$.messager.show({
+							title:'提示',
+							msg:data.msg,
+							timeout:2000,
+							showType:'slide'
+						});
+				   }
+			   }
+			});
+	}
+	if(field == "sendemail"){
+		var row = $('#show_user__Info').datagrid('getRows')[rowIndex];
+		//设置admin邮箱账号
+		$("#send_email_user_my").textbox('setValue',$.adminEmail);
+		//设置目标邮箱账号
+		$("#send_email_user_to").textbox('setValue',row.email);
+		
+		var objectJsonEmial = [];
+		objectJsonEmial.push(row.email);
+		$("#send_email_user").dialog({
+			closed: false,
+			buttons:[{
+				text:'发送',
+				iconCls:'icon-redo',
+				handler:function(){
+					if(!$("#send_email_user_text").textbox('isValid')) return;
+					sendEmailToController($.adminEmail,objectJsonEmial,$("#send_email_user_text").textbox('getValue'));
+				}
+			},{
+				text:'取消',
+				iconCls:'icon-clear',
+				handler:function(){$("#send_email_user").dialog({closed: true})}
+			}]
+		});
+		console.info(row);
+	}
+}
+
+function doSearchSingleUser(value,name){
+	var flag = $("#show_user__Info_search_single").searchbox('isValid');
+	if(!flag)return;
+	filtername = "";
+	if(name == "all"){filtername = value;}
+	$('#show_user__Info').datagrid({
+		url:$.projectUrl+"/adminManergeUserController/getAllUser.do?name=" + filtername
+	});
+}
+
+
+
+/* 双击事件函数 */
+function doubleClickRow(index,row){
+	$('#show_user__Info').datagrid('uncheckRow', editRow);
+	/* 判断是否还有未完成编辑的行 */
+	if (editRow != undefined) {
+		if (!$('#show_user__Info').datagrid('validateRow', editRow)) {
+			$.messager.show({
+				title : '提示',
+				msg : '请完成当前行的编辑 ！ ',
+				timeout : 2000
+			});
+			return false;
+		}
+		$('#show_user__Info').datagrid('endEdit', editRow);
+		editRow = undefined;
+	}
+	/* 取消所有行被选择项 */
+	$('#show_user__Info').datagrid('uncheckAll');
+	
+	$('#show_user__Info').datagrid('checkRow',index);
+	
+	$('#show_user__Info').datagrid('beginEdit',index);
+	editRow = index;
+}
+
+function saveRow(){
+	/* 判断最后一个编辑行是否通过校验 */
+	if (!$('#show_user__Info').datagrid('validateRow', editRow)) {
+		$.messager.show({
+			title : '提示',
+			msg : '请完成当前行的编辑 ！ ',
+			timeout : 2000
+		});
+		return false;
+	}
+	$('#show_user__Info').datagrid('endEdit', editRow);
+	editRow = undefined;
+	return true;
+}
+
+function addRow(){
+	if(!validateEditRowIsNull($('#show_user__Info').datagrid('getRows').length)){
+		return ;
+	};
+	
+	$('#show_user__Info').datagrid('appendRow',{
+	});
+	
+	/* 添加一行，并且让当前行的编辑状态开启 */
+	$('#show_user__Info').datagrid('beginEdit',$('#show_user__Info').datagrid('getRows').length-1);
+	
+}
+
+function validateEditRowIsNull(index){
+	if (editRow != undefined) {
+		if (!$('#show_user__Info').datagrid('validateRow', editRow)) {
+			$.messager.show({
+				title : '提示',
+				msg : '请完成当前行的编辑 ！ ',
+				timeout : 2000
+			});
+			return false;
+		}
+
+		$('#show_user__Info').datagrid('endEdit', editRow);
+		editRow = undefined;
+	}
+	editRow = index;
+	return true;
+}
+
+function sendEmails(){
+	var rows = $('#show_user__Info').datagrid('getChecked');
+	if(rows.length > 0){
+		var emailOject = "";
+		var objectJsonEmial = [];
+		for(var i =0;i<rows.length;i++){	
+			emailOject += rows[i].email + "\n";
+			objectJsonEmial.push(rows[i].email);
+	 	}
+		$("#send_email_user_my").textbox('setValue',$.adminEmail);
+		$("#send_email_user_to").textbox('setValue',emailOject);
+		$("#send_email_user").dialog({
+			closed: false,
+			buttons:[{
+				text:'发送',
+				iconCls:'icon-redo',
+				handler:function(){
+					if(!$("#send_email_user_text").textbox('isValid')) return;
+					
+					sendEmailToController($.adminEmail,objectJsonEmial,$("#send_email_user_text").textbox('getValue'));
+				}
+			},{
+				text:'取消',
+				iconCls:'icon-clear',
+				handler:function(){$("#send_email_user").dialog({closed: true})}
+			}]
+		});
+	}else{
+		$.messager.alert('提示','请选择要发送的对象','error');
+	}	
+}
+
+function sendEmailToController(myEmail,objectEmial,text){
+	var emailModel = {};
+	emailModel["myEmail"] = myEmail;
+	emailModel["toEmails"] = objectEmial;
+	emailModel["text"] = text;
+	console.info(emailModel);
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/adminManergeUserController/sendEmail.do",
+		   dataType:"json",
+		   contentType:"application/json;charset=utf-8",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+		   data:JSON.stringify(emailModel),
+		   success: function(data){
+			   if(data.success){
+				   $("#send_email_user").dialog({closed: true})
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+	
+	
+}
+</script>
+</body>
+

@@ -1,0 +1,166 @@
+<body>
+<table id="show_detail_table"  data-options="fit:'true'" style="height:300px;weith:100%">
+    <thead>
+		<tr id="show_user__table_detail_rows">
+			
+		</tr>
+    </thead>
+</table>
+
+
+
+	<!-- ------------------------------JS 代码--------------------------------------- -->
+<script type="text/javascript">
+
+
+/* 页面打开就执行，获取指定的tableIdAndName模板，然后初始化datagrid  */
+var globalTableModel = $.getGlobalTableModel();
+if(globalTableModel == null || globalTableModel == undefined){
+	$.messager.alert('Warning','获取全局table ID 和 Name 模型失败！！！');
+}else{
+	$("#show_user__table_detail_rows").append($('<th data-options="field:\'times\',width:50,checkbox:true">id</th>'));
+	for(var i=0;i<globalTableModel.length;i++){
+		var input = globalTableModel[i];
+ 		var td2String = undefined;
+		
+		if(input.type == "text"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
+		else if(input.type == "textarea"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
+		else if(input.type == "file"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else if(input.type == "date"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else if(input.type == "datetime"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
+		else if(input.type == "email"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else if(input.type == "number"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
+		else if(input.type == "select"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else if(input.type == "checkbox"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else if(input.type == "radio"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+		else{//该判断用于收集无效的input 
+		}
+		$("#show_user__table_detail_rows").append(td2String);
+	}
+	$('#show_detail_table').datagrid({
+		url:$.projectUrl+"/userTable/getTableIdAndNameByTableIdAndUserId.do?table_id=" +globalTableModel[0].table_id ,
+		fitColumns:true,
+		fit:true,
+		fitColumns:false,
+		nowrap:false,
+	    /* 定义工具栏按钮 */
+	    toolbar:[{
+			text:'刷新',
+			iconCls: 'icon-reload',
+			handler: function(){flushSize();}	//调用插入行方法 
+		},'-',{
+			text:'新增',
+			iconCls: 'icon-add',
+			handler: function(){addUserEditTable();}	//调用插入行方法 
+		},'-',{
+			text:'修改',
+			iconCls: 'icon-edit',
+			handler: function(){alertUserEditTable();}	//调用插入行方法 
+		},'-',{
+			text:'删除',
+			iconCls: 'icon-remove',
+			handler: function(){deleteUserEditTable();}	//调用插入行方法 
+		}]
+	});
+}
+function flushSize(){
+	$('#show_detail_table').datagrid('reload');console.info();
+}
+function addUserEditTable(){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/admin/db/getModelReturnJson.do?param=change",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"table_id="+globalTableModel[0].table_id,
+		   success: function(data){
+			   if(data.success){	//
+				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
+				   $.setGlobalModel(data.obj);
+				   $("#userTableLayout").layout('expand', 'east');
+					$("#userTableLayout").layout('panel', 'east').panel({
+						href : 'center_editTable.html'
+					});
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:4000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+}
+
+function alertUserEditTable(){
+	var rows = $('#show_detail_table').datagrid('getChecked');
+	if(rows.length > 1 || rows.length == 0){
+		$.messager.show({
+			title:'提示',
+			msg:"选择一行进行修改 ",
+			timeout:2000,
+			showType:'slide'
+		});
+		return;
+	}
+		
+	
+ 	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/userTable/getModel_WritedInput.do?times="+rows[0].times,
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"table_id="+globalTableModel[0].table_id,
+		   success: function(data){
+			   if(data.success){
+				   $.setGlobalModel(data.obj);
+				   $("#userTableLayout").layout('expand', 'east');
+					$("#userTableLayout").layout('panel', 'east').panel({
+						href : 'center_alterTable.html'
+					});
+			   }else{
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:4000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+}
+
+function deleteUserEditTable(){
+	$.messager.confirm('请确认','您确定要删除当前选中的所有行吗？',function(flag){
+		if(flag){
+			var rows = $('#show_detail_table').datagrid('getChecked');
+			for(var i=0;i<rows.length;i++){
+				var index = $('#show_detail_table').datagrid('getRowIndex',rows[i]);
+ 				$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/userTable/deleteUserWriteTable.do?times="+rows[i].times,
+					   dataType:"json",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+					   data:"table_id="+globalTableModel[0].table_id,
+					   success: function(data){
+						   if(data.success){
+							   $('#show_detail_table').datagrid('reload');
+						   }else{
+							   $.messager.alert('提示',data.msg,'error');
+						   }
+					   }
+					}); 
+			}
+		}
+	});
+	
+
+}
+
+
+
+
+
+</script>
+</body>

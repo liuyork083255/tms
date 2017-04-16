@@ -1,0 +1,343 @@
+
+<body>
+	<!-- 登陆div -->
+<div id="window_user_login" class="easyui-window" style="width:400px;height:300px"
+	data-options="modal:true">
+	<div id="tags" class="easyui-tabs" data-options="fit:true">
+	    <div title="登陆" style="padding:10px">
+
+			<form id="window_user_login_form_login" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>Name:</td>
+		    			<td><input id="window_user_login_form_login_name" class="easyui-textbox" type="text" name="name" data-options="required:true,validType:'namevalidte'"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password:</td>
+		    			<td><input id="window_user_login_form_login_password" class="easyui-textbox" type="password" name="email" data-options="required:true,validType:'unnormal'"></input></td>
+		    		</tr>
+		    	</table>
+	    	</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm(1)">Submit</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm(1)">Clear</a>
+		    </div>
+	    </div>
+	    <!-- ---------------------------------------------------------------------------------------------- -->
+	    <div title="注册" style="padding:10px">
+	    
+			<form id="window_user_login_form_register" method="post">
+		    	<table cellpadding="5">
+		    		<tr>
+		    			<td>用户名:</td>
+		    			<td><input id="window_user_login_form_register_name" class="easyui-textbox" type="text" name="name" data-options="required:true,validType:'namevalidte'"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>密码:</td>
+		    			<td><input id="window_user_login_form_register_password" class="easyui-textbox" type="password" data-options="required:true,validType:'unnormal'"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>邮箱:</td>
+		    			<td><input id="window_user_login_form_register_email" class="easyui-textbox" type="text" data-options="required:true,validType:'email'"></input></td>
+		    			<td><a href="javascript:void(0)" id="window_user_login_form_checkcode_button" class="easyui-linkbutton" onclick="sendCheckCode()">获取验证码</a>
+		    				<img id="wwwww" src="../../js/jquery-easyui-1.5/themes/icons/cancel.png">
+		    			</td>
+		    		</tr>
+		    		<tr>
+		    			<td>验证码:</td>
+		    			<td><input id="window_user_login_form_checkcode" class="easyui-textbox" type="text" style="width:100px" data-options="required:true"></input>
+		    			</td>
+		    		</tr>
+		    	</table>
+	    	</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm(2)">Submit</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm(2)">Clear</a>
+		    </div>
+	    </div>
+	    <!-- ---------------------------------------------------------------------------------------------- -->
+	    <div title="忘记密码" style="padding:10px">
+	    	<form id="window_user_login_form_forget" method="post">
+				<table cellpadding="5">
+			    		<tr>
+			    			<td>注册邮箱:</td>
+			    			<td><input id="window_user_login_form_forget_email" class="easyui-textbox" type="text" data-options="required:true,validType:'email'"></input></td>
+			    			<td><a href="javascript:void(0)" class="easyui-linkbutton" onclick="sendForgetCheckCode()">获取验证码</a>
+			    				<img id="img_forget_send" src="../../js/jquery-easyui-1.5/themes/icons/cancel.png">
+			    			</td>
+			    		</tr>
+			    		<tr>
+			    			<td>验证码:</td>
+			    			<td><input id="window_user_forget_form_checkcode" class="easyui-textbox" type="text" style="width:100px" data-options="required:true"></input></td>
+			    			<td><a href="javascript:void(0)" class="easyui-linkbutton" onclick="checkForgetCode()">验证</a>
+			    				<img id="img_forget_check" src="../../js/jquery-easyui-1.5/themes/icons/cancel.png">
+			    			</td>
+			    		</tr>
+			    		<tr>
+			    			<td>新密码:</td>
+			    			<td><input id="window_user_login_form_forget_password1" class="easyui-textbox" type="password" data-options="disabled:true,required:true,validType:'unnormal'"></input></td>
+			    		</tr>
+			    		<tr>
+			    			<td>确认密码:</td>
+			    			<td><input id="window_user_login_form_forget_password2" class="easyui-textbox" type="password" data-options="disabled:true,required:true,validType:'same[\'window_user_login_form_forget_password1\']'"></input></td>
+			    		</tr>
+				</table>
+			</form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" id="forget_submit" class="easyui-linkbutton" onclick="submitForm(3)" data-options="disabled:true" >更改</a>
+		    	<a href="javascript:void(0)" id="forget_cancel" class="easyui-linkbutton" onclick="clearForm(3)" >清空</a>
+		    </div>
+	    </div>
+	</div>
+</div>
+
+<script>
+function submitForm(n){
+	if(n == 1){
+		$('#window_user_login_form_login').form('submit',{
+		    onSubmit: function(){
+		    	//首先开启检验功能 
+		    	var flag = $('#window_user_login_form_login').form('validate');
+		    	if(flag == false){
+		    		return false;
+		    	}
+		    	else{
+		    		var user = {};
+		    		user["name"] = $("#window_user_login_form_login_name").val();
+		    		user["password"] = $("#window_user_login_form_login_password").val();
+		    		
+		     		$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/user/login.do",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+					   data:"name="+user.name+"&password="+user.password,
+					   success: function(data){
+						   console.info(data);
+					     if(data.success){
+					    	 //此处将当前用户存入全局变量中 
+					    	 $.setGlobalUser(data.obj);
+					    	 
+					    	 $("#window_user_login").window('close');
+					 		 $.messager.show({
+								title:'提示',
+								msg:'欢迎 '+user.name,
+								timeout:5000
+							 });
+					     }else{
+					 		 $.messager.show({
+									title:'提示',
+									msg:data.msg,
+									timeout:5000
+								 });
+					     }
+					   }
+					});
+						
+		    		//return true;
+		    	}
+		    		
+		    }
+		});
+	}
+	if(n == 2){
+		$('#window_user_login_form_register').form('submit',{
+ 			onSubmit: function(){
+			//首先开启检验功能 
+	    	var flag = $('#window_user_login_form_register').form('validate');
+	    	if(flag == false){
+	    		return false;
+	    	}
+	    	else{
+	    		//校验是否点击发送验证码按钮
+	    		if($("#wwwww").attr("src") == "../../js/jquery-easyui-1.5/themes/icons/cancel.png"){
+					   $.messager.alert({
+							title : '提示',
+							msg : "你还没有获取验证码  "
+						});
+					   return;
+	    		}
+	    		
+	    		var user = {};
+	    		user["name"] = $("#window_user_login_form_register_name").val();
+	    		user["password"] = $("#window_user_login_form_register_password").val();
+	    		user["email"] = $("#window_user_login_form_register_email").val();
+	    		console.info(user);
+	     		$.ajax({
+					   type: "POST",
+					   url: $.projectUrl+"/user/registerUser.do?checkCode="+$("#window_user_login_form_checkcode").val(),
+					   dataType:"json",
+					   contentType:"application/json;charset=utf-8",
+					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+					   data:JSON.stringify(user),
+					   success: function(data){
+						   //console.info(data);
+					     if(data.success){
+					    	//此处将当前用户存入全局变量中 
+					    	 $.setGlobalUser(data.obj);
+					    	 
+					    	 $("#window_user_login").window('close');
+					 		 $.messager.show({
+								title:'提示',
+								msg:'恭喜,注册成功  ',
+								timeout:5000
+							 });
+					     }else{
+					 		 $.messager.show({
+									title:'提示',
+									msg:'注册失败  ' + data.msg,
+									timeout:6000
+								 });
+					     }
+					   }
+					});
+	    		}
+			} 
+		});
+	}
+	if(n == 3){
+		$('#window_user_login_form_forget').form('submit',{
+ 			onSubmit: function(){
+ 				var flag = $('#window_user_login_form_forget').form('validate');
+ 		    	if(flag == false){
+ 		    		return false;
+ 		    	}
+ 		    	else{
+	 		   	    $.ajax({
+	 			        type:"post",
+	 			        url:$.projectUrl+"/user/updateUserPassword.do",
+	 			        dataType:'json',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+	 			        data:"email="+frogetCheckEmail+"&password="+$("#window_user_login_form_forget_password2").val(),
+	 			        success:function(data){
+	 			        	if(data.success){
+	 					 		 $.messager.show({
+	 									title:'提示',
+	 									msg:data.msg,
+	 									timeout:2000
+	 								 });
+	 			        	}else{
+	 					 		 $.messager.show({
+	 									title:'提示',
+	 									msg:data.msg,
+	 									timeout:3000
+	 								 });
+	 			        	}
+	 			        }          
+	 			    });
+ 		    	}
+ 			}
+		});
+
+	}
+
+}
+
+function sendCheckCode(){
+    $.ajax({
+        type:"post",
+        url:$.projectUrl+"/user/sendUserCheckCode.do?email="+$("#window_user_login_form_register_email").val()+"&username="+$("#window_user_login_form_register_name").val(),
+        dataType:'json',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+        success:function(data){
+        	if(data.success){
+        		$("#wwwww").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
+        		console.info("hah ");
+		 		 $.messager.show({
+						title:'提示',
+						msg:'请登录您的邮箱获取验证码 ',
+						timeout:2000
+					 });
+        	}else{
+		 		 $.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:3000
+					 });
+        		$("#wwwww").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        	}
+        }          
+    });
+}
+
+var frogetCheckEmail = "";
+
+function sendForgetCheckCode(){
+	frogetCheckEmail = $("#window_user_login_form_forget_email").val();
+	var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+	var flag = reg.test(frogetCheckEmail);
+	//这里做一个验证，看看输入的邮箱是否格式正确
+	if(!flag){
+		 $.messager.show({
+				title:'提示',
+				msg:'邮箱格式不正确',
+				timeout:2000
+			 });
+		return false;
+	}
+	
+    $.ajax({
+        type:"post",
+        url:$.projectUrl+"/user/sendForgetCheckCode.do?email="+frogetCheckEmail,
+        dataType:'json',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+        success:function(data){
+        	if(data.success){
+        		$("#img_forget_send").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
+		 		 $.messager.show({
+						title:'提示',
+						msg:'请登录您的邮箱获取验证码 ',
+						timeout:2000
+					 });
+        	}else{
+		 		 $.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:3000
+					 });
+        		$("#img_forget_send").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        	}
+        }          
+    });
+}
+
+function checkForgetCode(){
+    $.ajax({
+        type:"post",
+        url:$.projectUrl+"/user/checkForgetCheckCode.do?checkCode="+$("#window_user_forget_form_checkcode").val()+"&email="+frogetCheckEmail,
+        dataType:'json',    //返回类型，有json，text，HTML。这里并没有jsonp格式，所以别妄想能用jsonp做跨域了。
+        success:function(data){
+        	if(data.success){
+        		$("#img_forget_check").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
+        		$("#window_user_login_form_forget_password1").textbox({disabled:false});
+        		$("#window_user_login_form_forget_password2").textbox({disabled:false});
+        		$("#forget_submit").linkbutton({disabled:false});
+		 		 $.messager.show({
+						title:'提示',
+						msg:'请输入你的新密码 ',
+						timeout:2000
+					 });
+        	}else{
+		 		 $.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:3000
+					 });
+        		$("#img_forget_check").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        	}
+        }          
+    });
+}
+
+function clearForm(n){
+	if(n == 1)
+		$('#window_user_login_form_login').form('clear');
+	if(n == 2)
+		$('#window_user_login_form_register').form('clear');
+	if(n == 3){
+		$('#window_user_login_form_forget').form('clear');
+	}
+}
+<!-- ---------------------------------------------------------------------------------------------- -->
+
+
+
+<!-- ---------------------------------------------------------------------------------------------- -->
+</script>
+</body>

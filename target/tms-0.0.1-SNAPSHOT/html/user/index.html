@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<!-- 注意这里引入的jquery的js文件是easyui自带的，而不是别的文件，否者在layout组件的时候会出现异常 -->
+<script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.min.js" charset='utf-8'></script>
+<script type="text/javascript" src="../../js/jquery-easyui-1.5/jquery.easyui.min.js"  charset='utf-8'></script>
+<link rel='stylesheet' href='../../js/jquery-easyui-1.5/themes/default/easyui.css' type='text/css' charset='utf-8'></link>
+<link rel='stylesheet' href='../../js/jquery-easyui-1.5/themes/icon.css' type='text/css' charset='utf-8'></link>
+<script type="text/javascript" src="../../js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"  charset='utf-8'></script>
+<script type="text/javascript" src="../../js/extendJs/gv.js"  charset='utf-8'></script>
+<script type="text/javascript" src="../../js/extendJs/validator.js"  charset='utf-8'></script>
+<!-- 控制主题代码 -->
+<link id="easyuiTheme" rel="stylesheet" href="../../js/jquery-easyui-1.5/themes/black/easyui.css" />
+
+<body class="easyui-layout" id="userTableLayout">
+	<!-- 北部界面 -->
+        <div data-options="region:'north',title:'切换主题',split:true,collapsed:true" style="height:100px;">
+    	<a href="javascript:changeTheme('default')" class="easyui-linkbutton" style="height:100%;">Default Theme</a>
+    	<a href="javascript:changeTheme('black')" class="easyui-linkbutton" style="height:100%;">Black Theme</a>
+    	<a href="javascript:changeTheme('gray')" class="easyui-linkbutton" style="height:100%;">Gray Theme</a>
+    	<a href="javascript:changeTheme('material')" class="easyui-linkbutton" style="height:100%;">Material Theme</a>
+    	<a href="javascript:changeTheme('metro')" class="easyui-linkbutton" style="height:100%;">Metro Theme</a>
+    	<a href="javascript:changeTheme('metro-blue')" class="easyui-linkbutton" style="height:100%;">Metro-blue Theme</a>
+    	<a href="javascript:changeTheme('metro-gray')" class="easyui-linkbutton" style="height:100%;">Metro-gray Theme</a>
+    	<a href="javascript:changeTheme('metro-orange')" class="easyui-linkbutton" style="height:100%;">Metro-orange Theme</a>
+    	<a href="javascript:changeTheme('metro-red')" class="easyui-linkbutton" style="height:100%;">Metro-red Theme</a>
+    	<a href="javascript:changeTheme('bootstrap')" class="easyui-linkbutton" style="height:100%;">Bootstrap Theme</a>
+    	<a href="javascript:changeTheme('ui-cupertino')" class="easyui-linkbutton" style="height:100%;">Cupertino Theme</a>
+    	<a href="javascript:changeTheme('ui-dark-hive')" class="easyui-linkbutton" style="height:100%;">DarkHive Theme</a>
+    	<a href="javascript:changeTheme('ui-pepper-grinder')" class="easyui-linkbutton" style="height:100%;">Grinder Theme</a>
+    	<a href="javascript:changeTheme('ui-sunny')" class="easyui-linkbutton" style="height:100%;">Sunny Theme</a>
+    </div>
+    
+    <!-- 南部界面，即为登录界面 -->
+    <div data-options="region:'south',href:'login.html'" style="height:10px;"></div>
+    
+    <!-- 东部界面 -->
+    <div data-options="region:'east',title:'浏览界面',split:true,collapsed:true" style="width:500px;"></div>
+    
+    <!-- 西部界面 -->
+    <div data-options="region:'west',title:'菜单',href:'west.html',split:true" style="width:207px;"></div>
+    
+    <!-- center界面 -->
+    <div data-options="region:'center',split:true" >
+		
+	</div>
+	
+</body>
+
+<!-- 以后养成习惯，js代码尽量写在body后面，不然会出现一些不必要的调试错误 -->
+<script type="text/javascript">
+
+function changeTheme(color){
+	var themeStart = "../../js/jquery-easyui-1.5/themes/";
+	var themeEnd = "/easyui.css";
+	var themeType = color;
+	var themeUrl = themeStart + themeType + themeEnd;
+	//alert(themeUrl);
+	$("#easyuiTheme").attr("href",themeUrl);
+}
+
+console.info("helo");
+
+
+</script>
+
+</html>

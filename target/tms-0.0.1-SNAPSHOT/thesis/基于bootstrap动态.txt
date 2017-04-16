@@ -1,0 +1,127 @@
+基于Bootstrap框架的动态表单设计与实现
+谈华宇 吴昶成 邱小平
+(湖北师范学院计算机科学与技术学院，湖北 黄石 435000)
+摘 要：通过分析动态表单的实现原理，采用Bootstrap前端框架设计并实现了在线表单设计器。动态表单设计器是将用
+户待填写表单中的各种数据项组成特定格式的字符串，再将字符串存储到数据库相应的字段中以实现表单结构信息保
+存的功能。从数据库中读取字段，再拼接成指定格式的字符串，并对其读取解析还原成表单的样式，即简单的置换型模
+板引擎。
+关键词：Bootstrap；动态表单；模板引擎
+基金项目：湖北师范学院2014年本科生科研立项项目，项目编号：2013ZD50。
+作者简介：谈华宇（1992- ），男，湖北孝昌人，本科，研究方向：前端开发；吴昶成（1993- ），男，江西南昌人，本科，研究方向：系
+统集成；邱小平（1994- ），男，湖北武汉人，本科，研究方向：数据库开发。指导教师：李光敏，湖北师范学院计算机科学与技术学
+院。
+随着互联网的日益发展，基于浏览器/服务器（B/S）
+的开发模式已成为如今的应用系统开发的主流，表单作为
+业务的枢纽和信息的承载体也越来越重要，然而传统的表
+单操作存在着操作不灵活，实现复杂，功能简单等缺点。
+随着用户对于表单需求的发展变化，固定格
+式的表单结构和单一的表单元素已经无法
+满足用户的需求，用户对动态表单生成的功
+能需求迫在眉睫[1]。因此，文章提出了利用
+Bootstrap前端框架实现设计动态表单，用
+户填写表单内容等功能的技术实现。
+1 Bootstrap框架
+Bootstrap是Twitter推出的一个开源
+的用于前端开发的工具包。它由Twitter的
+设计师Mark Otto和Jacob Thornton合作
+开发，是一个CSS/HTML框架。Bootstrap提
+供了优雅的HTML和CSS规范，它即是由动态CSS语言Less写
+成。Bootstrap一经推出后颇受欢迎，一直是GitHub上的
+热门开源项目，包括NASA的MSNBC（微软全国广播公司）的
+Breaking News都使用了该项目。
+Bootstrap中包含了丰富的Web组件，根据这些组件，
+可以快速的搭建一个漂亮、功能完备的网站。并且可以对
+Bootstrap中所有的CSS变量进行修改，依据自己的需求定
+制代码。
+2 动态表单设计思路
+由于表单中元素的不确定性，动态表单设计器必须能
+根据用户的需要，自由的添加或删除表单中的元素，并能
+通过发布给用户填写的表单来收集所需要的信息[2]。想要
+实现表单设计器，可以像可视化编程环境中的控件拖放一
+样将已设计好的表单组件从组件库中取出放在系统界面的
+合适位置上，最后保存生成动态表单，表单保存成功后会
+在关系数据库中自动新建对应的数据表，表名为该表单的
+拼音，用于存储用户填写表单信息。动态表单实现原理如
+图1所示。
+系统所涉及的关系数表包括表单表(Form),表单组件
+表(Element)，组件值表(ElementValue)。表单表中的字段
+有Id，FormName，Description，OwnerId，CreateDate。
+FormName表示创建表单的中文名称，Description字段
+对欲创建的表单进行描述说明，OwnerId表示创建表单的
+用户Id，CreateDate表示创建表单的当前时间。表单组
+件表中的字段包括Id，FormId和TypeId。其中FormId表
+示该组件所属的表单Id，TypeId表示表单中当前组件的
+类型Id，如：Text，Radio或Checkbox。组件值表中包括的
+字段有Id，ElementId,ElementName,ElementValue。其中
+ElementId表示组件Id，记录值为表单组件表（Element）
+中的主键Id值，ElementName表示表单中组件的name属性
+值，ElementValue表示表单中组件的value属性值。用户在
+表单的设计过程中将填写的动态表单中元素添加到表单
+图1 动态表单实现原理
+第3期
+2015年2月
+No.3
+Februa ry，2015
+无线互联科技
+Wireless Internet Tech nology
+- 100 - - 101 -
+组件表中，使系统能识别什么元素存储于什么表中。Types
+表是存储常用的不同组件的类型，类型可以是：“text”，
+“radio”，“label”，“checkbox”，“select”等类型。
+ElementValue则用来存储这些元素组件相应的value值。
+3 具体功能实现
+利用Bootstrap框架设计出用户界面，前台利用特定
+格式的字符串传给后台，后台再将字符串中需要的部分
+存入关系数据库的四个表中。即用简单的置换型模板引
+擎实现将指定模板内容（字符串）中的特定标记（子字符
+串）替换，便生成了最终需要的动态表单。特殊格式的字
+符串如下：
+字符串第一项为当前的表单名称
+Label标签:label,value属性，name属性
+Text标签：text，name属性
+Checkbox标签：Checkbox，标签名，几个选项，选项
+一，选项二
+Radio标签：Radio，标签名,几个选项，选项一，选
+项二
+Select标签：Select，标签名,几个选项，选项一，选项
+二，选项三
+然后分别存入Form表，Element元素表,ElementValue
+元素值表中。
+默认传输数据为：Checbox，复选框，3，选项一，选项
+二，Select，下拉菜单，3，选项一，选项二，Radio,单选框，
+2，选项一，选项二，label，文本框，input1，text，input1.
+3.1 设计表单
+管理员可以设计表单，由于表单元素的不确定性，由用
+户来添加或者删除表单中的元素。目前只可以有文本框，下
+拉框，单选框和多选框拖入（或点击）表单，在表单区域，
+单击相应的字段会弹出属性设置对话框，用户填写相关的
+信息后点击“确定”按钮即可保存设置；若不需要一些表
+单字段，可以鼠标左键将相应的字段拖到控件区域便可移
+除。设计好后保存，保存成功会在右下角出现消息提示。前
+台根据特定格式的字符串，传给后台，然后进行向四个表
+中填写数据。
+3.2 发布表单
+管理员可以将设计好的表单发布给指定用户填写，可
+以选择表单以及何人可以填写表单等，发布后，存入Task表
+中，其他用户即可在待填表单中进行填写提交。
+3.3 导出表单
+管理员可以将用户填写的表单导出成Excel，利用SQL
+语句关联表单将信息导出。
+4 结语
+文章主要阐述了动态表单设计器的设计思路和实
+现，基本的用户设计表单和用户填写数据功能已经实现。
+该系统能够满足用户对信息管理系统中表单形式不断变
+化的要求，并且通过动态表单系统收集用户填写的信息。
+下一步的研究方向为用户多次填写表单后，表单的数据
+遗留问题。
+[参考文献]
+[1]洪英汉，刘竹松，龙桂和.基于SSH框架的动态表单设计与实现[J].现代计算机:下半月版，2009(9):186-188.
+[2]王智广，陈涛，陈明，等.软件开发中动态表单的解决方案[J].内蒙古师范大学学报:自然科学版，2010，39(5):467-472.
+Design and Implement of Dynamic Form Based on Bootstrap Framework
+TAN Huayu WU Changcheng QIU Xiaoping
+(Hubei Normal University，Dep artment of Computer Science and Technology，Huangshi 435000，China)
+Abstract：Form designer on-line is designed and implemented by principle analysis on the implementing dynamic form .Form
+designer uses Bootstrap framework. Dynamic Form designer realize form storage function through making various data items
+assemble into specific string, then database storages the corresponding data items. Reading field from database ,making it assemble
+into specific string and reading the string ,reducing it to form style. That is the simple replacement type template engine.
+Key words：Bootstrap；Dynamic Form；Template Engine

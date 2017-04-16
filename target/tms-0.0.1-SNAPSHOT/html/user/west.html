@@ -1,0 +1,117 @@
+<!-- 西部界面 -->
+<body>
+
+
+<div id="east-zedie1" class="easyui-accordion" data-options="fit:true">
+    <div title="我的表格" data-options="iconCls:'icon-save',selected:true" style="overflow:auto;padding:10px;">
+		<!-- <h1 >模板</h1> -->
+		<div >
+			<a href="#" onclick="a_click(1);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width:170px;">已填写的表格</a><br/>
+			<a href="#" onclick="a_click(2);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width:170px;">未填写的表格</a>
+		</div>
+		
+		<!-- <h1 >标签模板查看</h1> -->
+		
+    </div>
+    <div title="我的信息管理" data-options="iconCls:'icon-reload'" style="padding:10px;">
+		<div >
+			<a href="#" onclick="a_click(3);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:170px;">我的信息</a><br/>
+		</div>
+    </div>
+    <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
+		如有疑问，可向管理员联系<br /><br />
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'" onclick="helpUserToAdmin()">Click me ...</a>
+    </div>
+</div>
+
+<div id="dilog_user_sendemail_admin" style="width:400px;height:200px;" class="easyui-dialog" data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
+	<input id="send_email_admin_text" class="easyui-textbox" data-options="required:true,multiline:true,validType:'minLength[1]'" style="width:100%;height:100%;" />
+</div>
+
+
+<!-- JS代码 -->
+<script type="text/javascript">
+/* 当点击超链接的时候执行该方法，index参数判断是哪一个超链接 */
+function a_click(index){
+	if(index == 1){
+		//$("#userTableLayout").layout('collapse', 'west');
+		$("#userTableLayout").layout('panel', 'center').panel({
+			href : 'center_writeTable.html'
+		});
+	}
+	else if(index == 2){
+		//$("#userTableLayout").layout('collapse', 'west');
+		$("#userTableLayout").layout('panel', 'center').panel({
+			href : 'center_unwriteTable.html'
+		});
+	}
+	else if(index == 3){
+		//$("#userTableLayout").layout('collapse', 'west');
+		$("#userTableLayout").layout('panel', 'center').panel({
+			href : 'center_showMyinfo.html'
+		});
+	}
+	else if(index == 5){}
+	else if(index == 6){}
+	else if(index == 7){}
+	else if(index == 8){}
+	else{}
+}
+
+function helpUserToAdmin(){
+	$("#dilog_user_sendemail_admin").dialog({
+		closed: false,
+		buttons:[{
+			text:'发送',
+			iconCls:'icon-redo',
+			handler:function(){
+				if(!$("#send_email_admin_text").textbox('isValid')) return;
+				sendEmailToAdmin($("#send_email_admin_text").textbox('getValue'));
+			}
+		},{
+			text:'取消',
+			iconCls:'icon-clear',
+			handler:function(){$("#dilog_user_sendemail_admin").dialog({closed: true})}
+		}]
+	});
+}
+
+function sendEmailToAdmin(text){
+	$.ajax({
+		   type: "POST",
+		   url: $.projectUrl+"/user/userSendEmailToAdmin.do",
+		   dataType:"json",
+		 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.tringify进行转换成字符串类型
+		   data:"text=" + text,
+		   success: function(data){//返回的数据是json对象
+			   if(data.success){
+					$.messager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }else{
+				   ager.show({
+						title:'提示',
+						msg:data.msg,
+						timeout:2000,
+						showType:'slide'
+					});
+			   }
+		   }
+		});
+}
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
