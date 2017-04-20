@@ -315,30 +315,32 @@ public class ExcelUtils {
 	        
 	        //遍历map，封装到表中
 	        int shortGET = 0;
+	        int userId = 0;
 	        Set<String> keys =  inputListMap.keySet();
 			for (String username : keys) {
 				int num = 0;
 				row = sheet.createRow(++shortGET);
 				List<Input> inputList = inputListMap.get(username);
-				row.createCell(num++).setCellValue(user_tableList.get(0).getUser_name()); 
+				row.createCell(num++).setCellValue(user_tableList.get(userId++).getUser_name()); //这里是写入新增的名字列
 				for (Input input : inputList) {
-					row.createCell(num++).setCellValue(input.getValue());  
+					row.createCell(num++).setCellValue(input.getValue());  //这里是名字后面的列
 				}
 			}
 			
 	        //将文件存到指定位置  
 	        try  
 	        {  
-	            OutputStream os = response.getOutputStream();
+	            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+	            response.setHeader("Content-Disposition","attachment");
+	            response.setHeader("filename",tableName+".xls");
+				OutputStream os = new BufferedOutputStream(response.getOutputStream());
 	            wb.write(os);
-	            os.close();  
+			    os.flush();
+			    os.close(); 
 	        }  
-	        catch (Exception e)  
-	        {  
+	        catch (Exception e){  
 	        	e.printStackTrace();
-	        	if(e instanceof FileNotFoundException)
-	        		throw new ServiceException("该文件名被未知程序使用，不可导出");
-	            throw new ServiceException("导出失败，异常未知");
+	        	return false;
 	        } 
 			
 	    	return true;

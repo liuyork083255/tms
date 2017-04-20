@@ -61,40 +61,9 @@
 </div> -->
 
 
-
-<input type="button" value="click" onclick="test()" /> 
-
-
-
-
 <!-- 以下是js代码 -->
 
 <script type="text/javascript">
-
-
-function test(){
-	var formData = "";
-    $.ajax({
-        type:"post",
-        dataType:"json",
-        url:$.projectUrl+"/demo/fun1.do",
-        success:function(data){
-        	if(data.success){
-				   $.messager.show({
-						title : '提示',
-						msg : "success"+data.msg,
-						timeout:5000
-					});
-        	}else{
-				   $.messager.show({
-						title : '提示',
-						msg : "false"+data.msg,
-						timeout:5000
-					});
-        	}
-        }          
-    });
-}
 
 
 /* 定义一个编辑行的变量，该变量指向的是正在编辑的一行 */

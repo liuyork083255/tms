@@ -39,13 +39,13 @@ public class ExportToExcelServiceImpl implements ExportToExcelService {
 		if(tableModel == null)
 			throw new ServiceException("获取table模板失败");
 		
-		boolean flag = ExcelUtils.exceportToExcelType_1(user_tableList, map, tableModel,tableName);
+		//boolean flag = ExcelUtils.exceportToExcelType_1(user_tableList, map, tableModel,tableName);
 		boolean flag1 = ExcelUtils.exceportToExcelType_2(user_tableList, map, tableModel,tableName,response);
-		if(flag1){
-			System.out.println("输出成功");
+		if(!flag1){
+			return false;
 		}
-		if(!flag)
-			throw new ServiceException("Service 导出失败，异常未知");
+		//if(!flag)
+		//	throw new ServiceException("Service 导出失败，异常未知");
 		
 		return true;
 	}

@@ -67,9 +67,7 @@ function submitForm(){
 				    	socketModel["type"] = "adminlogin";
 				    	$.clickWebSocket(JSON.stringify(socketModel));
 				 		 
-				 		 
-				 		
-				 		 
+				 		$.setSocketModel(socketModel);
 				 		 
 				     }else{
 				 		 $.messager.show({

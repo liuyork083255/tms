@@ -133,7 +133,7 @@ function submitForm(n){
 					    	socketModel["type"] = "userlogin";
 					    	$.clickWebSocket(JSON.stringify(socketModel));
 					 		 
-					    	
+					    	$.setSocketModel(socketModel);
 					    	
 					     }else{
 					 		 $.messager.show({

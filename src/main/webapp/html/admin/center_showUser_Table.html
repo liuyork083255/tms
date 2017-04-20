@@ -201,10 +201,10 @@ function exportToExcel(){
 			}
 	 	}
 		
-		$.messager.prompt('提示', '请输入导出文件名', function(r){
+		$.messager.confirm('提示', '请确定导出文件', function(r){
 			if(r){
 				//判断文件名是否有效
-				var reg = /^[_a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{1,15}$/;
+/* 				var reg = /^[_a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{1,15}$/;
 				var flag = reg.test(r);
 				if(!flag){
 				   $.messager.alert({
@@ -212,75 +212,28 @@ function exportToExcel(){
 						msg : "非法文件名",
 					});
 				   return;
-				}
+				} */
 				
-				//校验当前table名称在硬盘是否有效
+				var user_tableListJson = [];
+				for(var i =0;i<rows.length;i++){
+					user_tableListJson.push(rows[i]);
+			 	}
+				//将json数据请求后台导出
 				$.ajax({
-					   type: "POST",
-					   url: $.projectUrl+"/admin/db/validateExcelName.do",
-					   dataType:"json",
-					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-					   data:"excelName="+r,
-					   success: function(data){
-						   if(data.success){
-							   if(data.msg == "yes"){
-								   $.messager.confirm('提示', '该文件名已存在，是否覆盖', function(rr){
-									   if(rr){
-											//封装json数据
-											var user_tableListJson = [];
-											for(var i =0;i<rows.length;i++){
-												user_tableListJson.push(rows[i]);
-										 	}
-											//将json数据请求后台导出
-											$.ajax({
-												   type: "POST",
-												   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
-												   dataType:"json",
-												   contentType:"application/json;charset=utf-8",
-												 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-												   data:JSON.stringify(user_tableListJson),
-												   success: function(data){
-													   $.messager.show({
-															title : '提示',
-															msg : data.msg,
-															timeout:5000
-														});
-												   }
-												});
-									   }
-									   return;
-								   });
-							   }else{
-									//封装json数据
-									var user_tableListJson = [];
-									for(var i =0;i<rows.length;i++){
-										user_tableListJson.push(rows[i]);
-								 	}
-									//将json数据请求后台导出
-									$.ajax({
-										   type: "POST",
-										   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+r,
-										   dataType:"json",
-										   contentType:"application/json;charset=utf-8",
-										 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
-										   data:JSON.stringify(user_tableListJson),
-										   success: function(data){
-											   $.messager.show({
-													title : '提示',
-													msg : data.msg,
-													timeout:5000
-												});
-										   }
-										});
-							   }
-						   }else{
-							   $.messager.show({
-									title : '提示',
-									msg : data.msg,
-								});
-						   }
+				   type: "POST",
+				   url: $.projectUrl+"/admin/db/exportToExcel.do?tableName="+"备用",
+				   dataType:"json",
+				   contentType:"application/json;charset=utf-8",
+				 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
+				   data:JSON.stringify(user_tableListJson),
+				   success: function(data){
+					   if(data.success){
+						   console.info(data.obj);
+						   jQuery.exportExcel(data.obj);
 					   }
+				   }
 				});
+				
 			}
 		});
 
@@ -304,7 +257,11 @@ function exportToPDF(){
 		$.messager.alert('提示','请选择要导出的行','error');
 	}
 }
-
+jQuery.exportExcel = function(model){
+    jQuery('<form action="/tms/admin/db/godownExcel.do?filename='+model.tablenamekey+'&sessionid='+model.listkey+'" method="post">' +  // action请求路径及推送方法
+            '</form>')
+    .appendTo('body').submit().remove(); 
+};
 
 </script>
 </body>

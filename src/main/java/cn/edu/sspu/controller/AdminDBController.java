@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 
 import cn.edu.sspu.exception.ServiceException;
+import cn.edu.sspu.models.AdminGodownExcelSession;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
@@ -453,7 +454,7 @@ public class AdminDBController {
 	
 	@ResponseBody
 	@RequestMapping("/exportToExcel")
-	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList,String tableName,HttpServletResponse response){
+	public Json exportToExcel(@RequestBody 	List<User_Table> user_tableList,String tableName,HttpServletRequest request){
 		Json json = new Json();
 		if(user_tableList == null || tableName == null){
 			json.setMsg("封装userid-tableid or tableName失败");
@@ -461,13 +462,45 @@ public class AdminDBController {
 			return json;
 		}
 		
-		//这里添加一个功能，就是校验当前的文件名是否存在，如果存在提示是否覆盖
+		AdminGodownExcelSession modelSession = new AdminGodownExcelSession();
+		String admin_uuid_list = AdminUtils.getUUID();
+		modelSession.setListkey(admin_uuid_list);
+		modelSession.setTablenamekey(tableName);
+		request.getSession().setAttribute(admin_uuid_list, user_tableList);
+		request.getSession().setAttribute(modelSession.getTablenamekey(), tableName);
 		
+		json.setObj(modelSession);
+		json.setMsg("存入session中成功");
+		json.setSuccess(true);
+		return json;
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/godownExcel")
+	public Json godownExcel(String filename,String sessionid,HttpServletRequest request,HttpServletResponse response){
+		Json json = new Json();
+		if(filename == null || sessionid == null){
+			json.setMsg("获取session中的excel参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		List<User_Table> modelSession = null;
+		String name = null;
+		try{
+			modelSession = (List<User_Table>)request.getSession().getAttribute(sessionid);
+			name = (String)request.getSession().getAttribute(filename);
+		}catch(Exception e){
+			json.setMsg("转换session中的excel参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		request.getSession().removeAttribute(sessionid);
+		request.getSession().removeAttribute(filename);
 		
-		//这里业务层直接返回一个map
 		boolean flag = false;
 		try {
-			flag = exportToExcelService.exportToExcel(user_tableList,tableName,response);
+			flag = exportToExcelService.exportToExcel(modelSession,name,response);
 		} catch (ServiceException e) {
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
@@ -478,10 +511,12 @@ public class AdminDBController {
 			json.setSuccess(false);
 			return json;
 		}
-		json.setMsg("导出成功");
-		json.setSuccess(false);
-		return json;
+		
+		
+		
+		return null;
 	}
+
 	
 	@ResponseBody
 	@RequestMapping("/validateExcelName")

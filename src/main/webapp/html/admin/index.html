@@ -95,6 +95,12 @@ function changeTheme(color){
 //这个方法还有一个功能要实现，就是如果admin后登陆，那么就要重新加载一次在线人数和在线用户，不然是不会同步的
 //因为前面的信息是没有收到的
 function showWebsocket(){
+	var socket = $.getWebSocket();
+	if(socket == null || socket == undefined){
+		console.info("开始重新连接websocket...");
+		$.clickWebSocket(JSON.stringify($.getSocketModel()));
+	}
+	
 	//获取dialog的状态
 	var status = $("#admin-websocket").dialog('options').closed;
 	
@@ -105,8 +111,10 @@ function showWebsocket(){
 	$("#admin-websocket").dialog({
 		closed:false
 	});
-	
-	
+}
+
+function reLinkWebsocket(){
+	$.messager.alert('提示','重新连接websocket失败，您可以重新登录 或者 继续使用！！！','error');
 }
 
 function sendMessageToUser(){

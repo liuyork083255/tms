@@ -54,7 +54,7 @@ public class FileServiceImpl implements FileService {
 			in.read(buffer);
 			in.close();
 			
-			response.addHeader("Content-Disposition", "attachment;filename=" + input.getValue());
+			response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode(input.getValue(), "UTF-8"));
 		    response.addHeader("Content-Length", "" + file.length());
 			
 		    OutputStream os = new BufferedOutputStream(response.getOutputStream());

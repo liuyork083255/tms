@@ -84,6 +84,12 @@ function changeTheme(color){
 
 
 function showWebsocket(){
+	var socket = $.getWebSocket();
+	if(socket == null || socket == undefined){
+		console.info("开始重新连接websocket...");
+		$.clickWebSocket(JSON.stringify($.getSocketModel()));
+	}
+	
 	//获取dialog的状态
 	var status = $("#user-websocket").dialog('options').closed;
 	
@@ -95,6 +101,10 @@ function showWebsocket(){
 		closed:false
 	});
 	
+}
+
+function reLinkWebsocket(){
+	$.messager.alert('提示','重新连接websocket失败，您可以重新登录 或者 继续使用！！！','error');
 }
 
 
