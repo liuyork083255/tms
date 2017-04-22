@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,19 +43,16 @@ import cn.edu.sspu.utils.AdminUtils;
 public class AdminDBController {
 	@Autowired
 	private TableService tableService = null;
-	
 	@Autowired
 	private UserService userService = null;
-	
 	@Autowired
 	private InputService inputService;
-	
 	@Autowired
 	private UserTableService userTableService;
-	
 	@Autowired
 	private ExportToExcelService exportToExcelService;
-
+	
+	private static Logger logger = LoggerFactory.getLogger(AdminDBController.class);
 	
 	@ResponseBody
 	@RequestMapping("/login")
@@ -87,6 +86,7 @@ public class AdminDBController {
 		json.setObj(user);
 		//将user存入session中
 		request.getSession().setAttribute("user", user);
+		logger.info("用户名 ：" + user.getName() +" id : " + user.getUser_id() + " 登陆");
 		return json;
 	}
 	
@@ -106,6 +106,7 @@ public class AdminDBController {
 		try {
 			table = tableService.selectTableByName(name);
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -137,6 +138,7 @@ public class AdminDBController {
 		try {
 			boolean flag = tableService.insertModel(newModel);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -159,6 +161,9 @@ public class AdminDBController {
 		
 		Map<String,Object> map = new HashMap<String,Object>();
 		
+		if(map.size() == 0)
+			logger.error("/getAllTableByPage.do 方法获取返回为空");
+		
 		map.put("total", tableTotal);//---------------------------------这里要查询真实数据库中的总记录
 
 		map.put("rows", tableList);
@@ -176,14 +181,16 @@ public class AdminDBController {
 			return json;
 		}
 		
-		int n = 0;
+		
 		try {
-			n = tableService.updateTable(table);
+			tableService.updateTable(table);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -216,11 +223,12 @@ public class AdminDBController {
 			model.setName(tableService.selectTableById(table_id).getName());
 			
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			json.setMsg("获取input未知异常");
 			json.setSuccess(false);
 			return json;
@@ -244,7 +252,7 @@ public class AdminDBController {
 		try {
 			inputList = inputService.selectInputByTableId(table_id);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return null;
 		}
 		
@@ -301,10 +309,12 @@ public class AdminDBController {
 				try {
 					inputService.deleteInput(input_id);
 				} catch (ServiceException e) {
+					logger.error(e.getMessage());
 					json.setMsg(e.getMessage());
 					json.setSuccess(false);
 					return json;
 				}catch (Exception e) {
+					logger.error(e.getMessage());
 					json.setMsg("位置异常");
 					json.setSuccess(false);
 					return json;
@@ -333,10 +343,12 @@ public class AdminDBController {
 		try {
 			n = inputService.updateInput(input);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg("未知异常");
 			json.setSuccess(false);
 			return json;
@@ -359,10 +371,12 @@ public class AdminDBController {
 		try {
 			n = inputService.insertInput(input);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg("insert操作未知异常");
 			json.setSuccess(false);
 			return json;
@@ -398,6 +412,7 @@ public class AdminDBController {
 		try {
 			x = userTableService.selectAllUser_TableByTableId(table_id);
 		} catch (ServiceException e1) {
+			logger.error(e1.getMessage());
 			json.setMsg(e1.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -414,6 +429,7 @@ public class AdminDBController {
 		try {
 			flag = tableService.deleteTableById(table_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -491,6 +507,7 @@ public class AdminDBController {
 			modelSession = (List<User_Table>)request.getSession().getAttribute(sessionid);
 			name = (String)request.getSession().getAttribute(filename);
 		}catch(Exception e){
+			logger.error(e.getMessage());
 			json.setMsg("转换session中的excel参数失败");
 			json.setSuccess(false);
 			return json;
@@ -502,6 +519,7 @@ public class AdminDBController {
 		try {
 			flag = exportToExcelService.exportToExcel(modelSession,name,response);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -566,6 +584,7 @@ public class AdminDBController {
 		try {
 			inputList= inputService.selectInputByUserIdAndTableId(table_id, user_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg("根据table_id和user_id查询input集合失败");
 			json.setSuccess(false);
 			return json;

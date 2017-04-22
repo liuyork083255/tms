@@ -2,6 +2,8 @@ package cn.edu.sspu.service.serviceImpl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,12 @@ import cn.edu.sspu.utils.AdminUtils;
 
 @Service
 public class UserServieceImpl implements UserService{
-	
 	@Autowired
 	private UserMapper userMapper = null ;
-	
 	@Autowired
 	private TableMapper tableMapper = null;
+	
+	private static Logger logger = LoggerFactory.getLogger(ExportToExcelServiceImpl.class);
 
 	public User selectUserByName(String name) throws ServiceException {
 		User user = userMapper.selectUserByName(name);
@@ -76,6 +78,7 @@ public class UserServieceImpl implements UserService{
 		try{
 			n = userMapper.deleteUserByName(name);
 		}catch(Exception e){
+			logger.error(e.getMessage());
 			if(e.getMessage().contains("SQLIntegrityConstraintViolationException")){
 				throw new ServiceException("主键 or 外键依赖 异常");
 			}
@@ -91,6 +94,7 @@ public class UserServieceImpl implements UserService{
 		try{
 			n = userMapper.deleteUserById(user_id);
 		}catch(Exception e){
+			logger.error(e.getMessage());
 			if(e.getMessage().contains("SQLIntegrityConstraintViolationException")){
 				throw new ServiceException("主键 or 外键依赖 异常");
 			}
@@ -106,7 +110,7 @@ public class UserServieceImpl implements UserService{
 		try{
 			n = userMapper.insertUser(user);
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new ServiceException("insert 操作未知异常");
 		}
 		if(n ==  0){
@@ -133,8 +137,7 @@ public class UserServieceImpl implements UserService{
 		try {
 			objectList = AdminUtils.transferUserToId_Name(userList);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return objectList;
 	}

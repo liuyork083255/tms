@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true"> <!--scan="true" scanPeriod="30 seconds"-->
+    <logger name = "org.redisson" level="INFO"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">      <!--这一段表示是将日志输出到控制台-->
+        <encoder>
+            <pattern>[LEVEL: %-5level][TIME: %d{yyyy-MM-dd HH:mm:ss}][THREAD: %thread] -%msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 按日期区分的滚动日志-->
+    <appender name="APP" class="ch.qos.logback.core.rolling.RollingFileAppender">       <!--这一段表示是将日志输出到指定目录下-->
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">       <!--这里是配置按天回滚-->
+            <fileNamePattern>/develop/logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>      <!--这里是日志文件配置路径-->
+        </rollingPolicy>
+        <encoder>
+            <pattern>[LEVEL: %-5level][TIME: %d{yyyy-MM-dd HH:mm:ss}][THREAD: %thread] -%msg%n</pattern>
+        </encoder>
+        <!--只输出error级别日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">   <!--这个是过滤器，从下面配置来看，只有INFO级别的日志才会被打印-->
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name ="ASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold >0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>10000</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="APP"/>             <!--异步输出也要依赖一个输出的appender，所这里添加了上面配置好的 APP-->
+    </appender>
+
+    <root level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref ="ASYNC"/>
+    </root>
+
+</configuration>

@@ -3,6 +3,8 @@ package cn.edu.sspu.service.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -23,16 +25,15 @@ import cn.edu.sspu.utils.AdminUtils;
 
 @Service
 public class TableServiceImpl implements TableService{
-	
 	//测试事务注入类
 	@Autowired
 	private DataSourceTransactionManager trManager;
-	
 	@Autowired
 	private TableMapper tableMapper = null;
-	
 	@Autowired
 	private InputMapper inputMapper;
+	
+	private static Logger logger = LoggerFactory.getLogger(ExportToExcelServiceImpl.class);
 
 	public Table selectTableById(String table_id){
 		Table table = tableMapper.selectTableById(table_id);
@@ -49,7 +50,7 @@ public class TableServiceImpl implements TableService{
 		try{
 			n = tableMapper.insertTable(table);
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new ServiceException("insert 操作未知异常");
 		}
 		if(n ==  0){
@@ -87,7 +88,7 @@ public class TableServiceImpl implements TableService{
 			
 			trManager.commit(status);
 		} catch (Exception e) {
-			trManager.rollback(status);
+			logger.error(e.getMessage());
 			throw new ServiceException("插入model异常 ");
 		}
 		
@@ -138,8 +139,7 @@ public class TableServiceImpl implements TableService{
 				trManager.commit(status);
 				
 			} catch (Exception e) {
-				System.out.println(e.getClass());
-				e.printStackTrace();
+				logger.error(e.getMessage());
 				trManager.rollback(status);
 			}
 		}else
@@ -167,7 +167,7 @@ public class TableServiceImpl implements TableService{
 			trManager.commit(status);
 		} catch (Exception e) {
 			trManager.rollback(status);
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new ServiceException("删除未知异常 ");
 		}
 		
@@ -183,8 +183,7 @@ public class TableServiceImpl implements TableService{
 		try {
 			objectList = AdminUtils.transferTableToId_Name(tableList);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return objectList;
 	}

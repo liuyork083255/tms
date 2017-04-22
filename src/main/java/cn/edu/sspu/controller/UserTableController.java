@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +49,8 @@ public class UserTableController {
 	private InputService inputService;
 	@Autowired
 	private FileService fileService;
+	
+	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	/**
 	 * 这个方法是查询一个指定用户还没有填写的所有表单
@@ -177,7 +181,7 @@ public class UserTableController {
 		try {
 			file.transferTo(fileIO);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			json.setMsg("文件写入内存失败");
 			json.setSuccess(false);
 			return json;
@@ -202,6 +206,7 @@ public class UserTableController {
 				return json;
 			}
 		}catch(Exception e){
+			logger.error(e.getMessage());
 			json.setMsg("session中没有当前用户，请重新登录");
 			json.setSuccess(false);
 			return json;
@@ -229,11 +234,13 @@ public class UserTableController {
 			AdminUtils.setInputTimes(model.getInputList(),max+1);
 			flag = userTableService.saveUserEditModel(model, request.getSession());
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
@@ -281,6 +288,7 @@ public class UserTableController {
 		try {
 			inputList= inputService.selectInputByUserIdAndTableIdAndTimes(table_id, sessionUser.getUser_id(), Integer.parseInt(times));
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg("根据table_id和user_id查询input集合失败");
 			json.setSuccess(false);
 			return json;
@@ -322,7 +330,7 @@ public class UserTableController {
 			try {
 				flag = userTableService.updataInputValueById(input_id, input_value, type, sessionFile);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 				json.setMsg("update 发生未知错误，请联系管理员");
 				json.setSuccess(false);
 				return json;
@@ -334,7 +342,7 @@ public class UserTableController {
 				flag = userTableService.updataInputValueById(input_id, input_value, type, null);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 				json.setMsg("update 发生未知错误，请联系管理员");
 				json.setSuccess(false);
 				return json;
@@ -367,6 +375,7 @@ public class UserTableController {
 		try {
 			flag = userTableService.deleteUserWriteTable(table_id, user.getUser_id(),times);
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -398,6 +407,7 @@ public class UserTableController {
 		try {
 			table = inputService.selectInputByTableId(table_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg("获取table模板失败");
 			json.setSuccess(false);
 			return json;
@@ -456,7 +466,7 @@ public class UserTableController {
 		try{
 			user = (User)request.getSession().getAttribute("user");
 		}catch(Exception e){
-			return null;
+			logger.error(e.getMessage());
 		}
 		
 		// 1 获得指定的table_id的file总记录数

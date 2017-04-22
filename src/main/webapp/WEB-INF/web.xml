@@ -10,6 +10,18 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:spring.xml,classpath:spring-mybatis.xml,classpath:spring-mail.xml</param-value>
 	</context-param>
+
+	<!-- logback-begin -->
+	<context-param>
+		<param-name>logbackConfigLocation</param-name>
+		<param-value> classpath:logback.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+	</listener>
+	<!-- logback-end --> 
+	
+	
 	
 	<!-- 这个过滤器设置前端提交参数中有中文后台能够正常显示 -->
 	<filter>

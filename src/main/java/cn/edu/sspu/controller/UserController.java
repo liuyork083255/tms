@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -28,9 +30,10 @@ import cn.edu.sspu.utils.MailUtils;
 public class UserController {
 	@Autowired
 	private UserService userService = null;
-	
 	@Autowired  
     private MailUtils mailUtil;
+	
+	private static Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	/**
 	 * 用户登录
@@ -52,10 +55,12 @@ public class UserController {
 		try {
 			user = userService.selectUserByNameAndPassword(name, password);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e){
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -104,6 +109,7 @@ public class UserController {
 		try {
 			dataUser = userService.selectUserByName(user.getName());
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			System.out.println(e.getMessage());
 		}
 		if(dataUser != null){
@@ -171,10 +177,12 @@ public class UserController {
 		try {
 			user = userService.selectUserByName(name);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		} catch (Exception e){
+			logger.error(e.getMessage());
 			json.setMsg("未知的查询异常");
 			json.setSuccess(false);
 			e.printStackTrace();
@@ -207,10 +215,12 @@ public class UserController {
 		try {
 			user = userService.selectUserById(user_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		} catch (Exception e){
+			logger.error(e.getMessage());
 			json.setMsg("未知的查询异常");
 			json.setSuccess(false);
 			e.printStackTrace();
@@ -237,10 +247,12 @@ public class UserController {
 		try {
 			userList = userService.getAllUser();
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e){
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -281,10 +293,12 @@ public class UserController {
 		try {
 			n = userService.updateUser(user);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		} catch(Exception e){
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -314,10 +328,12 @@ public class UserController {
 		try {
 			n = userService.deleteUserByName(name);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -347,10 +363,12 @@ public class UserController {
 		try {
 			n = userService.deleteUserById(user_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
 		}catch (Exception e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -385,6 +403,7 @@ public class UserController {
 		try {
 			n = userService.insertUser(user);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 		}
@@ -458,6 +477,7 @@ public class UserController {
 		try {
 			n = userService.updateUser(user);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -489,7 +509,7 @@ public class UserController {
 		try{
 			mailUtil.send(adminEmail, "来自"+sessionUser.getName()+"用户的邮件",text);
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			json.setMsg("邮件发送失败");
 			json.setSuccess(false);
 			return json;

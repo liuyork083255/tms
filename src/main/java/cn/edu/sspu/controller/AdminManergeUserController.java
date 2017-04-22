@@ -13,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,18 +42,16 @@ import cn.edu.sspu.utils.MailUtils;
 public class AdminManergeUserController {
 	@Autowired
 	private UserService userService;
-	
     @Autowired  
     private MailUtils mailUtil;
-    
     @Autowired
     private TableService tableService;
-    
     @Autowired
     private InputService inputService;
-    
     @Autowired
     private FileService fileService;
+    
+    private static Logger logger = LoggerFactory.getLogger(AdminManergeUserController.class);
 	
 	@ResponseBody
 	@RequestMapping("/getAllUser")
@@ -93,6 +93,7 @@ public class AdminManergeUserController {
 			try {
 				m = userService.insertUser(user);
 			} catch (ServiceException e) {
+				logger.error(e.getMessage());
 				json.setMsg("新增失败");
 				json.setSuccess(false);
 				return json;
@@ -116,6 +117,7 @@ public class AdminManergeUserController {
 		try {
 			n = userService.updateUser(user);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -143,6 +145,7 @@ public class AdminManergeUserController {
 		try {
 			n = userService.deleteUserById(user_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg(e.getMessage());
 			json.setSuccess(false);
 			return json;
@@ -170,6 +173,7 @@ public class AdminManergeUserController {
 		try{
 		mailUtil.send(emailModel.getToEmails(), "", emailModel.getText());
 		}catch(Exception e){
+			logger.error(e.getMessage());
 			e.printStackTrace();
 			json.setMsg("发送失败");
 			json.setSuccess(true);
@@ -222,6 +226,7 @@ public class AdminManergeUserController {
 		try {
 			inputList = inputService.selectInputByTableId(table_id);
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			json.setMsg("获取inputList位置异常");
 			json.setSuccess(false);
 			return json;

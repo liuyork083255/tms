@@ -1,9 +1,9 @@
 jQuery.extend({
 	
 	/*liuyork项目URL*/
-	HostPort:"120.25.251.210:8080",
+	//HostPort:"120.25.251.210:8080",
 	/*本机项目URL*/
-	//HostPort:"127.0.0.1:80",
+	HostPort:"127.0.0.1:80",
 	/*TL项目URL*/
 	//HostPort:"tms.shalib.cc:80",
 	/*项目路径*/

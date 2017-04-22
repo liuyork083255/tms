@@ -176,25 +176,37 @@ function initAdmin(model){
 
 //类别是改变在线人数,同时显示登录的用户
 function setOnline(model){
-	$(".admin-online-number").html(model.onlineNumber);
 	$.messager.show({
-		title:'My Title',
+		title:'用户上下线提示',
 		msg:model.sourceUserName + ' 刚刚登陆.',
 		timeout:5000,
 		showType:'slide'
 	});
 	$("#admin-user-sigle-show").combobox('reload','/tms/websocket/getWebSocketAllUsers.do');
+	
+	
+	if(model.onlineNumber == 1 || model.onlineNumber == "1"){
+		$(".admin-online-number").html("只有你在线");
+		return;
+	}
+	$(".admin-online-number").html(model.onlineNumber);
 }
 //类别是用户退出登录，然后提示admin，并且更新在线人数
 function setLoginOut(model){
-	$(".admin-online-number").html(model.onlineNumber);
 	$.messager.show({
-		title:'My Title',
+		title:'用户上下线提示',
 		msg:model.sourceUserName + ' 刚刚退出登陆.',
 		timeout:5000,
 		showType:'slide'
 	});
 	$("#admin-user-sigle-show").combobox('reload','/tms/websocket/getWebSocketAllUsers.do');
+	
+	if(model.onlineNumber == 1 || model.onlineNumber == "1"){
+		$(".admin-online-number").html("只有你在线");
+		return;
+	}
+	$(".admin-online-number").html(model.onlineNumber);
+
 }
 
 //该方法是显示user发送信息给admin

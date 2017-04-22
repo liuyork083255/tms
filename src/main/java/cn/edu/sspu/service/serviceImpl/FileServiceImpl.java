@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,10 @@ import cn.edu.sspu.utils.AdminUtils;
 public class FileServiceImpl implements FileService {
 	@Autowired
 	private InputMapper inputMapper;
-	
 	@Autowired
 	private FileMapper fileMapper;
+	private static Logger logger = LoggerFactory.getLogger(ExportToExcelServiceImpl.class);
+	
 
 	public List<File> getAllFile(int page,int rows) {
 		
@@ -61,7 +64,7 @@ public class FileServiceImpl implements FileService {
 		    os.close();
 			
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			return false;
 		}
 		return true;

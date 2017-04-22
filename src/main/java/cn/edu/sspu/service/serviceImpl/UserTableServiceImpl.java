@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
@@ -34,21 +36,19 @@ public class UserTableServiceImpl implements UserTableService{
 	//测试事务注入类
 	@Autowired
 	private DataSourceTransactionManager trManager;
-
 	@Autowired
 	private UserTableMapper userTableMapper;
-	
 	@Autowired
 	private InputMapper inputMapper;
-	
 	@Autowired
 	private FileMapper fileMapper;
-	
 	@Autowired
 	private User_TableMapper user_TableMapper;
-	
 	@Autowired
 	private UserMapper userMapper;
+	
+	private static Logger logger = LoggerFactory.getLogger(ExportToExcelServiceImpl.class);
+	
 	
 	public List<Table> selectTableUnwriteByUserId(String user_id,int num1,int num2) throws ServiceException{
 		List<Table> tableList = userTableMapper.selectTableUnwriteByUserId(user_id,num1,num2);
@@ -135,9 +135,11 @@ public class UserTableServiceImpl implements UserTableService{
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException(e.getMessage());
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException(e.getMessage());
 		}
@@ -171,9 +173,11 @@ public class UserTableServiceImpl implements UserTableService{
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException(e.getMessage());
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException(e.getMessage());
 		}
@@ -202,11 +206,11 @@ public class UserTableServiceImpl implements UserTableService{
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException("出现未知错误");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			trManager.rollback(status);
 			throw new ServiceException("出现未知错误");
 		}
@@ -221,7 +225,7 @@ public class UserTableServiceImpl implements UserTableService{
 		try{
 			n = user_TableMapper.selectAllUser_TableByTableId(table_id);
 		}catch(Exception e){
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			throw new ServiceException("查询指定table_id所有的user_table表出现未知异常");
 		}
 		return n;
