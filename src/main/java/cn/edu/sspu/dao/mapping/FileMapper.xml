@@ -44,23 +44,21 @@
   	select * from file
     limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
   </select>
+  
+  <select id="selectFileById" parameterType="java.lang.String" resultType="cn.edu.sspu.models.File">
+  	select * from `file` where input_id = #{input_id}
+  </select>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <select id="selectFileTotalByUserId" resultType="int">
+  	select count(1) from file where user_id = #{user_id}
+  </select>
+  
+  <select id="getAllFileByUserId" resultType="cn.edu.sspu.models.File">
+  	select * from file where user_id = #{user_id}
+    limit #{num1,jdbcType=BIT},#{num2,jdbcType=BIT}
+  </select>
 
 
 

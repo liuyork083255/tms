@@ -281,6 +281,27 @@ public class AdminManergeUserController {
 	}
 
 	@ResponseBody
+	@RequestMapping("/validateFilePath")
+	public Json validateFilePath(String input_id){
+		Json json = new Json();
+		if(input_id == null){
+			json.setMsg("获取相关参数失败");
+			json.setSuccess(false);
+			return json;
+		}
+		
+		boolean flag = fileService.validateFilePath(input_id);
+		if(!flag){
+			json.setMsg("文件下载失败");
+			json.setSuccess(false);
+			return json;
+		}
+		json.setMsg("文件路径校验成功");
+		json.setSuccess(true);
+		return json;
+	}
+	
+	@ResponseBody
 	@RequestMapping("/onloadFileByInputId")
 	public void onloadFileByInputId(String input_id,String user_id,String type,HttpServletResponse response){
 		if(input_id == null || user_id == null || type == null){

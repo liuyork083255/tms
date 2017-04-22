@@ -5,10 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,6 +65,26 @@ public class FileServiceImpl implements FileService {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean validateFilePath(String input_id) {
+		File file = fileMapper.selectFileById(input_id);
+		if(file == null)
+			return false;
+		String path = AdminUtils.getFileUploadPath("fileUploadPath");//获取文件保存的绝对路径
+		path = path+file.getUser_id()+"\\"+input_id+file.getFiletype();
+		java.io.File filePath = new java.io.File(path);
+		if(!filePath.exists())
+			return false;
+		return true;
+	}
+
+	public List<File> getAllFileByUserId(int page, int rows, String user_id) {
+		return fileMapper.getAllFileByUserId(page, rows, user_id);
+	}
+
+	public int selectFileTotalByUserId(String user_id) {
+		return fileMapper.selectFileTotalByUserId(user_id);
 	}
 }
 

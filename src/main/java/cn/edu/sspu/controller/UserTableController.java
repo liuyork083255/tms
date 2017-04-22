@@ -30,6 +30,7 @@ import cn.edu.sspu.models.Table;
 import cn.edu.sspu.models.TableIdAndName;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
+import cn.edu.sspu.service.FileService;
 import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserTableService;
@@ -44,7 +45,8 @@ public class UserTableController {
 	private TableService tableService;
 	@Autowired
 	private InputService inputService;
-	
+	@Autowired
+	private FileService fileService;
 	
 	/**
 	 * 这个方法是查询一个指定用户还没有填写的所有表单
@@ -445,6 +447,31 @@ public class UserTableController {
 		return inputService.selectHistoryByUserId_InputName(user.getUser_id(), inputname);
 	}
 
+	
+	
+	@ResponseBody
+	@RequestMapping("/getUserAllFile")
+	public Map<String,Object> getUserAllFile(int page,int rows,HttpServletRequest request){
+		User user = null;
+		try{
+			user = (User)request.getSession().getAttribute("user");
+		}catch(Exception e){
+			return null;
+		}
+		
+		// 1 获得指定的table_id的file总记录数
+		int fileTotal = fileService.selectFileTotalByUserId(user.getUser_id());
+		// 2 获得table集合
+		List<cn.edu.sspu.models.File> fileList = fileService.getAllFileByUserId((page-1)*rows, rows,user.getUser_id());
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		
+		map.put("total", fileTotal);//---------------------------------这里要查询真实数据库中的总记录
+
+		map.put("rows", fileList);
+		return map;
+	}
+	
 	
 	@ResponseBody
 	@RequestMapping("/fileUpTest")

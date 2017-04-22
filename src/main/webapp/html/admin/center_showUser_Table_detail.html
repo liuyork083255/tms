@@ -132,8 +132,27 @@ function clickCell(rowIndex, field, value){
 	
 	$.messager.confirm('Confirm', '确定要下载 ?', function(r){
 		if (r){
-			$.download(user_id,input_id,type); // 下载文件
-
+			
+			//这里先判断要下载的的文件是否存在，不然系统崩溃
+			$.ajax({
+				   type: "POST",
+				   url: $.projectUrl+"/adminManergeUserController/validateFilePath.do",
+				   dataType:"json",
+				   data:"input_id="+input_id,
+				   success: function(data){
+					   if(data.success){
+							$.download(user_id,input_id,type); // 下载文件
+					   }else{
+							$.messager.show({
+								title:'提示',
+								msg:data.msg,
+								timeout:2000,
+								showType:'slide'
+							});
+					   }
+				   }
+			});
+			
 		}
 	});
 }

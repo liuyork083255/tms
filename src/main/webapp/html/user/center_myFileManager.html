@@ -7,7 +7,7 @@
 <!-- --------------------------------------JS 代码----------------------------------------- -->
 <script type="text/javascript">
 $('#show_user_file_table').datagrid({
-    url:$.projectUrl+"/adminManergeUserController/getAllFile.do",
+    url:$.projectUrl+"/userTable/getUserAllFile.do",
     title:'File文件查看',
     iconCls:'icon-large-clipart',
     checkOnSelect:false,
@@ -71,21 +71,6 @@ jQuery.download = function(user_id,input_id,type){
             '</form>')
     .appendTo('body').submit().remove();
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

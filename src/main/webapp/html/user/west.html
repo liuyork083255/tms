@@ -9,19 +9,30 @@
 			<a href="#" onclick="a_click(1);" class="easyui-linkbutton" data-options="iconCls:'icon-add'" style="width:170px;">已填写的表格</a><br/>
 			<a href="#" onclick="a_click(2);" class="easyui-linkbutton" data-options="iconCls:'icon-remove'" style="width:170px;">未填写的表格</a>
 		</div>
-		
 		<!-- <h1 >标签模板查看</h1> -->
-		
     </div>
+    
+    <div title="我的文件管理" data-options="iconCls:'icon-reload'" style="padding:10px;">
+		<div >
+			<a href="#" onclick="a_click(4);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:170px;">我的文件</a><br/>
+		</div>
+    </div>
+    
+    
     <div title="我的信息管理" data-options="iconCls:'icon-reload'" style="padding:10px;">
 		<div >
 			<a href="#" onclick="a_click(3);" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style="width:170px;">我的信息</a><br/>
 		</div>
     </div>
+    
+    
+    
     <div title="帮助" data-options="iconCls:'icon-help'" style="padding:10px;">
 		如有疑问，可向管理员联系<br /><br />
 		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-redo'" onclick="helpUserToAdmin()">Click me ...</a>
     </div>
+    
+    
 </div>
 
 <div id="dilog_user_sendemail_admin" style="width:400px;height:200px;" class="easyui-dialog" data-options="iconCls:'icon-save',resizable:true,modal:true,closed:true">
@@ -51,7 +62,12 @@ function a_click(index){
 			href : 'center_showMyinfo.html'
 		});
 	}
-	else if(index == 5){}
+	else if(index == 4){
+		//$("#userTableLayout").layout('collapse', 'west');
+		$("#userTableLayout").layout('panel', 'center').panel({
+			href : 'center_myFileManager.html'
+		});
+	}
 	else if(index == 6){}
 	else if(index == 7){}
 	else if(index == 8){}
