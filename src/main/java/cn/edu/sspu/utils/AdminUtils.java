@@ -272,14 +272,57 @@ public class AdminUtils {
 			bean.setValue("file_type", file.getFiletype());
 			bean.setValue("file_upload_time", file.getUploadtime());
 		}
-		
-		
-		
-		
-		
 		return null;
 	}
 	
+	
+	public static String getRedisHost(String host){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (String)pps.get(host);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+	}
+	
+	public static int getRedisIP(String port){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (Integer)pps.get(port);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 6379;
+			}
+		}
+		return 6379;
+	}
+	
+	public static int getRedisExpireTime(String expireTime){
+		InputStream is = AdminUtils.class.getClassLoader().getResourceAsStream("db.properties");
+		if(is != null){
+			Properties pps = new Properties();
+			try {
+				pps.load(is);
+				return (Integer)pps.get(expireTime);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 1;
+			}
+		}
+		return 1;
+	}
 	
 }
 
