@@ -131,6 +131,10 @@ public class InputServiceImpl implements InputService {
 			return null;
 		}
 		return objectList;
+	}
+
+	public List<Input> selectInputByUserIdAndTableIdAndTimesIsFile(String table_id, String user_id, int times) {
+		return inputMapper.selectInputByUserIdAndTableIdAndTimesIsFile(table_id, user_id, times);
 	};
 
 }

@@ -18,14 +18,13 @@ import redis.clients.jedis.Jedis;
 public class Demo {
 	
 	public static void main(String[] args) {
-		System.out.println("=========================");
-		Jedis redis = new Jedis("120.25.251.210",6380);
-		//redis.auth("admin");  
-		redis.set("name1".getBytes(), "yangliu2zengying".getBytes());
-		redis.expire("name1", 5);
-		String name = redis.get("name");
-		System.out.println(name);
-		System.out.println("=========================");
+		
+		java.io.File file = new java.io.File("F:\\a.*");
+		file.delete();
+		
+		
+		
+		
 	}
 	
 	public static void set(){

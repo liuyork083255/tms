@@ -313,6 +313,14 @@ public class AdminManergeUserController {
 			System.out.println("获取参数失败");
 		}
 		
+		
+		//////////////////////////////////////
+		logger.info("三个参数 input_id： "  + input_id + "user_id" +user_id+ "   type : " + type );
+		//////////////////////////////////////
+		
+		
+		
+		
 		boolean flag = fileService.onloadFileByInputId(input_id, user_id, type, response);
 		System.out.println(flag);
 		if(!flag){

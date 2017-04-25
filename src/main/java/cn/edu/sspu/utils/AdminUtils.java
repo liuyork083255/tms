@@ -11,8 +11,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 
+import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.File;
 import cn.edu.sspu.models.Input;
 import cn.edu.sspu.models.InputName_Value;
@@ -24,11 +28,11 @@ import cn.edu.sspu.models.User;
 
 
 public class AdminUtils {
-
+	
+	private static Logger logger = LoggerFactory.getLogger(AdminUtils.class);
+	
 	/* 第一个方法是接收model对象，然后将里面的集合全部转为list，并返回 */
 	public static List<Object> modelToList() {
-		
-
 		return null;
 	}
 	
@@ -298,7 +302,7 @@ public class AdminUtils {
 			Properties pps = new Properties();
 			try {
 				pps.load(is);
-				return (Integer)pps.get(port);
+				return Integer.parseInt((String)pps.get(port));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -314,7 +318,7 @@ public class AdminUtils {
 			Properties pps = new Properties();
 			try {
 				pps.load(is);
-				return (Integer)pps.get(expireTime);
+				return Integer.parseInt((String)pps.get(expireTime));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -322,6 +326,25 @@ public class AdminUtils {
 			}
 		}
 		return 1;
+	}
+	
+	public static void deleteFileByInput(Input input) throws Exception{
+		try{
+		String path = AdminUtils.getFileUploadPath("fileUploadPath");
+		
+		String type = input.getValue().substring(input.getValue().lastIndexOf("."));
+		
+		
+		java.io.File file = new java.io.File(path + input.getUser_id() + "/" + input.getInput_id() + type);
+		
+		System.out.println(file.getAbsolutePath());
+		System.out.println(file.exists());
+		if(file.exists())
+			file.delete();
+		}catch(Exception e){
+			logger.error("根据input 删除硬盘文件失败   异常信息为 ： " + e.getMessage());
+			throw new ServiceException("根据input 删除硬盘文件失败");
+		}
 	}
 	
 }

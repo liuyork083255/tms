@@ -37,6 +37,8 @@ import cn.edu.sspu.service.InputService;
 import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
+import cn.edu.sspu.utils.RedisUtils;
+import redis.clients.jedis.Jedis;
 
 @Controller
 @RequestMapping("/userTable")
@@ -159,11 +161,20 @@ public class UserTableController {
 		sessionFile.setUploadtime(AdminUtils.getCurrentTime());
 		sessionFile.setFiletype(file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
 		
-		System.out.println(JSON.toJSONString(sessionFile, true));
-		
 		request.getSession().setAttribute(input_id, sessionFile);
 		
-		String filePath = AdminUtils.getFileUploadPath("fileUploadPath");
+		//将文件存入redis中，以inputid作为key
+		try{
+		RedisUtils.getRedisMaster();
+		RedisUtils.setValue(input_id, file.getBytes());
+		}catch(Exception e){
+			logger.error("文件上传存入redis操作失败，异常信息为 ： " + e.getMessage());
+			request.setAttribute("msg", "文件上传存入redis操作失败");
+			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
+			return null;
+		}
+		
+/*		String filePath = AdminUtils.getFileUploadPath("fileUploadPath");
 		if(filePath == null){
 			request.setAttribute("msg", "获取配置文件上传路径失败");
 			request.getRequestDispatcher("/showMessage.jsp").forward(request, response);
@@ -185,7 +196,7 @@ public class UserTableController {
 			json.setMsg("文件写入内存失败");
 			json.setSuccess(false);
 			return json;
-		}
+		}*/
 		json.setMsg("上传成功");
 		json.setSuccess(true);
 		return json;
@@ -224,9 +235,6 @@ public class UserTableController {
 		model.setInputList(AdminUtils.setAllnputUserId(model.getInputList(), model.getUser_id()));
 		
 		// 数据到数据库，file交给service层来处理，如果file写入硬盘报错，那么就回滚事务
-		
-		
-		
 		boolean flag;
 		try {
 			//这一步很关键，新增的功能，就是一张表能够再次填写
@@ -251,6 +259,7 @@ public class UserTableController {
 			json.setSuccess(false);
 			return json;
 		}
+		
 		
 		json.setMsg("保存成功！！！");
 		json.setSuccess(true);

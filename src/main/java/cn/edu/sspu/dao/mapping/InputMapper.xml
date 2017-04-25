@@ -110,6 +110,10 @@
   <select id="selectInputByUserIdAndTableIdAndTimes" resultType="cn.edu.sspu.models.Input">
   	select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  and times = #{times,jdbcType=BIT}  ORDER BY sort
   </select>
+
+  <select id="selectInputByUserIdAndTableIdAndTimesIsFile" resultType="cn.edu.sspu.models.Input">
+  	select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR}  and times = #{times,jdbcType=BIT} and type='file' ORDER BY sort
+  </select>
   
  <!--  <select id="selectInputByUserId_TableId_Times" resultType="cn.edu.sspu.models.Input">
     select * from input where table_id = #{table_id,jdbcType=VARCHAR} and user_id = #{user_id,jdbcType=VARCHAR} and time = #{times,jdbcType=BIT}

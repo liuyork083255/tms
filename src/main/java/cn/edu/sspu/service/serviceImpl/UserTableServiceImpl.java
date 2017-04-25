@@ -1,5 +1,6 @@
 package cn.edu.sspu.service.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -31,6 +32,8 @@ import cn.edu.sspu.models.User_Table;
 import cn.edu.sspu.models.searchfilter.UserTableSearch;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
+import cn.edu.sspu.utils.RedisUtils;
+import redis.clients.jedis.Jedis;
 @Service
 public class UserTableServiceImpl implements UserTableService{
 	//测试事务注入类
@@ -86,9 +89,18 @@ public class UserTableServiceImpl implements UserTableService{
 		//注意：这要插入三张表，分别是file user_table input
 		//这里不用一次性插入ListInput集合，而是一条一条判断插入
 		List<Input> inputList = model.getInputList();
+		
+		//创建一个List存放file的inputid，因为一个表单里面可能有多个文件上传字段，所以这里需要一次性获取，
+		//因为要结合事务来处理，也就是需要等到表插入成功后才可以写入硬盘，所以这里采用这种策略
+		List<String> rediskeyList = new ArrayList<String>();
+		
 		try {
 			for(Input input : inputList){
-				if(input.getType().equals("file")){//如果是file类型，说明还要插入file表
+				if(input.getType().equals("file")){      //如果是file类型，说明还要插入file表
+					
+					//将key存入list中
+					rediskeyList.add(input.getInput_id());
+					
 					File sessionFile = (File)session.getAttribute(input.getInput_id());//获取session中input对应的file
 					if(sessionFile == null){
 						throw new ServiceException("获取Session中input对应的file失败");
@@ -132,6 +144,19 @@ public class UserTableServiceImpl implements UserTableService{
 			if(user_tableInertFlag == 0)//插入失败抛出异常
 				throw new ServiceException("插入user_table表失败");
 
+			
+			//以上步骤都完成了说明表插入都是成功的，那么就可以写入redis文件到硬盘上了
+			
+			try{
+				for(String inputid : rediskeyList ){
+					File sessionFile = (File)session.getAttribute(inputid);
+					RedisUtils.outFile(sessionFile.getUser_id(),sessionFile.getInput_id(),sessionFile.getFiletype());
+					session.removeAttribute(inputid);
+				}
+			}catch(Exception e){
+				logger.error("执行获取redis文件并存入硬盘操作异常" + "   ====   " + e.getMessage() );
+				throw new ServiceException(e.getMessage());
+			}
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {
@@ -191,6 +216,9 @@ public class UserTableServiceImpl implements UserTableService{
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 		TransactionStatus status = trManager.getTransaction(def);
 		try {
+			//首先是获取要删除的表单的里面是file类型的字段，因为还要删除硬盘上的文件
+			List<Input> inputList = inputMapper.selectInputByUserIdAndTableIdAndTimesIsFile(table_id, user_id, Integer.parseInt(times));
+			
 			/*
 			 * 由于还要删除input中存在file类型对应的file表，这里采用的是数据库的联动来实现联动删除
 			 */
@@ -203,6 +231,15 @@ public class UserTableServiceImpl implements UserTableService{
 			int y = inputMapper.deleteInputByTableIdAndUserId(table_id, user_id,Integer.parseInt(times));
 			if(y == 0)
 				throw new ServiceException("删除input表中记录失败");
+			
+			//如果上面都没有错，那么说明可以删除对应硬盘上的文件
+			if(inputList != null && !inputList.isEmpty()){
+				for (Input input : inputList) {
+					AdminUtils.deleteFileByInput(input);
+				}
+			}
+			
+			
 			
 			trManager.commit(status);//完成提交
 		} catch (ServiceException e) {

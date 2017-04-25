@@ -41,12 +41,20 @@ public class FileServiceImpl implements FileService {
 
 	public boolean onloadFileByInputId(String input_id, String user_id, String type, HttpServletResponse response) {
 		String path = AdminUtils.getFileUploadPath("fileUploadPath");//获取文件保存的绝对路径
-		path = path+user_id+"\\"+input_id+"."+type;
+		
+		logger.info("path1 : " + path);
+		
+		path = path+user_id+"/"+input_id+"."+type;
 		//获取文件名称
+		
+		logger.info("path1 : " + path);
+		
 		Input input = inputMapper.selectInputById(input_id);
+		
+		logger.info("input : " + input);
+		
 		if(input == null)
 			return false;
-		
 		try {
 			java.io.File file = new java.io.File(path);
 			InputStream in = new BufferedInputStream(new FileInputStream(path));
@@ -75,7 +83,7 @@ public class FileServiceImpl implements FileService {
 		if(file == null)
 			return false;
 		String path = AdminUtils.getFileUploadPath("fileUploadPath");//获取文件保存的绝对路径
-		path = path+file.getUser_id()+"\\"+input_id+file.getFiletype();
+		path = path+file.getUser_id()+"/"+input_id+file.getFiletype();
 		java.io.File filePath = new java.io.File(path);
 		if(!filePath.exists())
 			return false;

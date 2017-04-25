@@ -36,11 +36,4 @@ public class File {
 	public void setFiletype(String filetype) {
 		this.filetype = filetype;
 	}
-	@Override
-	public String toString() {
-		return "File [user_id=" + user_id + ", input_id=" + input_id
-				+ ", filename=" + filename + ", uploadtime=" + uploadtime
-				+ ", filetype=" + filetype + "]";
-	}
-	
 }

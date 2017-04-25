@@ -29,4 +29,6 @@ public interface InputService {
 	public List<Object> getAllWriteTableByTableId(String table_id,String user_id);
 	
 	public List<Object> selectHistoryByUserId_InputName(String user_id,String name);
+	
+	public List<Input> selectInputByUserIdAndTableIdAndTimesIsFile(String table_id, String user_id,int times);
 }
