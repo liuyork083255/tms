@@ -404,6 +404,11 @@ function fileUpByInputId(input_id){
         	try{
         		var data = JSON.parse(data);
         		if(data.success){
+					   $.messager.show({
+							title : '提示',
+							msg : '请在5分钟内完成表单的编辑，否则上传的文件将过期 ',
+							timeout:3000
+						});
                 	$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
         		}else{
         			$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");

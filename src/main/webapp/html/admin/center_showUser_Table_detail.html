@@ -72,16 +72,16 @@ function getDataGrid(tableid,userid){
 						var input = inputList[i];
 				 		var td2String = undefined;
 						
-						if(input.type == "text"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
-						else if(input.type == "textarea"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
-						else if(input.type == "file"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
-						else if(input.type == "date"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
-						else if(input.type == "datetime"){td2String =$('<th data-options="field:\''+input.name+'\',width:200">'+input.name+'</th>');}
-						else if(input.type == "email"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
-						else if(input.type == "number"){td2String =$('<th data-options="field:\''+input.name+'\',width:50">'+input.name+'</th>');}
-						else if(input.type == "select"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
-						else if(input.type == "checkbox"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
-						else if(input.type == "radio"){td2String =$('<th data-options="field:\''+input.name+'\',width:100">'+input.name+'</th>');}
+						if(input.type == "text"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "textarea"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "file"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "date"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "datetime"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "email"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "number"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "select"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "checkbox"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
+						else if(input.type == "radio"){td2String =$('<th data-options="field:\''+input.name+'\',width:150">'+input.name+'</th>');}
 						else{//该判断用于收集无效的input 
 						}
 						$("#show_userwrite_alltable_rows").append(td2String);
