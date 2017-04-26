@@ -18,7 +18,7 @@ jQuery.extend({
 		for(var i=0;i<rows.length;i++){
 			var input = {};
 			//input["id"] = "";
-			input["name"] = rows[i].name;
+			input["name"] = rows[i].name.toLowerCase();
 			input["type"] = rows[i].type;
 			
 			if(rows[i].type == "select" || rows[i].type == "checkbox" || rows[i].type == "radio"){

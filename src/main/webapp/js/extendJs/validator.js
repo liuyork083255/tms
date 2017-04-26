@@ -107,6 +107,13 @@ $.extend($.fn.validatebox.defaults.rules, {
             }, 
             message : '非法字符路不能开头，长度满足[2-16]'
     }, 
+    fieldvalid:{// 验证表单字段，不能有非法字符
+        validator : function(value) { 
+            //return /^[\u0391-\uFFE5]{2,6}$/i.test(value)|/^[a-zA-Z][a-zA-Z0-9_]{3,15}$/i.test(value); 
+        	return /^[a-zA-Z\u4e00-\u9fa5][0-9_a-zA-Z\u4e00-\u9fa5]{0,9}$/.test(value); 
+        }, 
+        message : '不能包含非法字符，长度满足[1-10]'
+    }, 
     namevalidteone:{// 验证姓名，可以是中文或英文 
         validator : function(value) { 
             //return /^[\u0391-\uFFE5]{2,6}$/i.test(value)|/^[a-zA-Z][a-zA-Z0-9_]{3,15}$/i.test(value); 

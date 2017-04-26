@@ -57,7 +57,7 @@ $('#datagrid_unwirtedTableList').datagrid({
 
 function clickCell(rowIndex, field, value){
 	var row = $('#datagrid_unwirtedTableList').datagrid('getRows')[rowIndex];
-	if(field == "clickShow"){console.info(row);
+	if(field == "clickShow"){
 		$.ajax({
 			   type: "POST",
 			   url: $.projectUrl+"/admin/db/getModelReturnJson.do",
@@ -100,6 +100,14 @@ function clickCell(rowIndex, field, value){
 				   /* 这一步很重要，要理解，将model存入JQuery全局变量中，让不同页面可以共享这个对象 */
 				   $.setGlobalModel(data.obj);
 			   
+				      //注意这里的data 的msg 里的信息是token
+				      $.setGlobalToken(data.msg);
+			   
+						$("#userTableLayout").layout('panel', 'east').panel({
+							href : 'null.html'
+						});
+					   $("#userTableLayout").layout('collapse', 'east');
+				      
 					$("#userTableLayout").layout('panel', 'center').panel({
 						href : 'center_first_editTable.html'
 					});

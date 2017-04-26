@@ -31,6 +31,10 @@ jQuery.extend({
 	getGlobalUser:function(){return $.globalUser;},
 	setGlobalUser:function(user){$.globalUser = user;},
 	
+	globalToken:undefined,
+	getGlobalToken:function(){return $.globalToken;},
+	setGlobalToken:function(token){$.globalToken = token;},
+	
 	globalTableModel:undefined,
 	getGlobalTableModel:function(){return $.globalTableModel;},
 	setGlobalTableModel:function(model){$.globalTableModel = model;},

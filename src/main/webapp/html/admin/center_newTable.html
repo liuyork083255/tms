@@ -63,6 +63,8 @@
 
 <!-- 以下是js代码 -->
 
+<!-- Abc	 aBc  abC 	ABc	aBC  AbC ABC -->
+
 <script type="text/javascript">
 
 
@@ -85,7 +87,8 @@ $('#datagrid_newTable').datagrid({
 			editor:{
 				type:'validatebox',
 				options:{
-					required:true
+					required:true,
+					validType:'fieldvalid'
 				}
 			}
 				},

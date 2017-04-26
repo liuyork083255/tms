@@ -204,7 +204,7 @@ function showInputTypeIsSelect(formTable,input){
 	//调用方法得到data_options的校验规则 
 	var data_options = getData_optionsString(input);	
 	
-	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="'+data_options+'" style="width:100px;" ></select>');
+	var selectHtml = $('<select class="easyui-combobox" id="'+input.input_id+'" data-options="'+data_options+',editable:false" style="width:100px;" ></select>');
 	
 	if(input.param.length > 0){
 		var options = input.param.split("&");
@@ -281,16 +281,30 @@ function submitForm(){
 	    		inputList = setValue(inputList);
 	    		if(inputList == null) return;
 	    		model.inputList = inputList;
-	    		console.info(model);
+
+	    		var token = $.getGlobalToken();
+	    		if(token == null || token == undefined){
+					   $.messager.show({
+							title : '提示',
+							msg : "获取token失败，请重新点击新增填写表单 ",
+							timeout:3000
+						});
+					   return;
+	    		}
+	    		
 	    		
   				$.ajax({
 					   type: "POST",
-					   url: $.projectUrl+"/userTable/saveUserEditModel.do",
+					   url: $.projectUrl+"/userTable/saveUserEditModel.do?token="+token,
 					   dataType:"json",
 					   contentType:"application/json;charset=utf-8",
 					 //注意了，如果传递给后台的数据是直接就是json对象，而不是字符串，那么就要用JSON.stringify进行转换成字符串类型
 					   data:JSON.stringify(model),
 					   success: function(data){
+						   
+						   if(data.success)
+							   $.setGlobalToken(null);
+						   
 						   $("#userTableLayout").layout('panel', 'center').panel({
 								href : 'center_showWrite_detail.html',
 								width:650

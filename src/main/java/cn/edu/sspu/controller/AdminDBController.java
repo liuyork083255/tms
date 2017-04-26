@@ -203,7 +203,7 @@ public class AdminDBController {
 	/*该方法接收一个table_id参数，返回model对象*/
 	@ResponseBody
 	@RequestMapping("/getModelReturnJson")
-	public Json getModelReturnJson(String table_id,String param){
+	public Json getModelReturnJson(String table_id,String param,HttpServletRequest request){
 		Json json = new Json();
 		
 		if(table_id == null){
@@ -233,6 +233,11 @@ public class AdminDBController {
 			json.setSuccess(false);
 			return json;
 		}
+		
+		String token = AdminUtils.getUUID();
+		request.getSession().setAttribute(token, token);
+		
+		json.setMsg(token);
 		json.setObj(model);
 		json.setSuccess(true);
 		return json;

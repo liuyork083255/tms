@@ -40,7 +40,11 @@ function submitForm(){
 	    	else{
 	    		var user = {};
 	    		user["name"] = $("#window_admin_login_form_login_name").val();
-	    		user["password"] = $("#window_admin_login_form_login_password").val();
+	    		
+	    		md5Password = $.md5($("#window_admin_login_form_login_password").val());
+	    		
+	    		user["password"] = md5Password;
+	    		
 	    		
 	     		$.ajax({
 				   type: "POST",

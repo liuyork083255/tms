@@ -21,15 +21,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
 
-import sun.awt.RequestFocusController;
 import cn.edu.sspu.exception.ServiceException;
 import cn.edu.sspu.models.Input;
-import cn.edu.sspu.models.InputName_Value;
 import cn.edu.sspu.models.Model;
 import cn.edu.sspu.models.Table;
-import cn.edu.sspu.models.TableIdAndName;
 import cn.edu.sspu.models.User;
 import cn.edu.sspu.pojo.Json;
 import cn.edu.sspu.service.FileService;
@@ -38,7 +34,6 @@ import cn.edu.sspu.service.TableService;
 import cn.edu.sspu.service.UserTableService;
 import cn.edu.sspu.utils.AdminUtils;
 import cn.edu.sspu.utils.RedisUtils;
-import redis.clients.jedis.Jedis;
 
 @Controller
 @RequestMapping("/userTable")
@@ -205,8 +200,15 @@ public class UserTableController {
 	
 	@ResponseBody
 	@RequestMapping("/saveUserEditModel")
-	public Json saveUserEditModel(@RequestBody Model model,HttpServletRequest request){
+	public Json saveUserEditModel(@RequestBody Model model,String token,HttpServletRequest request){
 		Json json = new Json();
+		
+		if(token == null || !((String)request.getSession().getAttribute(token)).equals(token)){
+			json.setMsg("获取 or 校验token失败，请重新点击新增填写表单 ");
+			json.setSuccess(false);
+			return json;
+		}
+		
 		//判断session中是否有user
 		User sessionUser = null;
 		try{
@@ -260,6 +262,7 @@ public class UserTableController {
 			return json;
 		}
 		
+		request.getSession().removeAttribute(token);
 		
 		json.setMsg("保存成功！！！");
 		json.setSuccess(true);
