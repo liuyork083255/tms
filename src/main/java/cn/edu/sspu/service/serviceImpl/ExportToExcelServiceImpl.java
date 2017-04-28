@@ -42,7 +42,7 @@ public class ExportToExcelServiceImpl implements ExportToExcelService {
 			throw new ServiceException("获取table模板失败");
 		
 		//boolean flag = ExcelUtils.exceportToExcelType_1(user_tableList, map, tableModel,tableName);
-		boolean flag1 = ExcelUtils.exceportToExcelType_2(user_tableList, map, tableModel,tableName,response);
+		boolean flag1 = ExcelUtils.exceportToExcelType_3(user_tableList, map, tableModel,tableName,response);
 		if(!flag1){
 			return false;
 		}

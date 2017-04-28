@@ -187,39 +187,6 @@ public class ExcelUtils {
 	        }
 	    }
 	    
-
-	    public static void main(String[] args) throws IOException {
-	        /*int count = 100000;
-	        JSONArray ja = new JSONArray();
-	        for(int i=0;i<100;i++){
-	            Student s = new Student();
-	            s.setName("POI"+i);
-	            s.setAge(i);
-	            s.setBirthday(new Date());
-	            s.setHeight(i);
-	            s.setWeight(i);
-	            s.setSex(i/2==0?false:true);
-	            ja.add(s);
-	        }
-	        Map<String,String> headMap = new LinkedHashMap<String,String>();
-	        headMap.put("name","姓名");
-	        headMap.put("age","年龄");
-	        headMap.put("birthday","生日");
-	        headMap.put("height","身高");
-	        headMap.put("weight","体重");
-	        headMap.put("sex","性别");
-
-	        String title = "测试";
-	        
-	        OutputStream outXls = new FileOutputStream("E://a.xls");
-	        System.out.println("正在导出xls....");
-	        Date d = new Date();
-	        ExcelUtils.exportExcel(title,headMap,ja,null,0,outXls);
-	        System.out.println("共"+count+"条数据,执行"+(new Date().getTime()-d.getTime())+"ms");
-	        outXls.close();*/
-	        //
-	    }
-	    
 	    
 	    
 	    public static boolean exceportToExcelType_1(List<User_Table> user_tableList,Map<String,
@@ -298,8 +265,6 @@ public class ExcelUtils {
 	        // 第四步，创建单元格，并设置值表头 设置表头居中  
 	        HSSFCellStyle style = wb.createCellStyle();  
 	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
-	    	
-	        
 	        
 	        //设置每一列的名称
 	        HSSFCell cell = null; 
@@ -326,7 +291,6 @@ public class ExcelUtils {
 					row.createCell(num++).setCellValue(input.getValue());  //这里是名字后面的列
 				}
 			}
-			
 	        //将文件存到指定位置  
 	        try  
 	        {  
@@ -342,7 +306,75 @@ public class ExcelUtils {
 	        	e.printStackTrace();
 	        	return false;
 	        } 
-			
+	    	return true;
+	    }
+	    
+	    public static boolean exceportToExcelType_3(List<User_Table> user_tableList,Map<String,
+	    		List<Input>> inputListMap,List<Input> tableModel,String tableName,HttpServletResponse response) throws ServiceException{
+	    	// 1 首先校验参数了
+	    	
+	    	// 2 封装导出类
+	        // 第一步，创建一个webbook，对应一个Excel文件  
+	        HSSFWorkbook wb = new HSSFWorkbook();  
+	        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
+	        HSSFSheet sheet = wb.createSheet("sheet-1");  
+	        sheet.setDefaultColumnWidth(18);
+	        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
+	        HSSFRow row = sheet.createRow((int) 0);  
+	        row.setHeight((short) (200*2));
+	        // 第四步，创建单元格，并设置值表头 设置表头居中  
+	        HSSFCellStyle style = wb.createCellStyle();  
+	        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+	        
+	        
+	        
+	        
+	        //设置每一列的名称
+	        HSSFCell cell = null; 
+	        int shotNum = 0;
+        	cell = row.createCell(shotNum++); 
+	        cell.setCellValue("填表用户名");
+	        cell.setCellStyle(style); 
+	        
+	        for (Input input : tableModel) {
+	        	cell = row.createCell(shotNum++); 
+		        cell.setCellValue(input.getName());
+		        cell.setCellStyle(style); 
+			}
+	        
+	        //遍历map，封装到表中
+	        int shortGET = 0;
+	        int userId = 0;
+	        Set<String> keys =  inputListMap.keySet();
+			for (String username : keys) {
+				int num = 0;
+				row = sheet.createRow(++shortGET);
+				row.setHeight((short) (200*2));
+				List<Input> inputList = inputListMap.get(username);
+				cell = row.createCell(num++);
+				cell.setCellValue(user_tableList.get(userId++).getUser_name()); //这里是写入新增的名字列
+				cell.setCellStyle(style); 
+				for (Input input : inputList) {
+					cell = row.createCell(num++);
+					cell.setCellValue(input.getValue());  //这里是名字后面的列
+					cell.setCellStyle(style); 
+				}
+			}
+	        //将文件存到指定位置  
+	        try  
+	        {  
+	            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+	            response.setHeader("Content-Disposition","attachment");
+	            response.setHeader("filename",tableName+".xls");
+				OutputStream os = new BufferedOutputStream(response.getOutputStream());
+	            wb.write(os);
+			    os.flush();
+			    os.close(); 
+	        }  
+	        catch (Exception e){  
+	        	e.printStackTrace();
+	        	return false;
+	        } 
 	    	return true;
 	    }
 	    
