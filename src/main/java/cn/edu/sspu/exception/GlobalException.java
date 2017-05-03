@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,7 +15,8 @@ import com.alibaba.fastjson.JSON;
 import cn.edu.sspu.pojo.Json;
 
 public class GlobalException implements HandlerExceptionResolver {
-
+	private static Logger logger = LoggerFactory.getLogger(GlobalException.class);
+	
 	public ModelAndView resolveException(HttpServletRequest request,HttpServletResponse response, Object handler, Exception ex) {
 		response.setHeader("Content-type", "text/html;charset=UTF-8");
 		System.out.println(ex.getMessage());
@@ -23,7 +26,7 @@ public class GlobalException implements HandlerExceptionResolver {
 		try {
 			response.getWriter().print(JSON.toJSONString(json));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	    return new ModelAndView();
 	}

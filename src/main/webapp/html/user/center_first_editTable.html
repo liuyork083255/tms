@@ -415,6 +415,13 @@ function fileUpByInputId(input_id){
                 	$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/ok.png");
         		}else{
         			$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");
+        			
+        			if(!data.success)
+ 					   $.messager.show({
+							title : '提示',
+							msg : '你上传的文件大小超过 1MB ',
+							timeout:3000
+						});
         		}
         	}catch(e){
         		$("#"+input_id+" > img").attr("src","../../js/jquery-easyui-1.5/themes/icons/cancel.png");

@@ -41,7 +41,6 @@ public class SessionInterceptor extends HandlerInterceptorAdapter {
         list.add(UPDATE_USER_PASSWORD);
         //这里要注意：不能拦截用户的登陆，注册请求，验证码...等等请求，有点复杂，需要一个个去删除，可以看出这里没有设计好
         if(list.contains(url)){
-        	System.out.println("这个url不进行拦截");
         	return true;
         }else{
         	//别的所有拦截进行拦截
